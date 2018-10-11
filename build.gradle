@@ -1,22 +1,119 @@
-plugins {
-    id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.2.51'
-}
-
+import java.nio.file.Files
+apply plugin: 'java'
+apply plugin: 'kotlin'
 group 'com.github.jomof'
-version '1.0-SNAPSHOT'
-
-sourceCompatibility = 1.8
 
 repositories {
-    mavenCentral()
+    jcenter()
 }
+
+buildscript {
+    ext.kotlin_version = '1.2.51'
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+
+if (System.getenv()["TRAVIS_TAG"] != null && System.getenv()["TRAVIS_TAG"].length() > 0) {
+    version System.getenv()["TRAVIS_TAG"]
+} else {
+    version 'dev'
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs "src/main/resources"
+        }
+    }
+}
+
+class GenerateBuildInfo extends DefaultTask {
+    @OutputFile
+    public File buildInfoFile = new File("src/main/java/com/github/jomof/buildserver/BuildInfo.java")
+
+    @TaskAction
+    generate() {
+        buildInfoFile.parentFile.mkdirs()
+        buildInfoFile.write(
+                """package com.github.jomof.buildserver;
+class BuildInfo {
+  static final String PROJECT_VERSION = "$project.version";
+}""")
+    }
+}
+
+task generateBuildInfo(type: GenerateBuildInfo)
+compileJava.dependsOn generateBuildInfo
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    //noinspection GroovyAssignabilityCheck
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    //archives javadocJar
+}
+
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    //compile 'com.google.code.gson:gson:2.8.5'
     testCompile 'junit:junit:4.11'
     testCompile 'com.google.truth:truth:0.42'
 }
+
+jar {
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+}
+
+def packageFolder = file('.package').absoluteFile
+def redistFolder = file('.package/redist').absoluteFile
+def redistZip = file('.package/redist.zip')
+
+task prepareToZip << {
+    println '-----------------------------------------------------------------------------------------'
+    println 'Package folder: ' + packageFolder
+    println 'Redist folder: ' + redistFolder
+    println 'Redist zip: ' + redistZip
+    println 'Version: ' + version
+    packageFolder.deleteDir()
+    redistFolder.mkdirs()
+    new File(redistFolder, 'raptor-cage.bat').text = file('redist/raptor-cage.bat').text
+    new File(redistFolder, 'raptor-cage').text = file('redist/raptor-cage').text
+    new File(redistFolder, 'raptor-cage').setExecutable(true)
+    new File(redistFolder, 'raptor-cage.jar').bytes = file("build/libs/BuildServer-${version}.jar").bytes
+    new File(redistFolder, 'raptor-cage-sources.jar').bytes = file("build/libs/BuildServer-${version}-sources.jar").bytes
+    println '-----------------------------------------------------------------------------------------'
+}
+
+task zipRedist(type: Zip) {
+    from fileTree(redistFolder)
+    destinationDir packageFolder
+    archiveName 'redist.zip'
+}
+
+task packageArtifacts << {
+
+}
+
+zipRedist.dependsOn(prepareToZip)
+packageArtifacts.dependsOn(assemble)
+packageArtifacts.dependsOn(zipRedist)
 
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"

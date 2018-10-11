@@ -25,11 +25,11 @@ private fun startServer(serverName : String): ServerConnection {
 
     val localCachePath = localCachePath(serverName)
     localCachePath.mkdirs()
-    println("dir=$localCachePath")
     val pb = ProcessBuilder(result)
             .directory(localCachePath)
             .inheritIO()
     val process = pb.start()
+    println("java=$pb.")
 
     while (true) {
         if (!process.isAlive) {

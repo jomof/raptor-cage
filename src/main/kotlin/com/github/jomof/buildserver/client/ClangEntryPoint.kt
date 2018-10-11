@@ -1,5 +1,8 @@
 package com.github.jomof.buildserver.client
 
+/**
+ * Document me
+ */
 class ClangEntryPoint {
     companion object {
         @JvmStatic
