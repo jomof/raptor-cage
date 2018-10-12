@@ -35,13 +35,13 @@ private fun urlToFile(url: String): File {
     throw RuntimeException("Invalid URL $url")
 }
 
+fun javaExeFolder() = (System.getProperties().getProperty("java.home")
+        + File.separator + "bin")
+
+fun javaExeBase() = "java" + (if (isWindows()) ".exe" else "")
+
 fun javaExe(): String {
-    var java = (System.getProperties().getProperty("java.home")
-            + File.separator + "bin" + File.separator + "java")
-    if (isWindows()) {
-        java += ".exe"
-        java = java.replace("\\", "/")
-    }
+    var java = (javaExeFolder() + File.separator + javaExeBase())
     val result = File(java)
     if (!result.isFile) {
         throw RuntimeException("Expected to find java at $result but didn't")

@@ -11,3 +11,11 @@ fun localCachePath(serverName : String) : File {
 fun localPortAgreementFile(serverName : String) : File {
     return File(localCachePath(serverName), "port")
 }
+
+fun localCacheClientLogFile(serverName : String) : File {
+    return File(localCachePath(serverName), "client-log.txt")
+}
+
+fun localCacheServerLogFile(serverName : String) : File {
+    return File(localCachePath(serverName), "server-log.txt")
+}

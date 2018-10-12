@@ -7,10 +7,12 @@ import java.util.ArrayList
 import kotlin.jvm.internal.Intrinsics
 
 private fun startServer(serverName : String): ServerConnection {
+    log(serverName, "startServer")
+    val args = ArrayList<String>()
+    args.add("cmd")
+    args.add("/c")
+    args.add("start")
 
-    val result = ArrayList<String>()
-    result.add(platformQuote(javaExe()))
-    result.add("-classpath")
     val serverClass = ServerOperation::class
     val jarFile = getJarOfClass(ServerOperation::class.java)
     var classPath = jarFile.absolutePath.replace("\\", "/")
@@ -19,51 +21,60 @@ private fun startServer(serverName : String): ServerConnection {
         classPath = (getJarOfClass(Intrinsics::class.java).absolutePath.replace("\\", "/")
                 + separator + classPath)
     }
-    result.add(platformQuote(classPath))
-    result.add(serverClass.java.canonicalName)
-    result.add(serverName)
+
+    args.add("Raptor Cage -- $serverName")
+    args.add("/d")
+    args.add(javaExeFolder())
+    args.add(javaExeBase())
+    args.add("-classpath")
+    args.add(classPath)
+    args.add(serverClass.java.canonicalName)
+    args.add(serverName)
 
     val localCachePath = localCachePath(serverName)
     localCachePath.mkdirs()
-    val pb = ProcessBuilder(result)
+    val pb = ProcessBuilder(args)
             .directory(localCachePath)
             .inheritIO()
-    val process = pb.start()
-    println("java=$pb.")
-
+    pb.start()
+    println("Starting Raptor Cage server")
+    var i = 0
     while (true) {
-        if (!process.isAlive) {
-            throw RuntimeException("Could not start build server")
-        }
-        val connection = tryConnectServer(serverName)
+        val connection = connectServer(serverName)
         if (connection != null) {
+            log(serverName, "connected to server returning")
             return connection
         }
-        println("Waiting for server")
+        log(serverName, "Waiting for server")
         Thread.sleep(1000)
+        if (++i > 10) {
+            throw RuntimeException("Timeout connecting to server")
+        }
     }
 }
 
-fun tryConnectServer(serverName : String) : ServerConnection? {
+fun connectServer(serverName : String) : ServerConnection? {
+    log(serverName, "getOrStartServer")
     val localPortAgreementFile = localPortAgreementFile(serverName)
     if (localPortAgreementFile.isFile) {
         val port = localPortAgreementFile.readText().toInt()
-        val connection = ServerConnection(port)
-        try {
-            connection.hello()
+        return try {
+            log(serverName, "tryServerConnection")
+            val result = ServerConnection(serverName, port)
+            log(serverName, "connected!")
+            result
         } catch (e : ConnectException) {
-            return null
+            log(serverName, "connectServer failed")
+            null
         }
-        return connection
     }
     return null
 }
 
 fun getOrStartServer(serverName: String) : ServerConnection {
-    val connection = tryConnectServer(serverName)
-    if (connection != null) {
-        return connection
-    }
-    startServer(serverName)
-    return getOrStartServer(serverName)
+    log(serverName, "getOrStartServer")
+    val result = connectServer(serverName)
+            ?: startServer(serverName)
+    log(serverName, "finished getOrStartServer")
+    return result
 }

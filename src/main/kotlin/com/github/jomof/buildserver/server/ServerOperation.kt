@@ -8,6 +8,7 @@ import java.io.IOException
 import java.net.Socket
 
 class ServerOperation(
+        private var serverName: String,
         private var serverSocket: ServerSocket) : Runnable {
     private lateinit var runningThread: Thread
     private var isStopped = false
@@ -15,30 +16,36 @@ class ServerOperation(
     private val workItems = mutableListOf<WorkItem>()
 
     override fun run() {
-        synchronized(this) {
-            this.runningThread = Thread.currentThread()
-        }
-        while (!isStopped()) {
-            var clientSocket: Socket?
-            try {
-                clientSocket = this.serverSocket.accept()
-            } catch (e: IOException) {
-                if (isStopped()) {
-                    println("server Stopped.")
-                    return
+        try {
+            synchronized(this) {
+                this.runningThread = Thread.currentThread()
+            }
+            log(serverName, "Started")
+            while (!isStopped()) {
+                var clientSocket: Socket?
+                try {
+                    clientSocket = this.serverSocket.accept()
+                } catch (e: IOException) {
+                    if (isStopped()) {
+                        log(serverName, "Server stopped")
+                        return
+                    }
+                    log(serverName, "Error accepting client connection")
+                    throw RuntimeException(
+                            "Error accepting client connection", e)
                 }
-                throw RuntimeException(
-                        "Error accepting client connection", e)
-            }
 
-            // Deserialize the request
-            addWorkItem(NewRequestWorkItem(clientSocket))
+                // Deserialize the request
+                addWorkItem(NewRequestWorkItem(clientSocket))
 
-            if (workersRunning < 10) {
-                Thread(WorkerOperation(this)).start()
+                if (workersRunning < 10) {
+                    Thread(WorkerOperation(this)).start()
+                }
             }
+            log(serverName, "Server stopped after loop")
+        } finally {
+            log(serverName, "Run method exiting")
         }
-        println("server Stopped.")
     }
 
     @Synchronized
@@ -93,7 +100,7 @@ class ServerOperation(
         fun main(args: Array<String>) {
             val serverName = args[0]
             // Fully start the server before publishing the port
-            val server = ServerOperation(ServerSocket(0))
+            val server = ServerOperation(serverName, ServerSocket(0))
             Thread(server).start()
             // At this point, we could serve requests but no one knows
             // our port number.
@@ -107,7 +114,7 @@ class ServerOperation(
                 // with another server.
                 val agreementPort = portAgreementFile.readText().toInt()
                 if (agreementPort != server.port()) {
-                    println("Agreement port changed from ${server.port()} to $agreementPort, stopping server")
+                    log(serverName, "Agreement port changed from ${server.port()} to $agreementPort, stopping server")
                     server.stop()
                     return
 

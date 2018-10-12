@@ -8,8 +8,7 @@ class ServerManagementKtTest {
     @Test
     fun testGetOrStartServer() {
         val connection = getOrStartServer("testGetOrStartServer")
-        val hello = connection.hello()
-        assertThat(hello.type).isEqualTo("hello-response")
+        assertThat(connection.version()).isEqualTo(1)
         connection.stop()
     }
 }
