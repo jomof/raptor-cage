@@ -8,10 +8,6 @@ import kotlin.jvm.internal.Intrinsics
 
 private fun startServer(serverName : String): ServerConnection {
     log(serverName, "startServer")
-    val args = ArrayList<String>()
-    args.add("cmd")
-    args.add("/c")
-    args.add("start")
 
     val serverClass = ServerOperation::class
     val jarFile = getJarOfClass(ServerOperation::class.java)
@@ -21,7 +17,10 @@ private fun startServer(serverName : String): ServerConnection {
         classPath = (getJarOfClass(Intrinsics::class.java).absolutePath.replace("\\", "/")
                 + separator + classPath)
     }
-
+    val args = ArrayList<String>()
+    args.add("cmd")
+    args.add("/c")
+    args.add("start")
     args.add("Raptor Cage -- $serverName")
     args.add("/d")
     args.add(javaExeFolder())
