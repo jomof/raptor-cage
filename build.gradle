@@ -75,6 +75,7 @@ dependencies {
     //compile 'com.google.code.gson:gson:2.8.5'
     testCompile 'junit:junit:4.11'
     testCompile 'com.google.truth:truth:0.42'
+    testCompile group: 'net.java', name: 'quickcheck', version: '0.6'
 }
 
 jar {
