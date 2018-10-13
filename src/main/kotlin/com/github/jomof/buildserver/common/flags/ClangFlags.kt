@@ -8,6 +8,13 @@ data class ClangFlags(val rawFlags : List<String>) {
             .map { flag -> flag.flag.substringAfterLast(".", "") }
             .filter { extension -> knownFileExtensions.contains(extension) }
             .toSet()
+    val sourceFiles = flags.mapNotNull {
+        when(it) {
+            is SourceFileFlag -> it.flag
+            else -> null
+        }
+    }
+    val lastSourceFile = sourceFiles.lastOrNull()
     val isPreprocessorRun = rawFlags.contains("-E")
     val cFileExtensions = (fileExtensions intersect knownCFileExtensions)
     val ccFileExtensions = (fileExtensions intersect knownCcFileExtensions)
@@ -30,23 +37,40 @@ data class ClangFlags(val rawFlags : List<String>) {
         else -> UNKNOWN
     }
 
-    fun toPreprocessorEquivalent() : ClangFlags {
-        when (operation) {
-            CC_TO_O, C_TO_O -> {
-                val flags = flags.map { flag ->
-                    when {
-                        flag is OneArgFlag && flag.isFlag("o") ->
-                            listOf(flag.key, flag.value + when(operation) {
-                                C_TO_O -> ".i"
-                                else -> ".ii"
-                            })
-                        else -> flag.sourceFlags
-                    }
-                }.flatten()
-                return ClangFlags(flags + "-E")
+    fun toPreprocessEquivalent() : ClangFlags {
+        require(isCompile)
+        val preprocessExtension = if (isCcCompile) ".ii" else ".i"
+        val flags = flags.map { flag ->
+            when {
+                flag is OneArgFlag && flag.isFlag("o") ->
+                    listOf(flag.key, flag.value + preprocessExtension)
+                else -> flag.sourceFlags
             }
-            else -> throw RuntimeException(operation.toString())
+        }.flatten()
+        .filter {
+            when(it) {
+                // Running just the preprocessor doesn't use this flag, so remove
+                "-Wa,--noexecstack" -> false
+                else -> true
+            }
+
         }
+        return ClangFlags(flags + "-E")
+    }
+
+    fun toPostprocessEquivalent() : ClangFlags {
+        require(isCompile)
+        val preprocessExtension = if (isCcCompile) ".ii" else ".i"
+        val preprocessFile = lastOutput + preprocessExtension
+        val newFlags = flags
+                .filter { flag -> !unusedInPostProcessPhase.any { flag.isFlag(it) } }
+                .map {
+            when(it) {
+                is SourceFileFlag -> listOf(preprocessFile)
+                else -> it.sourceFlags
+            }
+        }.flatten()
+        return ClangFlags(newFlags)
     }
 
     private fun interpretFlags(flags : List<String>) : List<ClangFlag> {
@@ -70,6 +94,9 @@ data class ClangFlags(val rawFlags : List<String>) {
                             value,
                             listOf(flag)))
                 }
+                !flag.startsWith("-")
+                        && knownSourceFileExtensions.any { flag.endsWith(it) } ->
+                    result.add(SourceFileFlag(flag))
                 else -> result.add(UnidentifiedClangFlag(flag))
             }
             ++i
@@ -78,25 +105,28 @@ data class ClangFlags(val rawFlags : List<String>) {
     }
 
     companion object {
-        private val oneArgFlagsNoDash = setOf("o", "MT")
+        private val unusedInPostProcessPhase = setOf("MD", "MT", "isystem", "MF")
+        private val oneArgFlagsNoDash = setOf("o", "MT", "MF", "isystem")
         private val oneArgFlagsSingleDash = oneArgFlagsNoDash.map { "-$it" }
         private val oneArgFlagsDoubleDash = oneArgFlagsNoDash.map { "--$it" }
         private val oneArgFlags = oneArgFlagsSingleDash + oneArgFlagsDoubleDash
         private val oneArgFlagsEquals = oneArgFlags.map { "$it=" }
         private val knownCFileExtensions = setOf("c")
         private val knownCcFileExtensions = setOf("c++", "cpp", "cc")
+        private val knownPostProcessFileExtensions = setOf(".i", ".ii")
+        private val knownSourceFileExtensions = knownCFileExtensions + knownCcFileExtensions + knownPostProcessFileExtensions
         private val knownObjectFileExtensions = setOf("o")
         val knownFileExtensions =
                 setOf("exe", "d") +
                         knownObjectFileExtensions +
-                        knownCcFileExtensions +
-                        knownCFileExtensions
+                        knownSourceFileExtensions
     }
 }
 
 abstract class ClangFlag {
     abstract val sourceFlags : List<String>
     abstract val flag : String
+    abstract fun isFlag(flag : String) : Boolean
 }
 
 data class OneArgFlag(
@@ -104,11 +134,31 @@ data class OneArgFlag(
         val value : String,
         override val sourceFlags : List<String>) : ClangFlag() {
     override val flag = "$key $value"
-    fun isFlag(flag : String) = key == "--$flag" || key == "-$flag"
+    override fun isFlag(flag : String)  =
+            when(key) {
+                "--$flag", "-$flag" ->
+                    true
+                else ->
+                    false
+            }
+}
+
+data class SourceFileFlag(
+        val sourceFile : String) : ClangFlag() {
+    override val sourceFlags = listOf(sourceFile)
+    override val flag = sourceFile
+    override fun isFlag(flag : String) = false
 }
 
 data class UnidentifiedClangFlag(val rawFlag : String) : ClangFlag() {
     override val sourceFlags = listOf(rawFlag)
     override val flag = rawFlag
+    override fun isFlag(flag : String)  =
+            when(rawFlag) {
+                "--$flag", "-$flag" ->
+                    true
+                else ->
+                    false
+            }
 }
 

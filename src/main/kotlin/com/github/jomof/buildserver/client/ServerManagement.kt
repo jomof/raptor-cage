@@ -7,8 +7,6 @@ import java.util.ArrayList
 import kotlin.jvm.internal.Intrinsics
 
 private fun startServer(serverName : String): ServerConnection {
-    log(serverName, "startServer")
-
     val serverClass = ServerOperation::class
     val jarFile = getJarOfClass(ServerOperation::class.java)
     var classPath = jarFile.absolutePath.replace("\\", "/")
@@ -41,10 +39,8 @@ private fun startServer(serverName : String): ServerConnection {
     while (true) {
         val connection = connectServer(serverName)
         if (connection != null) {
-            log(serverName, "connected to server returning")
             return connection
         }
-        log(serverName, "Waiting for server")
         Thread.sleep(1000)
         if (++i > 10) {
             throw RuntimeException("Timeout connecting to server")
@@ -53,17 +49,13 @@ private fun startServer(serverName : String): ServerConnection {
 }
 
 fun connectServer(serverName : String) : ServerConnection? {
-    log(serverName, "getOrStartServer")
     val localPortAgreementFile = localPortAgreementFile(serverName)
     if (localPortAgreementFile.isFile) {
         val port = localPortAgreementFile.readText().toInt()
         return try {
-            log(serverName, "tryServerConnection")
             val result = ServerConnection(serverName, port)
-            log(serverName, "connected!")
             result
         } catch (e : ConnectException) {
-            log(serverName, "connectServer failed")
             null
         }
     }
@@ -71,9 +63,7 @@ fun connectServer(serverName : String) : ServerConnection? {
 }
 
 fun getOrStartServer(serverName: String) : ServerConnection {
-    log(serverName, "getOrStartServer")
     val result = connectServer(serverName)
             ?: startServer(serverName)
-    log(serverName, "finished getOrStartServer")
     return result
 }

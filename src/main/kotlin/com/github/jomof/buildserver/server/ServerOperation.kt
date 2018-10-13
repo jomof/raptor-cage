@@ -112,6 +112,12 @@ class ServerOperation(
                 // If at any point the agreement port changes then we no longer
                 // control this cache directory. We have to stop to avoid racing
                 // with another server.
+                if (!portAgreementFile.exists()) {
+                    log(serverName, "Agreement port disappeared. Stopping.")
+                    server.stop()
+                    return
+
+                }
                 val agreementPort = portAgreementFile.readText().toInt()
                 if (agreementPort != server.port()) {
                     log(serverName, "Agreement port changed from ${server.port()} to $agreementPort, stopping server")

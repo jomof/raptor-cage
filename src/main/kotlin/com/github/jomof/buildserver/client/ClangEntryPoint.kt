@@ -1,8 +1,6 @@
 package com.github.jomof.buildserver.client
 
 import com.github.jomof.buildserver.common.flags.ClangFlags
-import com.github.jomof.buildserver.common.flags.ClangOperation
-import com.github.jomof.buildserver.common.flags.ClangOperation.*
 
 /**
  * Document me
@@ -11,30 +9,33 @@ class ClangEntryPoint {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            println("Raptor cage y'all")
+            println("Raptor cage intercepted")
+            val joined = args.joinToString(" ")
+            log("main", "\r\nentry point: $joined")
+            if (joined.contains("-E")) throw RuntimeException("why?!")
             val connection = getOrStartServer("main")
             val flags = ClangFlags(args.toList())
             if (flags.operation.isObjectOutput()) {
-                println("Preprocessing first")
-                val objectOutput = flags.lastOutput
-                val preprocessorFlags = flags.toPreprocessorEquivalent()
-                println("object output = $objectOutput")
-                println("preprocessor output = ${preprocessorFlags.lastOutput}")
-                executeAndExit(preprocessorFlags.rawFlags.toTypedArray())
+                val preprocess = flags.toPreprocessEquivalent()
+                val postproces = flags.toPostprocessEquivalent()
+                println("Raptor cage writing ${preprocess.lastOutput}")
+                execute(preprocess.rawFlags.toTypedArray())
+                println("Raptor cage writing ${postproces.lastOutput}")
+                execute(postproces.rawFlags.toTypedArray())
             }
-
-            log("main", "Starting process")
             executeAndExit(args)
         }
 
         private fun executeAndExit(args: Array<String>) {
-            val result =
-                    ProcessBuilder(args.toList())
-                            .inheritIO()
-                            .start()
-                            .waitFor()
-            log("main", "Process exited with $result")
+            val result = execute(args)
             System.exit(result)
+        }
+
+        private fun execute(args: Array<String>): Int {
+            return ProcessBuilder(args.toList())
+                    .inheritIO()
+                    .start()
+                    .waitFor()
         }
     }
 }
