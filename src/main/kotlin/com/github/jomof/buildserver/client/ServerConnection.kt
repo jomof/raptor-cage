@@ -1,5 +1,8 @@
 package com.github.jomof.buildserver.client
 
+import com.github.jomof.buildserver.common.io.PIPE_EXIT
+import com.github.jomof.buildserver.common.io.PIPE_STDERR
+import com.github.jomof.buildserver.common.io.PIPE_STDOUT
 import com.github.jomof.buildserver.common.messages.*
 import java.io.DataInputStream
 import java.io.DataOutputStream
@@ -29,7 +32,7 @@ class ServerConnection(
 
     fun version() = hello.version
 
-    fun hello() : HelloResponse {
+    private fun hello() : HelloResponse {
         return send(HelloRequest()) as HelloResponse
     }
 

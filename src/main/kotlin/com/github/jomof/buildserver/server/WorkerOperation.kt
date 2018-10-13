@@ -31,10 +31,11 @@ class WorkerOperation(
                                 }
                                 is ClangRequest -> {
                                     println("clang")
-                                    clang(
+                                    val code = clang(
                                             request.directory,
                                             request.args,
                                             write)
+                                    write.writeObject(ClangResponse(code = code))
                                 }
                                 is StopRequest -> {
                                     server.stop()
