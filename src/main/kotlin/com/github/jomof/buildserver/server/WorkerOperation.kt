@@ -8,7 +8,7 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
 class WorkerOperation(
-        private val server : ServerOperation) : Runnable {
+        private val server: ServerOperation) : Runnable {
     override fun run() {
         synchronized(server) {
             server.incrementWorkers()
@@ -24,17 +24,17 @@ class WorkerOperation(
                     when (workItem) {
                         is NewRequestWorkItem -> {
                             val request = read.readObject()
-                            println("got me a $request")
                             when (request) {
                                 is HelloRequest -> {
+                                    println("hello")
                                     write.writeObject(HelloResponse(version = 1))
                                 }
                                 is ClangRequest -> {
-                                    val code = clang(
+                                    println("clang")
+                                    clang(
                                             request.directory,
                                             request.args,
                                             write)
-                                    write.writeObject(ClangResponse(code = code))
                                 }
                                 is StopRequest -> {
                                     server.stop()
@@ -52,7 +52,7 @@ class WorkerOperation(
                         }
                     }
                 }
-            } while(true)
+            } while (true)
         } finally {
             server.decrementWorkers()
         }
