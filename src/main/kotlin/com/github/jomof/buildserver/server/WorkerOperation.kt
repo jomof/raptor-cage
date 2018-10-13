@@ -29,6 +29,13 @@ class WorkerOperation(
                                 is HelloRequest -> {
                                     write.writeObject(HelloResponse(version = 1))
                                 }
+                                is ClangRequest -> {
+                                    val code = clang(
+                                            request.directory,
+                                            request.args,
+                                            write)
+                                    write.writeObject(ClangResponse(code = code))
+                                }
                                 is StopRequest -> {
                                     server.stop()
                                     write.writeObject(StopResponse())

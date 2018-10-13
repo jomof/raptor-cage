@@ -1,9 +1,6 @@
 package com.github.jomof.buildserver.client
 
-import com.github.jomof.buildserver.common.messages.ErrorResponse
-import com.github.jomof.buildserver.common.messages.HelloRequest
-import com.github.jomof.buildserver.common.messages.HelloResponse
-import com.github.jomof.buildserver.common.messages.StopRequest
+import com.github.jomof.buildserver.common.messages.*
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.ObjectInputStream
@@ -34,6 +31,12 @@ class ServerConnection(
 
     fun hello() : HelloResponse {
         return send(HelloRequest()) as HelloResponse
+    }
+
+    fun clang(directory : String, args : List<String>) : ClangResponse {
+        return send(ClangRequest(
+                directory = directory,
+                args = args)) as ClangResponse
     }
 
     fun stop() {
