@@ -13,8 +13,8 @@ class ClangEntryPoint {
             println("Raptor cage intercepted")
             val connection = getOrStartServer("main")
             System.exit(connection.clang(
-                    File(".").absolutePath,
-                    args.toList()).code)
+                    directory = File(".").absolutePath,
+                    args = args.toList()).code)
         }
     }
 }

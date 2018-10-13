@@ -46,7 +46,6 @@ fun connectServer(serverName : String) : ServerConnection? {
 }
 
 fun getOrStartServer(serverName: String) : ServerConnection {
-    val result = connectServer(serverName)
+    return connectServer(serverName)
             ?: startServer(serverName)
-    return result
 }
