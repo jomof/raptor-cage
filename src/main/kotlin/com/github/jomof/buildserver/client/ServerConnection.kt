@@ -1,8 +1,6 @@
 package com.github.jomof.buildserver.client
 
-import com.github.jomof.buildserver.common.io.PIPE_EXIT
-import com.github.jomof.buildserver.common.io.PIPE_STDERR
-import com.github.jomof.buildserver.common.io.PIPE_STDOUT
+import com.github.jomof.buildserver.common.io.teleportStdio
 import com.github.jomof.buildserver.common.messages.*
 import java.io.DataInputStream
 import java.io.DataOutputStream
@@ -46,23 +44,12 @@ class ServerConnection(
             objectWrite.writeObject(request)
             val inFromServer = DataInputStream(clientSocket.getInputStream())
             val objectRead = ObjectInputStream(inFromServer)
-            while(true) {
-                when(0 + objectRead.readByte()) {
-                    PIPE_STDERR -> {
-                        val line = objectRead.readUTF()
-                        System.err.println(line)
-                    }
-                    PIPE_STDOUT -> {
-                        val line = objectRead.readUTF()
-                        System.out.println(line)
-                    }
-                    PIPE_EXIT -> {
-                        return objectRead.readObject() as ClangResponse
-                    }
-                }
+            teleportStdio(objectRead) { err, message ->
+                if (err) { System.err.println(message) }
+                else { System.out.println(message) }
             }
+            return objectRead.readObject() as ClangResponse
         }
-        throw RuntimeException("unreachable")
     }
 
     fun stop() {
