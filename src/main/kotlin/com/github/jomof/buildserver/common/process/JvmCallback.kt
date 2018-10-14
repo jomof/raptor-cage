@@ -36,13 +36,17 @@ class JvmCallbackBuilder(clazz : KClass<*>) {
             vararg processArgs: String) : ProcessBuilder {
         val args = ArrayList<String>()
         if (detached) {
-            args.add("cmd")
-            args.add("/c")
-            args.add("start")
-            args.add(title)
-            args.add("/d")
-            args.add(javaExeFolder().path)
-            args.add(javaExeBase())
+            if (isWindows()) {
+                args.add("cmd")
+                args.add("/c")
+                args.add("start")
+                args.add(title)
+                args.add("/d")
+                args.add(javaExeFolder().path)
+                args.add(javaExeBase())
+            } else {
+                args.add(javaExe().path)
+            }
         } else {
             args.add(javaExe().path)
         }
@@ -50,6 +54,11 @@ class JvmCallbackBuilder(clazz : KClass<*>) {
         args.add(classPath)
         args.add(entryPoint)
         args.addAll(processArgs)
+
+        if (detached && !isWindows()) {
+            args.add("&")
+        }
+
         return ProcessBuilder(args)
     }
 }

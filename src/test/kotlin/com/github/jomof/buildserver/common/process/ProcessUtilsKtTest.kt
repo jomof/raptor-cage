@@ -25,6 +25,7 @@ class ProcessUtilsKtTest {
         @JvmStatic
         fun main(args: Array<String>) {
             System.out.println("OUT: " + args.joinToString(" "))
+            Thread.sleep(50)
             System.err.println("ERR: " + args.joinToString(" "))
             System.exit(args[0].toInt())
         }
