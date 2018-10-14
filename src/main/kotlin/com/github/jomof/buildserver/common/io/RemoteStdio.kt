@@ -3,6 +3,10 @@ package com.github.jomof.buildserver.common.io
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
+const val PIPE_STDERR = 0
+const val PIPE_STDOUT = 1
+const val PIPE_EXIT = 2
+
 /**
  * Allows stdout/stderr to be redirected across an
  * ObjectOutputStream.

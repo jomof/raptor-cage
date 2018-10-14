@@ -11,7 +11,6 @@ class JvmCallbackBuilder(clazz : KClass<*>) {
     private val mainClassPath : String = clazz.classPath()
     private val isJar = mainClassPath.endsWith(".jar")
     private var classPath = mainClassPath
-    private val separator = if (isWindows()) ";" else ":"
     private var detached = false
 
     init {
@@ -21,7 +20,7 @@ class JvmCallbackBuilder(clazz : KClass<*>) {
 
     fun dependsOn(clazz : KClass<*>) : JvmCallbackBuilder {
         if (!isJar) {
-            classPath = clazz.classPath() + separator + classPath
+            classPath = clazz.classPath() + os.classPathSeparator + classPath
         }
         return this
     }
@@ -36,7 +35,7 @@ class JvmCallbackBuilder(clazz : KClass<*>) {
             vararg processArgs: String) : ProcessBuilder {
         val args = ArrayList<String>()
         if (detached) {
-            if (isWindows()) {
+            if (os == Os.WINDOWS) {
                 args.add("cmd")
                 args.add("/c")
                 args.add("start")
@@ -55,7 +54,7 @@ class JvmCallbackBuilder(clazz : KClass<*>) {
         args.add(entryPoint)
         args.addAll(processArgs)
 
-        if (detached && !isWindows()) {
+        if (detached && os != Os.WINDOWS) {
             args.add("&")
         }
 

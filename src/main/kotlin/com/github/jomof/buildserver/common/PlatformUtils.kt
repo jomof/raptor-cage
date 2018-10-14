@@ -1,11 +1,19 @@
 package com.github.jomof.buildserver.common
 
-fun isWindows(): Boolean {
-    return System.getProperty("os.name").startsWith("Win")
+enum class Os(
+        val tag : String,
+        val exe : String,
+        val classPathSeparator : String) {
+    WINDOWS("windows", ".exe", ";"),
+    LINUX("linux", "", ":"),
+    DARWIN("darwin", "", ":")
 }
 
-fun platformQuote(file: String): String {
-    return if (isWindows()) {
-        "\"" + file + "\""
-    } else file
+private val osName = System.getProperty("os.name")
+
+val os = when {
+    osName.startsWith("Win") -> Os.WINDOWS
+    osName.startsWith("Mac") -> Os.DARWIN
+    else -> Os.LINUX
 }
+

@@ -34,7 +34,7 @@ fun jarUrlToFile(url: String): String {
 fun javaExeFolder() =
         File(System.getProperties().getProperty("java.home"), "bin")
 
-fun javaExeBase() = "java" + (if (isWindows()) ".exe" else "")
+fun javaExeBase() = "java" + os.exe
 
 fun javaExe(): File {
     var java = File(javaExeFolder(), javaExeBase())
