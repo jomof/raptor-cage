@@ -6,10 +6,6 @@
 ##
 ##############################################################################
 
-if [ -f "$1" ]; then
-    MANIFEST=$1
-    shift 1
-fi
 SCRIPT_FOLDER="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CLASSPATH=$SCRIPT_FOLDER/raptor-cage.jar
 
@@ -168,7 +164,7 @@ fi
 
 "$JAVACMD" "${JVM_OPTS[@]}" -classpath "$CLASSPATH" com.github.jomof.buildserver.client.ClangEntryPoint $@
 if [[ $? != 0 ]]; then
-  exit 1
+  exit 1f
 fi
 
 
