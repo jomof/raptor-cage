@@ -34,6 +34,8 @@ data class ClangFlags(val rawFlags : List<String>) {
     val lastOutput = outputs.lastOrNull()
 
     val operation = when {
+        !isPreprocessorRun && isICompile && isObjectOutput -> I_TO_O
+        !isPreprocessorRun && isIiCompile && isObjectOutput -> II_TO_O
         !isPreprocessorRun && isCCompile && isObjectOutput -> C_TO_O
         !isPreprocessorRun && isCcCompile && isObjectOutput -> CC_TO_O
         isPreprocessorRun && isCCompile && isObjectOutput -> C_TO_I

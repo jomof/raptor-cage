@@ -25,9 +25,10 @@ fun clang(
 
     try {
         if (flags.operation.isObjectOutput()) {
-            val flagsFile = File(flags.outputs.single() + ".flags")
-            //stdio.stdout("Writing flags to $flagsFile")
-            //flagsFile.writeText(args.joinToString("\n"))
+            val flagsFile = File(directory, flags.outputs.single() + ".flags")
+            flagsFile.parentFile.mkdirs()
+            stdio.stdout("Raptor cage writing $flagsFile")
+            flagsFile.writeText(args.joinToString("\n"))
 
             val preprocess = flags.toPreprocessEquivalent()
             val postproces = flags.toPostprocessEquivalent()
@@ -41,7 +42,6 @@ fun clang(
         }
         return execute(args.toTypedArray())
     } finally {
-        println("Server writing clang exit code")
         stdio.exit()
     }
 }
