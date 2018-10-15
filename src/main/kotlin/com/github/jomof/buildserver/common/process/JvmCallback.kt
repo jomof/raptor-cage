@@ -34,22 +34,11 @@ class JvmCallbackBuilder(clazz : KClass<*>) {
             title : String,
             directory : File,
             vararg processArgs: String) : ProcessBuilder {
-        val shellArgs = ArrayList<String>()
+
         val args = ArrayList<String>()
-        if (detached) {
-            if (os == Os.WINDOWS) {
-                shellArgs.add("cmd")
-                shellArgs.add("/c")
-                shellArgs.add("start")
-                shellArgs.add(title)
-                shellArgs.add("/d")
-                args.add(javaExeFolder().path)
-                args.add(javaExeBase())
-            } else {
-                shellArgs.add("/bin/sh")
-                shellArgs.add("-c")
-                args.add(javaExe().path)
-            }
+        if (detached && os == Os.WINDOWS) {
+            args.add(javaExeFolder().path)
+            args.add(javaExeBase())
         } else {
             args.add(javaExe().path)
         }
@@ -61,12 +50,20 @@ class JvmCallbackBuilder(clazz : KClass<*>) {
 
         return if (detached) {
             if (os == Os.WINDOWS) {
+                val shellArgs = ArrayList<String>()
+                shellArgs.add("cmd")
+                shellArgs.add("/c")
+                shellArgs.add("start")
+                shellArgs.add(title)
+                shellArgs.add("/d")
                 ProcessBuilder(shellArgs + args)
             } else {
                 val command = File(directory, "start-daemon")
-                command.writeText("/bin/sh -c '( ${args.joinToString(" ")} & )\n'")
+                command.writeText("/bin/sh -c '(shopt -u huponexit; " +
+                        "${args.joinToString(" ")} &)'\n")
+
                 command.setExecutable(true)
-                ProcessBuilder(command.path)
+                ProcessBuilder(command.absolutePath)
             }
         } else {
 

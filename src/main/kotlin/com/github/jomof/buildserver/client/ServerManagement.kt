@@ -9,24 +9,21 @@ import java.net.ConnectException
 private fun startServer(serverName : String): ServerConnection {
     val localCachePath = localCachePath(serverName)
     localCachePath.mkdirs()
+    val stdout = File(localCachePath, "server-stdout.txt")
+    val stderr = File(localCachePath, "server-stderr.txt")
     val pb = RaptorCageDaemon::class.callbackBuilder()
             .detached()
             .processBuilder("Raptor Cage", localCachePath, serverName)
             .directory(localCachePath)
-            .inheritIO()
-    println("Starting Raptor Cage server")
-    if(!File(localCachePath, "start-daemon").isFile) {
-        throw RuntimeException("xxx")
-    }
+            .redirectOutput(ProcessBuilder.Redirect.appendTo(stdout))
+            .redirectError(ProcessBuilder.Redirect.appendTo(stderr))
+    log(serverName, "Starting Raptor Cage server")
     val process = pb.start()
-    val code = process.waitFor()
-    if (code != 0) {
-        throw RuntimeException("Shell exited with $code")
-    }
 
 
     var i = 0
     while (true) {
+        log(serverName, "Spinning while attaching")
         val connection = connectServer(serverName)
         if (connection != null) {
             return connection

@@ -10,11 +10,13 @@ class ClangEntryPoint {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            println("Raptor cage intercepted")
+            log("main", "Raptor cage intercepted")
             val connection = getOrStartServer("main")
-            System.exit(connection.clang(
+            val code = connection.clang(
                     directory = File(".").absolutePath,
-                    args = args.toList()).code)
+                    args = args.toList()).code
+
+            log("main", "Reached the end of main")
         }
     }
 }
