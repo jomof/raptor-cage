@@ -53,6 +53,7 @@ class JvmCallbackBuilder(clazz : KClass<*>) {
         } else {
             args.add(javaExe().path)
         }
+        
         args.add("-classpath")
         args.add(classPath)
         args.add(entryPoint)
