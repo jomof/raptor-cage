@@ -1,6 +1,6 @@
 package com.github.jomof.buildserver.common
 
-import com.github.jomof.buildserver.server.ServerOperation
+import com.github.jomof.buildserver.server.RaptorCageDaemon
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import net.java.quickcheck.Generator
@@ -52,7 +52,7 @@ class ReflectionUtilsKtTest {
 
     @Test
     fun jarOfCodeSideClass() {
-        val jar = File(ServerOperation::class.classPath())
+        val jar = File(RaptorCageDaemon::class.classPath())
         println(jar.toString())
         // Test classes go to a directory that is incrementally updated
         // rather than a zipped-up jar

@@ -2,22 +2,29 @@ package com.github.jomof.buildserver.client
 
 import com.github.jomof.buildserver.common.*
 import com.github.jomof.buildserver.common.process.callbackBuilder
-import com.github.jomof.buildserver.server.ServerOperation
+import com.github.jomof.buildserver.server.RaptorCageDaemon
+import java.io.File
 import java.net.ConnectException
-import java.util.ArrayList
-import kotlin.jvm.internal.Intrinsics
 
 private fun startServer(serverName : String): ServerConnection {
     val localCachePath = localCachePath(serverName)
     localCachePath.mkdirs()
-    val pb = ServerOperation::class.callbackBuilder()
+    val pb = RaptorCageDaemon::class.callbackBuilder()
             .detached()
-            .processBuilder("Raptor Cage", serverName)
+            .processBuilder("Raptor Cage", localCachePath, serverName)
             .directory(localCachePath)
             .inheritIO()
-
-    pb.start()
     println("Starting Raptor Cage server")
+    if(!File(localCachePath, "start-daemon").isFile) {
+        throw RuntimeException("xxx")
+    }
+    val process = pb.start()
+    val code = process.waitFor()
+    if (code != 0) {
+        throw RuntimeException("Shell exited with $code")
+    }
+
+
     var i = 0
     while (true) {
         val connection = connectServer(serverName)

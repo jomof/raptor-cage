@@ -4,11 +4,20 @@ import com.github.jomof.buildserver.common.os
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.io.File
+import java.util.*
 
 val resources = File("./src/test/resources").absoluteFile!!
 val postProcessCppExample = File(resources, "native-lib.cpp.o.ii")
-val tools = File("./tools")
+val clangFlagsExample = File(resources, "clang-flags.txt")
+val tools = File("./tools").absoluteFile
 val clangCompilerToolExample = File(tools, "${os.tag}/ndk/18.0/toolchains/llvm/prebuilt/${os.tag}-x86_64/bin/clang++")
+
+
+fun isolatedTestFolder() : File {
+    val folder = File("./build/test-isolated/${Random().nextLong()}")
+    folder.mkdirs()
+    return folder
+}
 
 class Locations{
     @Test

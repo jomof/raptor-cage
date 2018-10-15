@@ -44,6 +44,7 @@ class RemoteStdio(private val write : ObjectOutputStream) {
  */
 fun teleportStdio(objectRead: ObjectInputStream, stdio : (Boolean, String) -> Unit) {
     while(true) {
+        println("About to read byte from server")
         when(0 + objectRead.readByte()) {
             PIPE_STDERR -> {
                 val line = objectRead.readUTF()
@@ -54,8 +55,10 @@ fun teleportStdio(objectRead: ObjectInputStream, stdio : (Boolean, String) -> Un
                 stdio(false, line)
             }
             PIPE_EXIT -> {
+                println("Read exit byte from server")
                 return
             }
         }
+        println("Read byte from server")
     }
 }

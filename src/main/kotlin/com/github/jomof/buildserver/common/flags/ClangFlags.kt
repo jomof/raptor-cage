@@ -18,11 +18,15 @@ data class ClangFlags(val rawFlags : List<String>) {
     val isPreprocessorRun = rawFlags.contains("-E")
     val cFileExtensions = (fileExtensions intersect knownCFileExtensions)
     val ccFileExtensions = (fileExtensions intersect knownCcFileExtensions)
+    val iFileExtensions = (fileExtensions intersect knownIFileExtensions)
+    val iiFileExtensions = (fileExtensions intersect knownIiFileExtensions)
     val objectFileExtensions = (fileExtensions intersect knownObjectFileExtensions)
     val isObjectOutput = !objectFileExtensions.isEmpty()
     val isCcCompile = !ccFileExtensions.isEmpty() && !objectFileExtensions.isEmpty()
     val isCCompile = !cFileExtensions.isEmpty() && !objectFileExtensions.isEmpty()
-    val isCompile = isCCompile || isCcCompile
+    val isIiCompile = !iiFileExtensions.isEmpty() && !objectFileExtensions.isEmpty()
+    val isICompile = !iFileExtensions.isEmpty() && !objectFileExtensions.isEmpty()
+    val isCompile = isCCompile || isCcCompile || isIiCompile || isICompile
     val outputFlags = flags
             .filterIsInstance<OneArgFlag>()
             .filter { it.key == "-o" || it.key == "-o" }
@@ -104,6 +108,37 @@ data class ClangFlags(val rawFlags : List<String>) {
         return result
     }
 
+    fun withClangExecutable(executable : String) : ClangFlags {
+        return ClangFlags(listOf(executable) + rawFlags.drop(1))
+    }
+
+    fun withSourceInput(source : String) : ClangFlags {
+        require(isCompile)
+        val newFlags = flags
+                .map {
+                    when(it) {
+                        is SourceFileFlag ->
+                            listOf(source)
+                        else -> it.sourceFlags
+                    }
+                }.flatten()
+        val result = ClangFlags(newFlags)
+        require(result.isCompile)
+        return result
+    }
+
+    fun withOutput(output : String) : ClangFlags {
+        require(isCompile)
+        val flags = flags.map { flag ->
+            when {
+                flag is OneArgFlag && flag.isFlag("o") ->
+                    listOf(flag.key, output)
+                else -> flag.sourceFlags
+            }
+        }.flatten()
+        return ClangFlags(flags)
+    }
+
     companion object {
         private val unusedInPostProcessPhase = setOf("MD", "MT", "isystem", "MF")
         private val oneArgFlagsNoDash = setOf("o", "MT", "MF", "isystem")
@@ -113,7 +148,9 @@ data class ClangFlags(val rawFlags : List<String>) {
         private val oneArgFlagsEquals = oneArgFlags.map { "$it=" }
         private val knownCFileExtensions = setOf("c")
         private val knownCcFileExtensions = setOf("c++", "cpp", "cc")
-        private val knownPostProcessFileExtensions = setOf(".i", ".ii")
+        private val knownIFileExtensions = setOf("i")
+        private val knownIiFileExtensions = setOf("ii")
+        private val knownPostProcessFileExtensions = knownIFileExtensions + knownIiFileExtensions
         private val knownSourceFileExtensions = knownCFileExtensions + knownCcFileExtensions + knownPostProcessFileExtensions
         private val knownObjectFileExtensions = setOf("o")
         val knownFileExtensions =

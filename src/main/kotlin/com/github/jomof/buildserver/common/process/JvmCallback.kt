@@ -32,18 +32,22 @@ class JvmCallbackBuilder(clazz : KClass<*>) {
 
     fun processBuilder(
             title : String,
+            directory : File,
             vararg processArgs: String) : ProcessBuilder {
+        val shellArgs = ArrayList<String>()
         val args = ArrayList<String>()
         if (detached) {
             if (os == Os.WINDOWS) {
-                args.add("cmd")
-                args.add("/c")
-                args.add("start")
-                args.add(title)
-                args.add("/d")
+                shellArgs.add("cmd")
+                shellArgs.add("/c")
+                shellArgs.add("start")
+                shellArgs.add(title)
+                shellArgs.add("/d")
                 args.add(javaExeFolder().path)
                 args.add(javaExeBase())
             } else {
+                shellArgs.add("/bin/sh")
+                shellArgs.add("-c")
                 args.add(javaExe().path)
             }
         } else {
@@ -54,11 +58,19 @@ class JvmCallbackBuilder(clazz : KClass<*>) {
         args.add(entryPoint)
         args.addAll(processArgs)
 
-        if (detached && os != Os.WINDOWS) {
-            args.add("&")
-        }
+        return if (detached) {
+            if (os == Os.WINDOWS) {
+                ProcessBuilder(shellArgs + args)
+            } else {
+                val command = File(directory, "start-daemon")
+                command.writeText("/bin/sh -c '( ${args.joinToString(" ")} & )\n'")
+                command.setExecutable(true)
+                ProcessBuilder(command.path)
+            }
+        } else {
 
-        return ProcessBuilder(args)
+            ProcessBuilder(args)
+        }
     }
 }
 

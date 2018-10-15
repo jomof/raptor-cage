@@ -8,7 +8,7 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
 class WorkerOperation(
-        private val server: ServerOperation) : Runnable {
+        private val server: RaptorCageDaemon) : Runnable {
     override fun run() {
         synchronized(server) {
             server.incrementWorkers()
@@ -24,27 +24,33 @@ class WorkerOperation(
                     when (workItem) {
                         is NewRequestWorkItem -> {
                             val request = read.readObject()
-                            when (request) {
-                                is HelloRequest -> {
-                                    println("hello")
-                                    write.writeObject(HelloResponse(version = 1))
+                            try {
+                                when (request) {
+                                    is HelloRequest -> {
+                                        println("hello")
+                                        write.writeObject(HelloResponse(version = 1))
+                                    }
+                                    is ClangRequest -> {
+                                        println("Server executing clang")
+                                        val code = clang(
+                                                request.directory,
+                                                request.args,
+                                                write)
+                                        println("Server about to write clang-response")
+                                        write.writeObject(ClangResponse(code = code))
+                                        println("Server wrote clang-response")
+                                    }
+                                    is StopRequest -> {
+                                        server.stop()
+                                        write.writeObject(StopResponse())
+                                    }
+                                    else -> {
+                                        val error = ErrorResponse(message = "Server did not handle $request")
+                                        write.writeObject(error)
+                                    }
                                 }
-                                is ClangRequest -> {
-                                    println("clang")
-                                    val code = clang(
-                                            request.directory,
-                                            request.args,
-                                            write)
-                                    write.writeObject(ClangResponse(code = code))
-                                }
-                                is StopRequest -> {
-                                    server.stop()
-                                    write.writeObject(StopResponse())
-                                }
-                                else -> {
-                                    val error = ErrorResponse(message = "Server did not handle $request")
-                                    write.writeObject(error)
-                                }
+                            } catch( e: Exception) {
+                                write.writeObject(ErrorResponse(message = "Exception during $request"))
                             }
                         }
                         else -> {
@@ -52,6 +58,7 @@ class WorkerOperation(
                             write.writeObject(error)
                         }
                     }
+                    write.flush()
                 }
             } while (true)
         } finally {

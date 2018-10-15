@@ -3,6 +3,7 @@ package com.github.jomof.buildserver.common.process
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import java.io.File
 
 class JavaCallbackKtTest {
     @Test
@@ -10,7 +11,7 @@ class JavaCallbackKtTest {
         val result =
                 JavaCallbackKtTest::class.callbackBuilder()
                         .dependsOn(Truth::class)
-                        .processBuilder("Test Title", "9", "arg1", "arg2")
+                        .processBuilder("Test Title", File("."), "9", "arg1", "arg2")
                         .inheritIO()
                         .start()
                         .waitFor()

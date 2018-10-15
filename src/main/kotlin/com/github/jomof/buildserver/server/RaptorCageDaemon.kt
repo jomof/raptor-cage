@@ -7,7 +7,7 @@ import java.net.ServerSocket
 import java.io.IOException
 import java.net.Socket
 
-class ServerOperation(
+class RaptorCageDaemon(
         private var serverName: String,
         private var serverSocket: ServerSocket) : Runnable {
     private lateinit var runningThread: Thread
@@ -100,7 +100,7 @@ class ServerOperation(
         fun main(args: Array<String>) {
             val serverName = args[0]
             // Fully start the server before publishing the port
-            val server = ServerOperation(serverName, ServerSocket(0))
+            val server = RaptorCageDaemon(serverName, ServerSocket(0))
             Thread(server).start()
             // At this point, we could serve requests but no one knows
             // our port number.

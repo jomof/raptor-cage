@@ -4,6 +4,7 @@ import com.google.common.truth.Truth
 import org.junit.Test
 
 import com.google.common.truth.Truth.assertThat
+import java.io.File
 
 class ProcessUtilsKtTest {
     @Test
@@ -12,7 +13,7 @@ class ProcessUtilsKtTest {
         val result =
                 ProcessUtilsKtTest::class.callbackBuilder()
                         .dependsOn(Truth::class)
-                        .processBuilder("Test Title", "9", "arg1", "arg2")
+                        .processBuilder("Test Title", File("."),"9", "arg1", "arg2")
                         .start()
                         .waitFor { err, message ->
                             sb.append("$err=$message,")

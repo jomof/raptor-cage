@@ -48,7 +48,10 @@ class ServerConnection(
                 if (err) { System.err.println(message) }
                 else { System.out.println(message) }
             }
-            return objectRead.readObject() as ClangResponse
+            println("Client about to read clang-response")
+            val result = objectRead.readObject() as ClangResponse
+            println("Client read clang-response")
+            return result
         }
     }
 
