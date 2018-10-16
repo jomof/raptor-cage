@@ -28,6 +28,6 @@ native-lib.cpp.o
 -MF
 native-lib.cpp.o.d
 -o
-native-lib.cpp.o
+out/native-lib.cpp.o
 -c
 /Users/jomof/AndroidStudioProjects/MyApplication11/app/src/main/cpp/native-lib.cpp

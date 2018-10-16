@@ -33,6 +33,7 @@ class WorkerOperation(
                                     is ClangRequest -> {
                                         println("Server executing clang")
                                         val code = clang(
+                                                server.serverName,
                                                 request.directory,
                                                 request.args,
                                                 write)

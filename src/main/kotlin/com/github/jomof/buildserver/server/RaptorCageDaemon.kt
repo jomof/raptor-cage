@@ -8,8 +8,8 @@ import java.io.IOException
 import java.net.Socket
 
 class RaptorCageDaemon(
-        private var serverName: String,
-        private var serverSocket: ServerSocket) : Runnable {
+        val serverName: String,
+        private val serverSocket: ServerSocket) : Runnable {
     private lateinit var runningThread: Thread
     private var isStopped = false
     private var workersRunning = 0

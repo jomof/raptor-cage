@@ -1,6 +1,7 @@
 package com.github.jomof.buildserver.common.flags
 
 import com.github.jomof.buildserver.common.flags.ClangOperation.*
+import java.io.File
 
 data class ClangFlags(val rawFlags : List<String>) {
     val flags = interpretFlags(rawFlags)
@@ -43,41 +44,6 @@ data class ClangFlags(val rawFlags : List<String>) {
         else -> UNKNOWN
     }
 
-    fun toPreprocessEquivalent() : ClangFlags {
-        require(isCompile)
-        val preprocessExtension = if (isCcCompile) ".ii" else ".i"
-        val flags = flags.map { flag ->
-            when {
-                flag is OneArgFlag && flag.isFlag("o") ->
-                    listOf(flag.key, flag.value + preprocessExtension)
-                else -> flag.sourceFlags
-            }
-        }.flatten()
-        .filter {
-            when(it) {
-                // Running just the preprocessor doesn't use this flag, so remove
-                "-Wa,--noexecstack" -> false
-                else -> true
-            }
-
-        }
-        return ClangFlags(flags + "-E")
-    }
-
-    fun toPostprocessEquivalent() : ClangFlags {
-        require(isCompile)
-        val preprocessExtension = if (isCcCompile) ".ii" else ".i"
-        val preprocessFile = lastOutput + preprocessExtension
-        val newFlags = flags
-                .filter { flag -> !unusedInPostProcessPhase.any { flag.isFlag(it) } }
-                .map {
-            when(it) {
-                is SourceFileFlag -> listOf(preprocessFile)
-                else -> it.sourceFlags
-            }
-        }.flatten()
-        return ClangFlags(newFlags)
-    }
 
     private fun interpretFlags(flags : List<String>) : List<ClangFlag> {
         val result = mutableListOf<ClangFlag>()
@@ -141,8 +107,12 @@ data class ClangFlags(val rawFlags : List<String>) {
         return ClangFlags(flags)
     }
 
+    fun joinToString() : String {
+        return rawFlags.joinToString("\n")
+    }
+
     companion object {
-        private val unusedInPostProcessPhase = setOf("MD", "MT", "isystem", "MF")
+
         private val oneArgFlagsNoDash = setOf("o", "MT", "MF", "isystem")
         private val oneArgFlagsSingleDash = oneArgFlagsNoDash.map { "-$it" }
         private val oneArgFlagsDoubleDash = oneArgFlagsNoDash.map { "--$it" }
