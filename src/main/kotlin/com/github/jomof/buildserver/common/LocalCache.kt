@@ -19,3 +19,7 @@ fun localCacheClientLogFile(serverName : String) : File {
 fun localCacheServerLogFile(serverName : String) : File {
     return File(localCachePath(serverName), "server-log.txt")
 }
+
+fun localCacheStoreRoot(serverName : String) : File {
+    return File(localCachePath(serverName), "store")
+}

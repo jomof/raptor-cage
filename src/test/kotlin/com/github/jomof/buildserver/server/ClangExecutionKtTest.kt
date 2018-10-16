@@ -37,7 +37,6 @@ class ClangExecutionKtTest {
 
         println(sb)
         assertThat(File(folder, "native-lib.cpp.o").isFile).isTrue()
-
     }
 
     @Test
