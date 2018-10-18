@@ -10,37 +10,6 @@ import org.junit.Test
 import java.io.*
 
 class ClangExecutionKtTest {
-
-    @Test
-    fun simpleClangIiToO() {
-        val folder = isolatedTestFolder()
-        val clangArgs = postProcessCppExampleFlags.readLines()
-        val clangFlags = ClangFlags(clangArgs)
-                .withClangExecutable(clangCompilerToolExample.path)
-                .toPostprocessEquivalent()
-                .withSourceInput(postProcessIiExample.path)
-                .withOutput("native-lib.cpp.o")
-
-        val byteStream = ByteArrayOutputStream()
-        val write = ObjectOutputStream(byteStream)
-        clang("simpleClangIiToO", folder.path, clangFlags.rawFlags, write)
-        write.flush()
-        val bytes = byteStream.toByteArray()
-        val byteInputStream = ByteArrayInputStream(bytes)
-        val read = ObjectInputStream(byteInputStream)
-        val sb = StringBuilder()
-        teleportStdio(read) {
-            err, message ->
-            if (err) {
-                sb.append("ERR: $message \n") }
-            else {
-                sb.append("OUT: $message \n") }
-        }
-
-        println(sb)
-        assertThat(File(folder, "native-lib.cpp.o").isFile).isTrue()
-    }
-
     @Test
     fun simpleClangCppToO() {
         localCacheStoreRoot("simpleClangCppToO").deleteRecursively()
@@ -49,7 +18,7 @@ class ClangExecutionKtTest {
         val clangFlags = ClangFlags(clangArgs)
                 .withClangExecutable(clangCompilerToolExample.path)
                 .withSourceInput(postProcessCppExample.path)
-                .withOutput("native-lib.cpp.o")
+                .withOutput("out/native-lib.cpp.o")
 
         val byteStream = ByteArrayOutputStream()
         val write = ObjectOutputStream(byteStream)
@@ -67,32 +36,36 @@ class ClangExecutionKtTest {
                 sb.append("OUT: $message \n") }
         }
         println(sb)
-        assertThat(File(folder, "native-lib.cpp.o").isFile).isTrue()
+        assertThat(File(folder, "out/native-lib.cpp.o").isFile).isTrue()
     }
 
     @Test
     fun sourceFilesInPostProcessEquivalent() {
-        val flags = ClangFlags(clangFlagsExample.readLines()).toPostprocessEquivalent()
+        val folder = isolatedTestFolder()
+        val flags = ClangFlags(clangFlagsExample.readLines())
+                .toPostprocessEquivalent(folder)
         assertThat(flags.sourceFiles)
-                .isEqualTo(listOf("CMakeFiles/native-lib.dir/native-lib.cpp.o.ii"))
-        assertThat(flags.lastSourceFile)
-                .isEqualTo("CMakeFiles/native-lib.dir/native-lib.cpp.o.ii")
+                .isEqualTo(listOf(folder.path + "/CMakeFiles/native-lib.dir/native-lib.cpp.o.ii"))
     }
 
     @Test
     fun toPreprocessor() {
-        val flags = ClangFlags(clangFlagsExample.readLines()).toPreprocessEquivalent()
+        val folder = isolatedTestFolder()
+        val flags = ClangFlags(postProcessCppExampleFlags.readLines())
+                .withOutput("out/native-lib.cpp.o")
+                .toPreprocessEquivalent(folder)
         assertThat(flags.isPreprocessorRun).isTrue()
         assertThat(flags.operation).isEqualTo(ClangOperation.CC_TO_II)
-        assertThat(flags.lastOutput).endsWith(".ii")
+        assertThat(flags.lastOutput).isEqualTo(File(folder, "out/native-lib.cpp.o.ii").path)
     }
 
     @Test
     fun postProcessRemovesIsystem() {
+        val folder = isolatedTestFolder()
         val flags = ClangFlags(listOf(
                 "-isystem=bob", "tom.cpp", "-o=tom.o"))
-                .toPostprocessEquivalent()
+                .toPostprocessEquivalent(folder)
         assertThat(flags.flags.map { it.flag })
-                .isEqualTo(listOf("tom.o.ii", "-o tom.o"))
+                .isEqualTo(listOf(folder.path + "/tom.o.ii", "-o tom.o"))
     }
 }

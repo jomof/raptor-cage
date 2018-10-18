@@ -35,19 +35,25 @@ fun clang(
             if (readableStore == null) {
                 // If readable is null then these flags haven't been seen before.
                 val writeableStore = storeHandle.writeable()
-                val preprocess = flags.toPreprocessEquivalent(writeableStore)
+                val preprocess = flags
+                        .toPreprocessEquivalent(writeableStore)
                 stdio.stdout("Raptor cage writing ${preprocess.lastOutput}")
+                File(preprocess.lastOutput).parentFile.mkdirs()
                 val preprocessCode = execute(preprocess.rawFlags.toTypedArray())
                 if (preprocessCode != 0) {
                     return preprocessCode
                 }
 
-                val postproces = flags
-                        .redirectOutputs(writeableStore)
+                val postprocess = flags
                         .toPostprocessEquivalent(writeableStore)
-                stdio.stdout("Raptor cage writing ${postproces.lastOutput}")
-                val result = execute(postproces.rawFlags.toTypedArray())
+                        .redirectOutputs(writeableStore)
+                stdio.stdout("Raptor cage writing ${postprocess.lastOutput}")
+                val result = execute(postprocess.rawFlags.toTypedArray())
                 storeHandle.commit()
+
+                val finalOutput = File(directory, flags.lastOutput)
+                stdio.stdout("Raptor cage writing to $finalOutput")
+                File(postprocess.lastOutput).copyTo(finalOutput)
                 return result
             }
             stdio.stdout("Raptor cage found cache")
@@ -64,62 +70,64 @@ private val unusedInPostProcessPhase = setOf("MD", "MT", "isystem", "MF")
 
 private fun ClangFlags.preprocessExtension() = if (isCcCompile) ".ii" else ".i"
 
-fun ClangFlags.toPreprocessEquivalent(preprocessFolder : File? = null) : ClangFlags {
+
+/**
+ * Convert this compile command to an equivalent command that just producess preprocessor
+ * output (.i or .ii) format.
+ */
+fun ClangFlags.toPreprocessEquivalent(preprocessFolder : File) : ClangFlags {
     require(isCompile)
-    val flags = flags.map { flag ->
-        when {
-            flag is OneArgFlag && flag.isFlag("o") -> {
-                if (preprocessFolder == null) {
-                    listOf(flag.key, flag.value + preprocessExtension())
-                } else {
-                    val output = File(preprocessFolder, File(flag.value).name + preprocessExtension())
+    val flags = flags
+        .map { flag ->
+            when {
+                flag is OneArgFlag && flag.isFlag("o") -> {
+                    val output = File(preprocessFolder, flag.value + preprocessExtension())
                     listOf(flag.key, output.path)
                 }
+                else -> flag.sourceFlags
             }
-            else -> flag.sourceFlags
         }
-    }.flatten()
-            .filter {
-                when(it) {
-                    // Running just the preprocessor doesn't use this flag, so remove
-                    "-Wa,--noexecstack" -> false
-                    else -> true
-                }
-
+        .flatten()
+        .filter {
+            when(it) {
+                // Running just the preprocessor doesn't use this flag, so remove
+                "-Wa,--noexecstack" -> false
+                else -> true
             }
+        }
     return ClangFlags(flags + "-E")
 }
 
 fun ClangFlags.redirectOutputs(cacheFolder : File) : ClangFlags {
     val newFlags = flags
-            .asSequence()
-            .filter { flag -> !unusedInPostProcessPhase.any { flag.isFlag(it) } }
-            .map {flag ->
-                when {
-                    flag is OneArgFlag && flag.isFlag("o") -> {
-                        listOf(flag.key, redirectUserFileToCacheFile(flag.value, cacheFolder))
-                    }
-                    else -> flag.sourceFlags
+        .asSequence()
+        .filter { flag -> !unusedInPostProcessPhase.any { flag.isFlag(it) } }
+        .map {flag ->
+            when {
+                flag is OneArgFlag && flag.isFlag("o") -> {
+                    listOf(flag.key, redirectUserFileToCacheFile(flag.value, cacheFolder))
                 }
+                else -> flag.sourceFlags
             }
-            .toList().flatten()
+        }
+        .toList().flatten()
     return ClangFlags(newFlags)
 
 }
 
-fun ClangFlags.toPostprocessEquivalent(preprocessFolder : File? = null) : ClangFlags {
+/**
+ * Convert this compile command to an equivalent command that consumes the output of
+ * {@link ClangFlags.toPreprocessEquivalent}.
+ */
+fun ClangFlags.toPostprocessEquivalent(preprocessFolder : File) : ClangFlags {
     require(isCompile)
-    val preprocessFile = if (preprocessFolder == null) {
-        lastOutput + preprocessExtension()
-    } else {
-        File(preprocessFolder, File(lastOutput).name + preprocessExtension()).path
-    }
+    val preprocessFile = File(preprocessFolder, lastOutput + preprocessExtension()).path
     val newFlags = flags
             .asSequence()
             .filter { flag -> !unusedInPostProcessPhase.any { flag.isFlag(it) } }
             .map {flag ->
-                when {
-                    flag is SourceFileFlag -> listOf(preprocessFile)
+                when (flag) {
+                    is SourceFileFlag -> listOf(preprocessFile)
                     else -> flag.sourceFlags
                 }
             }
