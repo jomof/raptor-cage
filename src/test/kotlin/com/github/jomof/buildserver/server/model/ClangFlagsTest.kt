@@ -22,6 +22,8 @@ class ClangFlagsTest {
 
     @Test
     fun sourceFiles() {
+//        assertThat(ClangFlags.knownSourceFileExtensions)
+//                .containsAllIn(listOf(".c"))
         val flags = ClangFlags(basicCcFlags)
         assertThat(flags.sourceFiles)
                 .isEqualTo(listOf("C:/Users/jomof/AndroidStudioProjects/AndroidCCacheExample/app/src/main/cpp/native-lib.cpp"))
@@ -54,17 +56,5 @@ class ClangFlagsTest {
         val flags = ClangFlags(listOf("-o", "output.o"))
         assertThat(flags.flags).isEqualTo(listOf(OneArgFlag("-o", "output.o", listOf("-o", "output.o"))))
         assertThat(flags.lastOutput).isEqualTo("output.o")
-    }
-
-    @Test
-    fun oneArgSeparateDouble() {
-        val flags = ClangFlags(listOf("--o", "output.o"))
-        assertThat(flags.flags).isEqualTo(listOf(OneArgFlag("--o", "output.o", listOf("--o", "output.o"))))
-    }
-
-    @Test
-    fun oneArgCombinedDouble() {
-        val flags = ClangFlags(listOf("--o=output.o"))
-        assertThat(flags.flags).isEqualTo(listOf(OneArgFlag("--o", "output.o", listOf("--o=output.o"))))
     }
 }

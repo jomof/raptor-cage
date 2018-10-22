@@ -84,7 +84,11 @@ data class StoreHandle(
                 for (sub in subs) {
                     val keyValue = File(sub, "key.store")
                     if (keyValue.isFile) {
-                        val read = ObjectInputStream(DataInputStream(FileInputStream(keyValue))).readObject()!!
+                        val read = retry(10, 100, Any()) {
+                            ObjectInputStream(
+                                    DataInputStream(
+                                            FileInputStream(keyValue))).readObject()!!
+                        }
                         if (key == read) {
                             val store = storeFolder(sub)
                             if (store != null) {

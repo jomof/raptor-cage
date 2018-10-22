@@ -1,6 +1,7 @@
 package com.github.jomof.buildserver.server.model
 
 import com.github.jomof.buildserver.server.model.ClangOperation.*
+import com.github.jomof.buildserver.server.model.ClangFlagGroups.ONE_ARG_CLANG_FLAGS
 
 data class ClangFlags(val rawFlags : List<String>) {
     val flags = interpretFlags(rawFlags)
@@ -16,21 +17,21 @@ data class ClangFlags(val rawFlags : List<String>) {
     }
     val lastSourceFile = sourceFiles.lastOrNull()
     val isPreprocessorRun = rawFlags.contains("-E")
-    val cFileExtensions = (fileExtensions intersect knownCFileExtensions)
-    val ccFileExtensions = (fileExtensions intersect knownCcFileExtensions)
-    val iFileExtensions = (fileExtensions intersect knownIFileExtensions)
-    val iiFileExtensions = (fileExtensions intersect knownIiFileExtensions)
-    val objectFileExtensions = (fileExtensions intersect knownObjectFileExtensions)
-    val isObjectOutput = !objectFileExtensions.isEmpty()
+    private val cFileExtensions = (fileExtensions intersect knownCFileExtensions)
+    private val ccFileExtensions = (fileExtensions intersect knownCcFileExtensions)
+    private val iFileExtensions = (fileExtensions intersect knownIFileExtensions)
+    private val iiFileExtensions = (fileExtensions intersect knownIiFileExtensions)
+    private val objectFileExtensions = (fileExtensions intersect knownObjectFileExtensions)
+    private val isObjectOutput = !objectFileExtensions.isEmpty()
     val isCcCompile = !ccFileExtensions.isEmpty() && !objectFileExtensions.isEmpty()
     val isCCompile = !cFileExtensions.isEmpty() && !objectFileExtensions.isEmpty()
-    val isIiCompile = !iiFileExtensions.isEmpty() && !objectFileExtensions.isEmpty()
-    val isICompile = !iFileExtensions.isEmpty() && !objectFileExtensions.isEmpty()
+    private val isIiCompile = !iiFileExtensions.isEmpty() && !objectFileExtensions.isEmpty()
+    private val isICompile = !iFileExtensions.isEmpty() && !objectFileExtensions.isEmpty()
     val isCompile = isCCompile || isCcCompile || isIiCompile || isICompile
-    val outputFlags = flags
+    private val outputFlags = flags
             .filterIsInstance<OneArgFlag>()
             .filter { it.key == "-o" || it.key == "-o" }
-    val outputs = outputFlags.map { it.value }
+    private val outputs = outputFlags.map { it.value }
     val lastOutput = outputs.lastOrNull()
 
     val operation = when {
@@ -43,21 +44,20 @@ data class ClangFlags(val rawFlags : List<String>) {
         else -> UNKNOWN
     }
 
-
     private fun interpretFlags(flags : List<String>) : List<ClangFlag> {
         val result = mutableListOf<ClangFlag>()
         var i = 0
         while (i < flags.size) {
             val flag = flags[i]
             when {
-                flags.size != i + 1 && oneArgFlags.contains(flag) -> {
+                flags.size != i + 1 && ONE_ARG_CLANG_FLAGS.contains(flag) -> {
                     result.add(OneArgFlag(
                             flag,
                             flags[i + 1],
                             listOf(flag, flags[i + 1])))
                     ++i
                 }
-                oneArgFlagsEquals.any { flag.startsWith(it) } -> {
+                ONE_ARG_CLANG_FLAGS.isOneArgEquals(flag) -> {
                     val key = flag.substringBefore("=")
                     val value = flag.substringAfter("=")
                     result.add(OneArgFlag(
@@ -66,7 +66,7 @@ data class ClangFlags(val rawFlags : List<String>) {
                             listOf(flag)))
                 }
                 !flag.startsWith("-")
-                        && knownSourceFileExtensions.any { flag.endsWith(it) } ->
+                        && knownSourceFileExtensions.any { flag.endsWith(".$it") } ->
                     result.add(SourceFileFlag(flag))
                 else -> result.add(UnidentifiedClangFlag(flag))
             }
@@ -111,12 +111,6 @@ data class ClangFlags(val rawFlags : List<String>) {
     }
 
     companion object {
-
-        private val oneArgFlagsNoDash = setOf("o", "MT", "MF", "isystem")
-        private val oneArgFlagsSingleDash = oneArgFlagsNoDash.map { "-$it" }
-        private val oneArgFlagsDoubleDash = oneArgFlagsNoDash.map { "--$it" }
-        private val oneArgFlags = oneArgFlagsSingleDash + oneArgFlagsDoubleDash
-        private val oneArgFlagsEquals = oneArgFlags.map { "$it=" }
         private val knownCFileExtensions = setOf("c")
         private val knownCcFileExtensions = setOf("c++", "cpp", "cc")
         private val knownIFileExtensions = setOf("i")
@@ -129,44 +123,5 @@ data class ClangFlags(val rawFlags : List<String>) {
                         knownObjectFileExtensions +
                         knownSourceFileExtensions
     }
-}
-
-abstract class ClangFlag {
-    abstract val sourceFlags : List<String>
-    abstract val flag : String
-    abstract fun isFlag(flag : String) : Boolean
-}
-
-data class OneArgFlag(
-        val key : String,
-        val value : String,
-        override val sourceFlags : List<String>) : ClangFlag() {
-    override val flag = "$key $value"
-    override fun isFlag(flag : String)  =
-            when(key) {
-                "--$flag", "-$flag" ->
-                    true
-                else ->
-                    false
-            }
-}
-
-data class SourceFileFlag(
-        val sourceFile : String) : ClangFlag() {
-    override val sourceFlags = listOf(sourceFile)
-    override val flag = sourceFile
-    override fun isFlag(flag : String) = false
-}
-
-data class UnidentifiedClangFlag(val rawFlag : String) : ClangFlag() {
-    override val sourceFlags = listOf(rawFlag)
-    override val flag = rawFlag
-    override fun isFlag(flag : String)  =
-            when(rawFlag) {
-                "--$flag", "-$flag" ->
-                    true
-                else ->
-                    false
-            }
 }
 
