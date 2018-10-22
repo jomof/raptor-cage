@@ -1,6 +1,5 @@
 package com.github.jomof.buildserver.client
 
-import com.github.jomof.buildserver.common.flags.ClangFlags
 import java.io.File
 
 /**

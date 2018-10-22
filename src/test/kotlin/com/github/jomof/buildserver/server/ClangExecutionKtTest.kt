@@ -1,8 +1,8 @@
 package com.github.jomof.buildserver.server
 
 import com.github.jomof.buildserver.*
-import com.github.jomof.buildserver.common.flags.ClangFlags
-import com.github.jomof.buildserver.common.flags.ClangOperation
+import com.github.jomof.buildserver.server.model.ClangFlags
+import com.github.jomof.buildserver.server.model.ClangOperation
 import com.github.jomof.buildserver.common.io.teleportStdio
 import com.github.jomof.buildserver.common.localCacheStoreRoot
 import com.github.jomof.buildserver.common.os

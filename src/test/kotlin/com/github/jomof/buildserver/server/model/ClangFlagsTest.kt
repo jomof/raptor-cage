@@ -1,4 +1,4 @@
-package com.github.jomof.buildserver.common.flags
+package com.github.jomof.buildserver.server.model
 
 import com.github.jomof.buildserver.clangFlagsExample
 import com.google.common.truth.Truth.assertThat

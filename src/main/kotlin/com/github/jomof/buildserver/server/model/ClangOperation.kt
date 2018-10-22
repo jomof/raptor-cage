@@ -1,4 +1,4 @@
-package com.github.jomof.buildserver.common.flags
+package com.github.jomof.buildserver.server.model
 
 enum class ClangOperation {
     II_TO_O,

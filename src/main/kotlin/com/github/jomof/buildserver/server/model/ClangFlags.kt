@@ -1,7 +1,6 @@
-package com.github.jomof.buildserver.common.flags
+package com.github.jomof.buildserver.server.model
 
-import com.github.jomof.buildserver.common.flags.ClangOperation.*
-import java.io.File
+import com.github.jomof.buildserver.server.model.ClangOperation.*
 
 data class ClangFlags(val rawFlags : List<String>) {
     val flags = interpretFlags(rawFlags)

@@ -1,8 +1,8 @@
 package com.github.jomof.buildserver.server
 
-import com.github.jomof.buildserver.common.flags.ClangFlags
-import com.github.jomof.buildserver.common.flags.OneArgFlag
-import com.github.jomof.buildserver.common.flags.SourceFileFlag
+import com.github.jomof.buildserver.server.model.ClangFlags
+import com.github.jomof.buildserver.server.model.OneArgFlag
+import com.github.jomof.buildserver.server.model.SourceFileFlag
 import com.github.jomof.buildserver.common.io.RemoteStdio
 import com.github.jomof.buildserver.common.process.redirectAndWaitFor
 import com.github.jomof.buildserver.server.store.StoreHandle
