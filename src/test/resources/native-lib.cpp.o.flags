@@ -3,6 +3,7 @@
 --gcc-toolchain=/Users/jomof/Library/Android/sdk/ndk-bundle/toolchains/x86_64-4.9/prebuilt/darwin-x86_64
 --sysroot=/Users/jomof/Library/Android/sdk/ndk-bundle/sysroot
 -Dnative_lib_EXPORTS
+-v
 -isystem
 /Users/jomof/Library/Android/sdk/ndk-bundle/sources/cxx-stl/llvm-libc++/include
 -isystem

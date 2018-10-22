@@ -5,6 +5,7 @@ import com.github.jomof.buildserver.common.flags.ClangFlags
 import com.github.jomof.buildserver.common.flags.ClangOperation
 import com.github.jomof.buildserver.common.io.teleportStdio
 import com.github.jomof.buildserver.common.localCacheStoreRoot
+import com.github.jomof.buildserver.common.os
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.io.*
@@ -28,15 +29,17 @@ class ClangExecutionKtTest {
         val byteInputStream = ByteArrayInputStream(bytes)
         val read = ObjectInputStream(byteInputStream)
         val sb = StringBuilder()
-        teleportStdio(read) {
-            err, message ->
+        teleportStdio(read) { err, message ->
             if (err) {
-                sb.append("ERR: $message \n") }
-            else {
-                sb.append("OUT: $message \n") }
+                sb.append("ERR: $message \n")
+            } else {
+                sb.append("OUT: $message \n")
+            }
         }
         println(sb)
-        assertThat(File(folder, "out/native-lib.cpp.o").isFile).isTrue()
+        assertThat(File(folder, "out/native-lib.cpp.o").isFile)
+                .named(folder.toString())
+                .isTrue()
     }
 
     @Test
@@ -44,8 +47,9 @@ class ClangExecutionKtTest {
         val folder = isolatedTestFolder()
         val flags = ClangFlags(clangFlagsExample.readLines())
                 .toPostprocessEquivalent(folder)
+        val s = os.fileSeparator
         assertThat(flags.sourceFiles)
-                .isEqualTo(listOf(folder.path + "/CMakeFiles/native-lib.dir/native-lib.cpp.o.ii"))
+                .isEqualTo(listOf(folder.path + "${s}CMakeFiles${s}native-lib.dir${s}native-lib.cpp.o.ii"))
     }
 
     @Test
@@ -65,7 +69,8 @@ class ClangExecutionKtTest {
         val flags = ClangFlags(listOf(
                 "-isystem=bob", "tom.cpp", "-o=tom.o"))
                 .toPostprocessEquivalent(folder)
+        val s = os.fileSeparator
         assertThat(flags.flags.map { it.flag })
-                .isEqualTo(listOf(folder.path + "/tom.o.ii", "-o tom.o"))
+                .isEqualTo(listOf(folder.path + "${s}tom.o.ii", "-o tom.o"))
     }
 }
