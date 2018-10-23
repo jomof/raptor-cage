@@ -1,7 +1,7 @@
 package com.github.jomof.buildserver.server
 
 import com.github.jomof.buildserver.*
-import com.github.jomof.buildserver.server.model.ClangFlags
+import com.github.jomof.buildserver.server.model.ClangCall
 import com.github.jomof.buildserver.server.model.ClangOperation
 import com.github.jomof.buildserver.common.io.teleportStdio
 import com.github.jomof.buildserver.common.localCacheStoreRoot
@@ -16,7 +16,7 @@ class ClangExecutionKtTest {
         localCacheStoreRoot("simpleClangCppToO").deleteRecursively()
         val folder = isolatedTestFolder()
         val clangArgs = postProcessCppExampleFlags.readLines()
-        val clangFlags = ClangFlags(clangArgs)
+        val clangFlags = ClangCall(clangArgs)
                 .withClangExecutable(clangCompilerToolExample.path)
                 .withSourceInput(postProcessCppExample.path)
                 .withOutput("out/native-lib.cpp.o")
@@ -45,7 +45,7 @@ class ClangExecutionKtTest {
     @Test
     fun sourceFilesInPostProcessEquivalent() {
         val folder = isolatedTestFolder()
-        val flags = ClangFlags(clangFlagsExample.readLines())
+        val flags = ClangCall(clangFlagsExample.readLines())
                 .toPostprocessEquivalent(folder)
         val s = os.fileSeparator
         assertThat(flags.sourceFiles)
@@ -55,7 +55,7 @@ class ClangExecutionKtTest {
     @Test
     fun toPreprocessor() {
         val folder = isolatedTestFolder()
-        val flags = ClangFlags(postProcessCppExampleFlags.readLines())
+        val flags = ClangCall(postProcessCppExampleFlags.readLines())
                 .withOutput("out/native-lib.cpp.o")
                 .toPreprocessEquivalent(folder)
         assertThat(flags.isPreprocessorRun).isTrue()
@@ -66,7 +66,7 @@ class ClangExecutionKtTest {
     @Test
     fun postProcessRemovesIsystem() {
         val folder = isolatedTestFolder()
-        val flags = ClangFlags(listOf(
+        val flags = ClangCall(listOf(
                 "-isystem=bob", "tom.cpp", "-o=tom.o"))
                 .toPostprocessEquivalent(folder)
         val s = os.fileSeparator

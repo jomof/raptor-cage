@@ -2,9 +2,9 @@ package com.github.jomof.buildserver.server.model
 
 import com.github.jomof.buildserver.server.model.ClangFlagKind.ONE_ARG
 
-enum class ClangFlagGroups(val flags : List<ClangFlagType>) {
+enum class ClangFlagGroups(val flags : List<ClangFlags>) {
     ONE_ARG_CLANG_FLAGS(
-            ClangFlagType.values().filter { it.kind == ONE_ARG });
+            ClangFlags.values().filter { it.kind == ONE_ARG });
 
     private val shortDashSet = flags.mapNotNull { it.short }.map { "-$it" }
     private val longDashSet = flags.mapNotNull { it.long }.map { "--$it" }

@@ -1,6 +1,6 @@
 package com.github.jomof.buildserver.server
 
-import com.github.jomof.buildserver.server.model.ClangFlags
+import com.github.jomof.buildserver.server.model.ClangCall
 import com.github.jomof.buildserver.server.model.OneArgFlag
 import com.github.jomof.buildserver.server.model.SourceFileFlag
 import com.github.jomof.buildserver.common.io.RemoteStdio
@@ -18,7 +18,7 @@ fun clang(
         args: List<String>,
         write: ObjectOutputStream) : Int {
     val stdio = RemoteStdio(write)
-    val flags = ClangFlags(args.toList())
+    val flags = ClangCall(args.toList())
 
     fun execute(args: Array<String>) : Int {
         return ProcessBuilder(args.toList())
@@ -68,14 +68,14 @@ fun clang(
 
 private val unusedInPostProcessPhase = setOf("MD", "MT", "isystem", "MF")
 
-private fun ClangFlags.preprocessExtension() = if (isCcCompile) ".ii" else ".i"
+private fun ClangCall.preprocessExtension() = if (isCcCompile) ".ii" else ".i"
 
 
 /**
  * Convert this compile command to an equivalent command that just producess preprocessor
  * output (.i or .ii) format.
  */
-fun ClangFlags.toPreprocessEquivalent(preprocessFolder : File) : ClangFlags {
+fun ClangCall.toPreprocessEquivalent(preprocessFolder : File) : ClangCall {
     require(isCompile)
     val flags = flags
         .map { flag ->
@@ -95,10 +95,10 @@ fun ClangFlags.toPreprocessEquivalent(preprocessFolder : File) : ClangFlags {
                 else -> true
             }
         }
-    return ClangFlags(flags + "-E")
+    return ClangCall(flags + "-E")
 }
 
-fun ClangFlags.redirectOutputs(cacheFolder : File) : ClangFlags {
+fun ClangCall.redirectOutputs(cacheFolder : File) : ClangCall {
     val newFlags = flags
         .asSequence()
         .filter { flag -> !unusedInPostProcessPhase.any { flag.isFlag(it) } }
@@ -111,15 +111,15 @@ fun ClangFlags.redirectOutputs(cacheFolder : File) : ClangFlags {
             }
         }
         .toList().flatten()
-    return ClangFlags(newFlags)
+    return ClangCall(newFlags)
 
 }
 
 /**
  * Convert this compile command to an equivalent command that consumes the output of
- * {@link ClangFlags.toPreprocessEquivalent}.
+ * {@link ClangCall.toPreprocessEquivalent}.
  */
-fun ClangFlags.toPostprocessEquivalent(preprocessFolder : File) : ClangFlags {
+fun ClangCall.toPostprocessEquivalent(preprocessFolder : File) : ClangCall {
     require(isCompile)
     val preprocessFile = File(preprocessFolder, lastOutput + preprocessExtension()).path
     val newFlags = flags
@@ -132,7 +132,7 @@ fun ClangFlags.toPostprocessEquivalent(preprocessFolder : File) : ClangFlags {
                 }
             }
             .toList().flatten()
-    return ClangFlags(newFlags)
+    return ClangCall(newFlags)
 }
 
 fun redirectUserFileToCacheFile(userFile : String, cacheFolder : File) : String {

@@ -4,27 +4,27 @@ import com.github.jomof.buildserver.clangFlagsExample
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class ClangFlagsTest {
+class ClangCallTest {
     private val basicCcFlags = clangFlagsExample.readLines()
 
     @Test
     fun tryGetCompileFlags() {
-        val flags = ClangFlags(basicCcFlags)
+        val flags = ClangCall(basicCcFlags)
         println(flags)
     }
 
     @Test
     fun fileExtensions() {
-        val flags = ClangFlags(basicCcFlags)
+        val flags = ClangCall(basicCcFlags)
         assertThat(flags.fileExtensions)
                 .isEqualTo(setOf("exe", "o", "d", "cpp"))
     }
 
     @Test
     fun sourceFiles() {
-//        assertThat(ClangFlags.knownSourceFileExtensions)
+//        assertThat(ClangCall.knownSourceFileExtensions)
 //                .containsAllIn(listOf(".c"))
-        val flags = ClangFlags(basicCcFlags)
+        val flags = ClangCall(basicCcFlags)
         assertThat(flags.sourceFiles)
                 .isEqualTo(listOf("C:/Users/jomof/AndroidStudioProjects/AndroidCCacheExample/app/src/main/cpp/native-lib.cpp"))
         assertThat(flags.lastSourceFile)
@@ -34,26 +34,26 @@ class ClangFlagsTest {
 
     @Test
     fun isCcCompile() {
-        val flags = ClangFlags(basicCcFlags)
+        val flags = ClangCall(basicCcFlags)
         assertThat(flags.isCcCompile).isTrue()
         assertThat(flags.isCCompile).isFalse()
     }
 
     @Test
     fun operation() {
-        val flags = ClangFlags(basicCcFlags)
+        val flags = ClangCall(basicCcFlags)
         assertThat(flags.operation).isEqualTo(ClangOperation.CC_TO_O)
     }
 
     @Test
     fun danglingFlag() {
-        val flags = ClangFlags(listOf("-o"))
+        val flags = ClangCall(listOf("-o"))
         assertThat(flags.flags).isEqualTo(listOf(UnidentifiedClangFlag("-o")))
     }
 
     @Test
     fun oneArgSeparate() {
-        val flags = ClangFlags(listOf("-o", "output.o"))
+        val flags = ClangCall(listOf("-o", "output.o"))
         assertThat(flags.flags).isEqualTo(listOf(OneArgFlag("-o", "output.o", listOf("-o", "output.o"))))
         assertThat(flags.lastOutput).isEqualTo("output.o")
     }
