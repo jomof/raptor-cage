@@ -12,29 +12,47 @@ class ClangPlanningKtTest {
 
     private fun simulatePlan(plan : List<PlanStep>) : Map<String, String> {
         val filesMap = mutableMapOf<String, String>()
+        val seenWorkingDirs = mutableMapOf<File, String>()
         val seenStores = mutableMapOf<File, String>()
+
+        fun workingDirAlias(workingDir : File, file : String) : String {
+            if (!seenWorkingDirs.contains(workingDir)) {
+                seenWorkingDirs[workingDir] = "{working-${seenStores.size}}"
+            }
+            return seenWorkingDirs[workingDir]!! + "/$file"
+        }
+
+        fun storeDirAlias(storeDir : File, file : String) : String {
+            if (!seenStores.contains(storeDir)) {
+                seenStores[storeDir] = "{store-${seenStores.size}}"
+            }
+            return seenStores[storeDir]!! + "/$file"
+        }
+
         plan.onEach { step ->
             when(step) {
                 is ExecuteClang -> {
                     step.call.outputFiles().onEach {
                         (type, files) -> files.onEach { file ->
-                            require(!filesMap.contains(file))
-                            filesMap[file] = type.toString()
+                            val relative =
+                            if (file.startsWith(step.workingFolder.path)) {
+                                file.substringAfter(step.workingFolder.path).substring(1)
+                            } else {
+                                file
+                            }
+                            val workingFile = workingDirAlias(step.workingFolder, relative)
+                            require(!filesMap.contains(workingFile))
+                            filesMap[workingFile] = type.toString()
                         }
                     }
                 }
                 is CopyFile -> {
-                    require(filesMap.contains(step.from))
-                    val storeAlias =
-                        if (seenStores.contains(step.toFolder)) {
-                            seenStores[step.toFolder]!!
-                        } else {
-                            seenStores[step.toFolder] = "{store-${seenStores.size}}"
-                            seenStores[step.toFolder]!!
-                        }
-                    val fileAlias = "$storeAlias/${step.toFile}"
-                    require(!filesMap.contains(fileAlias))
-                    filesMap[fileAlias] = "copy of ${filesMap[step.from]}"
+                    val fromFile = workingDirAlias(step.fromFolder, step.fromFile)
+                    val toFile = storeDirAlias(step.toFolder, step.toFile)
+                    require(filesMap.contains(fromFile)) {
+                        "$fromFile was not already seen"}
+                    require(!filesMap.contains(toFile)) { "$toFile was already seen"}
+                    filesMap[toFile] = "copy of ${filesMap[fromFile]}"
                 }
             }
         }
@@ -52,8 +70,8 @@ class ClangPlanningKtTest {
         val result = simulatePlan(plan)
         println(result.toString())
         assertThat(result).hasSize(4)
-        assertThat(result["CMakeFiles/native-lib.dir/native-lib.cpp.o.d"]).isEqualTo("MF")
-        assertThat(result["CMakeFiles/native-lib.dir/native-lib.cpp.o"]).isEqualTo("OUTPUT")
+        assertThat(result["{working-0}/CMakeFiles/native-lib.dir/native-lib.cpp.o.d"]).isEqualTo("MF")
+        assertThat(result["{working-0}/CMakeFiles/native-lib.dir/native-lib.cpp.o"]).isEqualTo("OUTPUT")
         assertThat(result["{store-0}/CMakeFiles/native-lib.dir/native-lib.cpp.o.d"]).isEqualTo("copy of MF")
         assertThat(result["{store-0}/CMakeFiles/native-lib.dir/native-lib.cpp.o"]).isEqualTo("copy of OUTPUT")
     }
@@ -61,7 +79,7 @@ class ClangPlanningKtTest {
     @Test
     fun absoluteOutputFolder() {
         val folder = isolatedTestFolder().absoluteFile
-        val absoluteOutput = folder.absolutePath + "out/my-output.o"
+        val absoluteOutput = folder.absolutePath + "/out/my-output.o"
         val call = ClangCall(clangFlagsExample.readLines())
                 .withOutput(absoluteOutput)
         val plan = createPlan()
@@ -73,8 +91,8 @@ class ClangPlanningKtTest {
         val result = simulatePlan(plan)
         println(result.toString())
         assertThat(result).hasSize(4)
-        assertThat(result["CMakeFiles/native-lib.dir/native-lib.cpp.o.d"]).isEqualTo("MF")
-        assertThat(result[absoluteOutput]).isEqualTo("OUTPUT")
+        assertThat(result["{working-0}/CMakeFiles/native-lib.dir/native-lib.cpp.o.d"]).isEqualTo("MF")
+        assertThat(result["{working-0}/out/my-output.o"]).isEqualTo("OUTPUT")
         assertThat(result["{store-0}/CMakeFiles/native-lib.dir/native-lib.cpp.o.d"]).isEqualTo("copy of MF")
         assertThat(result["{store-0}/out/my-output.o"]).isEqualTo("copy of OUTPUT")
     }

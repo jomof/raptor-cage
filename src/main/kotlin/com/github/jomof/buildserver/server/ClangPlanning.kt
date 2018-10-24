@@ -10,7 +10,8 @@ data class ExecuteClang(
         val workingFolder: File,
         val call : ClangCall) : PlanStep
 data class CopyFile(
-        val from : String,
+        val fromFolder : File,
+        val fromFile : String,
         val toFolder : File,
         val toFile : String) : PlanStep
 data class CommitStore(val storeHandle : StoreHandle) : PlanStep
@@ -37,10 +38,12 @@ fun List<PlanStep>.copyOutputsTo(serverName : String) : List<PlanStep> {
                             val file = File(it)
                             val workingFolder = step.workingFolder.path
                             if(!file.isAbsolute) {
-                                CopyFile(it, writeable, it)
+                                CopyFile(step.workingFolder, it, writeable, it)
                             } else if (it.startsWith(workingFolder)){
-                                val toRelative = it.substringAfter(workingFolder)
-                                CopyFile(it, writeable, toRelative)
+                                val toRelative = it.substringAfter(workingFolder).substring(1)
+                                CopyFile(
+                                        step.workingFolder, toRelative,
+                                        writeable, toRelative)
                             } else {
                                 throw RuntimeException("Couldn't map $it with working folder $workingFolder to store")
                             }

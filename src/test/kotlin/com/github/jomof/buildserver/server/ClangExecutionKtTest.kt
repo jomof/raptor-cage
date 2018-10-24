@@ -11,20 +11,10 @@ import org.junit.Test
 import java.io.*
 
 class ClangExecutionKtTest {
-    @Test
-    fun simpleClangCppToO() {
-        localCacheStoreRoot("simpleClangCppToO").deleteRecursively()
-        val folder = isolatedTestFolder()
-        File(folder, "out").mkdirs()
-        val clangArgs = postProcessCppExampleFlags.readLines()
-        val clangFlags = ClangCall(clangArgs)
-                .withClangExecutable(clangCompilerToolExample.path)
-                .withSourceInput(postProcessCppExample.path)
-                .withOutput("out/native-lib.cpp.o")
-
+    private fun withStdio(call : (ObjectOutputStream) -> Unit) {
         val byteStream = ByteArrayOutputStream()
         val write = ObjectOutputStream(byteStream)
-        clang("simpleClangCppToO", folder.path, clangFlags.rawFlags, write)
+        call(write)
         write.flush()
         val bytes = byteStream.toByteArray()
         val byteInputStream = ByteArrayInputStream(bytes)
@@ -38,7 +28,47 @@ class ClangExecutionKtTest {
             }
         }
         println(sb)
+
+    }
+
+    @Test
+    fun simpleClangCppToO() {
+        localCacheStoreRoot("simpleClangCppToO").deleteRecursively()
+        val folder = isolatedTestFolder()
         File(folder, "out").mkdirs()
+        val clangArgs = postProcessCppExampleFlags.readLines()
+        val clangFlags = ClangCall(clangArgs)
+                .withClangExecutable(clangCompilerToolExample.path)
+                .withSourceInput(postProcessCppExample.path)
+                .withOutput("out/native-lib.cpp.o")
+
+        withStdio { write ->
+            clang("simpleClangCppToO", folder.path, clangFlags.rawFlags, write)
+        }
+
+        assertThat(File(folder, "out/native-lib.cpp.o").isFile)
+                .named(folder.toString())
+                .isTrue()
+    }
+
+    @Test
+    fun clangExecutePlan() {
+        localCacheStoreRoot("clangExecutePlan").deleteRecursively()
+        val folder = isolatedTestFolder()
+        File(folder, "out").mkdirs()
+        val clangArgs = postProcessCppExampleFlags.readLines()
+        val clangFlags = ClangCall(clangArgs)
+                .withClangExecutable(clangCompilerToolExample.path)
+                .withSourceInput(postProcessCppExample.path)
+                .withOutput("out/native-lib.cpp.o")
+        val plan = createPlan()
+                .addClangCall(folder, clangFlags)
+                .copyOutputsTo("clangExecutePlan")
+
+        withStdio { write ->
+            clang(plan, write)
+        }
+
         assertThat(File(folder, "out/native-lib.cpp.o").isFile)
                 .named(folder.toString())
                 .isTrue()

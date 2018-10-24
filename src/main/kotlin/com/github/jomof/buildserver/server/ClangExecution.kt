@@ -18,12 +18,11 @@ fun clang(
     val stdio = RemoteStdio(write)
     val flags = ClangCall(args.toList())
 
-    fun execute(args: Array<String>) : Int {
-        return ProcessBuilder(args.toList())
-                .directory(File(directory))
-                .start()
-                .redirectAndWaitFor(stdio)
-    }
+    fun execute(args: Array<String>) =
+        ProcessBuilder(args.toList())
+            .directory(File(directory))
+            .start()
+            .redirectAndWaitFor(stdio)
 
     try {
         if (flags.operation.isObjectOutput()) {
@@ -57,6 +56,45 @@ fun clang(
             return execute(args.toTypedArray())
         }
         return execute(args.toTypedArray())
+    } finally {
+        stdio.exit()
+    }
+}
+
+fun clang(
+        plan : List<PlanStep>,
+        write: ObjectOutputStream) : Int {
+    val stdio = RemoteStdio(write)
+
+    fun execute(folder : File, args: Array<String>) =
+            ProcessBuilder(args.toList())
+                    .directory(folder)
+                    .start()
+                    .redirectAndWaitFor(stdio)
+
+    try {
+        for (step in plan) {
+            when(step) {
+                is ExecuteClang -> {
+                    val code = execute(
+                            step.workingFolder,
+                            step.call.rawFlags.toTypedArray())
+                    if (code != 0) {
+                        return code
+                    }
+                }
+                is CopyFile -> {
+                    val from = File(step.fromFolder, step.toFile)
+                    val to = File(step.toFolder, step.toFile)
+                    stdio.stdout("Raptor cage copying $from to $to")
+                    from.copyTo(to)
+                }
+                is CommitStore -> {
+                    step.storeHandle.commit()
+                }
+            }
+        }
+        return 0
     } finally {
         stdio.exit()
     }
