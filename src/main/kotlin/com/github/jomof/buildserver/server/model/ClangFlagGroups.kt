@@ -9,6 +9,7 @@ enum class ClangFlagGroups(val flags : List<ClangFlagType>) {
             ClangFlagType.values().filter { it.kind == ONE_ARG }),
     PASS_THROUGH_CLANG_FLAGS(
             ClangFlagType.values().filter { it.kind == PASS_THROUGH_ARG }),
+    PRODUCES_OUTPUT_FILE(listOf(OUTPUT, MF)),
     UNUSED_IN_POSTPROCESS_ONLY_PHASE(
             listOf(MD, MF, MT, ISYSTEM, ISYSROOT)),
     UNUSED_IN_PREPROCESS_ONLY_PHASE(
@@ -17,11 +18,6 @@ enum class ClangFlagGroups(val flags : List<ClangFlagType>) {
     private val dashMap = flags.flatMap { type ->
         type.dashSet.map { dash -> Pair(dash, type)} }
             .toMap()
-    private val oneArg = flags.filter { it.kind == ONE_ARG }
-    private val oneArgShortDashSet = oneArg.mapNotNull { it.short }.map { "-$it" }
-    private val oneArgLongDashSet = oneArg.mapNotNull { it.long }.map { "--$it" }
-    private val oneArgDashSet = oneArgShortDashSet + oneArgLongDashSet
-    private val oneArgEquals = oneArgDashSet.map { "$it=" }
     private val prefixSet = flags.flatMap { flag ->
         when(flag.kind) {
             ClangFlagKind.ONE_ARG ->

@@ -2,6 +2,7 @@ package com.github.jomof.buildserver.server.model
 
 import com.github.jomof.buildserver.server.model.ClangOperation.*
 import com.github.jomof.buildserver.server.model.ClangFlagGroups.*
+import com.github.jomof.buildserver.server.model.ClangFlagType.*
 
 data class ClangCall(val rawFlags : List<String>) {
     val flags = interpretFlags(rawFlags)
@@ -41,7 +42,7 @@ data class ClangCall(val rawFlags : List<String>) {
         !isPreprocessorRun && isCcCompile && isObjectOutput -> CC_TO_O
         isPreprocessorRun && isCCompile && isObjectOutput -> C_TO_I
         isPreprocessorRun && isCcCompile && isObjectOutput -> CC_TO_II
-        else -> UNKNOWN
+        else -> ClangOperation.UNKNOWN
     }
 
     private fun interpretFlags(flags : List<String>) : List<ClangFlag> {
@@ -83,6 +84,20 @@ data class ClangCall(val rawFlags : List<String>) {
             ++i
         }
         return result
+    }
+
+    fun outputFiles() : Map<ClangFlagType, List<String>> {
+        return flags.mapNotNull {
+            if (PRODUCES_OUTPUT_FILE.contains(it)) {
+                val oneArgFlag = it as OneArgFlag
+                Pair(it.type,oneArgFlag.value)
+            } else {
+                null
+            }
+        }
+        .groupBy { it.first }
+        .map { (type,pairs) -> Pair(type, pairs.map { it.second })}
+        .toMap()
     }
 
     fun withClangExecutable(executable : String) : ClangCall {

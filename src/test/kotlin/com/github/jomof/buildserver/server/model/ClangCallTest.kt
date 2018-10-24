@@ -61,4 +61,15 @@ class ClangCallTest {
                         )))
         assertThat(flags.lastOutput).isEqualTo("output.o")
     }
+
+    @Test
+    fun identifyOutputFiles() {
+        val call = ClangCall(basicCcFlags)
+        val outputs = call.outputFiles()
+        assertThat(outputs).hasSize(2)
+        assertThat(outputs[ClangFlagType.MF]!!.single()).isEqualTo(
+                "CMakeFiles/native-lib.dir/native-lib.cpp.o.d")
+        assertThat(outputs[ClangFlagType.OUTPUT]!!.single()).isEqualTo(
+                "CMakeFiles/native-lib.dir/native-lib.cpp.o")
+    }
 }

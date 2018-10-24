@@ -15,6 +15,7 @@ class ClangExecutionKtTest {
     fun simpleClangCppToO() {
         localCacheStoreRoot("simpleClangCppToO").deleteRecursively()
         val folder = isolatedTestFolder()
+        File(folder, "out").mkdirs()
         val clangArgs = postProcessCppExampleFlags.readLines()
         val clangFlags = ClangCall(clangArgs)
                 .withClangExecutable(clangCompilerToolExample.path)
@@ -37,6 +38,7 @@ class ClangExecutionKtTest {
             }
         }
         println(sb)
+        File(folder, "out").mkdirs()
         assertThat(File(folder, "out/native-lib.cpp.o").isFile)
                 .named(folder.toString())
                 .isTrue()
