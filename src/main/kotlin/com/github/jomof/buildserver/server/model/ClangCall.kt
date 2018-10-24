@@ -1,7 +1,7 @@
 package com.github.jomof.buildserver.server.model
 
 import com.github.jomof.buildserver.server.model.ClangOperation.*
-import com.github.jomof.buildserver.server.model.ClangFlagGroups.ONE_ARG_CLANG_FLAGS
+import com.github.jomof.buildserver.server.model.ClangFlagGroups.*
 
 data class ClangCall(val rawFlags : List<String>) {
     val flags = interpretFlags(rawFlags)
@@ -54,16 +54,26 @@ data class ClangCall(val rawFlags : List<String>) {
                     result.add(OneArgFlag(
                             flag,
                             flags[i + 1],
-                            listOf(flag, flags[i + 1])))
+                            listOf(flag, flags[i + 1]),
+                            ONE_ARG_CLANG_FLAGS.typeOf(flag)
+                            ))
                     ++i
                 }
-                ONE_ARG_CLANG_FLAGS.isOneArgEquals(flag) -> {
-                    val key = flag.substringBefore("=")
-                    val value = flag.substringAfter("=")
+                ONE_ARG_CLANG_FLAGS.canSplit(flag) -> {
+                    val (key,value) = ONE_ARG_CLANG_FLAGS.split(flag)!!
                     result.add(OneArgFlag(
                             key,
                             value,
-                            listOf(flag)))
+                            listOf(flag),
+                            ONE_ARG_CLANG_FLAGS.typeOf(key)))
+                }
+                PASS_THROUGH_CLANG_FLAGS.canSplit(flag) -> {
+                    val (key,value) = PASS_THROUGH_CLANG_FLAGS.split(flag)!!
+                    result.add(PassThroughFlag(
+                            key,
+                            value,
+                            listOf(flag),
+                            PASS_THROUGH_CLANG_FLAGS.typeOf(key)))
                 }
                 !flag.startsWith("-")
                         && knownSourceFileExtensions.any { flag.endsWith(".$it") } ->
@@ -98,7 +108,7 @@ data class ClangCall(val rawFlags : List<String>) {
         require(isCompile)
         val flags = flags.map { flag ->
             when {
-                flag is OneArgFlag && flag.isFlag("o") ->
+                flag is OneArgFlag && flag.type == ClangFlagType.OUTPUT ->
                     listOf(flag.key, output)
                 else -> flag.sourceFlags
             }

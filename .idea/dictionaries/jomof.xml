@@ -1,8 +1,13 @@
 <component name="ProjectDictionaryState">
   <dictionary name="jomof">
     <words>
+      <w>isysroot</w>
       <w>isystem</w>
+      <w>noexecstack</w>
+      <w>postprocess</w>
+      <w>preprocess</w>
       <w>teleport</w>
+      <w>writeable</w>
     </words>
   </dictionary>
 </component>

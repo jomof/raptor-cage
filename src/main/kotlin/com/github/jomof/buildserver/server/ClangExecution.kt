@@ -5,6 +5,8 @@ import com.github.jomof.buildserver.server.model.OneArgFlag
 import com.github.jomof.buildserver.server.model.SourceFileFlag
 import com.github.jomof.buildserver.common.io.RemoteStdio
 import com.github.jomof.buildserver.common.process.redirectAndWaitFor
+import com.github.jomof.buildserver.server.model.ClangFlagGroups.*
+import com.github.jomof.buildserver.server.model.ClangFlagType
 import com.github.jomof.buildserver.server.store.StoreHandle
 import java.io.File
 import java.io.ObjectOutputStream
@@ -66,21 +68,23 @@ fun clang(
 }
 
 
-private val unusedInPostProcessPhase = setOf("MD", "MT", "isystem", "MF")
+//private val unusedInPostProcessPhase = setOf("MD", "MT", "isystem", "MF")
 
 private fun ClangCall.preprocessExtension() = if (isCcCompile) ".ii" else ".i"
 
 
 /**
- * Convert this compile command to an equivalent command that just producess preprocessor
+ * Convert this compile command to an equivalent command that just produces preprocessor
  * output (.i or .ii) format.
  */
 fun ClangCall.toPreprocessEquivalent(preprocessFolder : File) : ClangCall {
     require(isCompile)
     val flags = flags
+        .filter { flag ->
+            !UNUSED_IN_PREPROCESS_ONLY_PHASE.contains(flag) }
         .map { flag ->
             when {
-                flag is OneArgFlag && flag.isFlag("o") -> {
+                flag is OneArgFlag && flag.type == ClangFlagType.OUTPUT -> {
                     val output = File(preprocessFolder, flag.value + preprocessExtension())
                     listOf(flag.key, output.path)
                 }
@@ -88,23 +92,24 @@ fun ClangCall.toPreprocessEquivalent(preprocessFolder : File) : ClangCall {
             }
         }
         .flatten()
-        .filter {
-            when(it) {
-                // Running just the preprocessor doesn't use this flag, so remove
-                "-Wa,--noexecstack" -> false
-                else -> true
-            }
-        }
+//        .filter {
+//            UNUSED_IN_PREPROCESS_ONLY_PHASE
+////            when(it) {
+////                // Running just the preprocessor doesn't use this flag, so remove
+////                "-Wa,--noexecstack" -> false
+////                else -> true
+////            }
+//        }
     return ClangCall(flags + "-E")
 }
 
 fun ClangCall.redirectOutputs(cacheFolder : File) : ClangCall {
     val newFlags = flags
         .asSequence()
-        .filter { flag -> !unusedInPostProcessPhase.any { flag.isFlag(it) } }
+        .filter { flag -> !UNUSED_IN_POSTPROCESS_ONLY_PHASE.contains(flag) }
         .map {flag ->
             when {
-                flag is OneArgFlag && flag.isFlag("o") -> {
+                flag is OneArgFlag && flag.type == ClangFlagType.OUTPUT-> {
                     listOf(flag.key, redirectUserFileToCacheFile(flag.value, cacheFolder))
                 }
                 else -> flag.sourceFlags
@@ -124,7 +129,7 @@ fun ClangCall.toPostprocessEquivalent(preprocessFolder : File) : ClangCall {
     val preprocessFile = File(preprocessFolder, lastOutput + preprocessExtension()).path
     val newFlags = flags
             .asSequence()
-            .filter { flag -> !unusedInPostProcessPhase.any { flag.isFlag(it) } }
+            .filter { flag -> !UNUSED_IN_POSTPROCESS_ONLY_PHASE.contains(flag) }
             .map {flag ->
                 when (flag) {
                     is SourceFileFlag -> listOf(preprocessFile)

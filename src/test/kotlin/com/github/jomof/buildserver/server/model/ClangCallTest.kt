@@ -22,8 +22,6 @@ class ClangCallTest {
 
     @Test
     fun sourceFiles() {
-//        assertThat(ClangCall.knownSourceFileExtensions)
-//                .containsAllIn(listOf(".c"))
         val flags = ClangCall(basicCcFlags)
         assertThat(flags.sourceFiles)
                 .isEqualTo(listOf("C:/Users/jomof/AndroidStudioProjects/AndroidCCacheExample/app/src/main/cpp/native-lib.cpp"))
@@ -54,7 +52,13 @@ class ClangCallTest {
     @Test
     fun oneArgSeparate() {
         val flags = ClangCall(listOf("-o", "output.o"))
-        assertThat(flags.flags).isEqualTo(listOf(OneArgFlag("-o", "output.o", listOf("-o", "output.o"))))
+        assertThat(flags.flags).isEqualTo(listOf(
+                OneArgFlag(
+                        "-o",
+                        "output.o",
+                        listOf("-o", "output.o"),
+                        ClangFlagType.OUTPUT
+                        )))
         assertThat(flags.lastOutput).isEqualTo("output.o")
     }
 }

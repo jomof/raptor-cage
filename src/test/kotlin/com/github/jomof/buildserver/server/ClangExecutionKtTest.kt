@@ -71,6 +71,18 @@ class ClangExecutionKtTest {
                 .toPostprocessEquivalent(folder)
         val s = os.fileSeparator
         assertThat(flags.flags.map { it.flag })
-                .isEqualTo(listOf(folder.path + "${s}tom.o.ii", "-o tom.o"))
+                .isEqualTo(listOf(folder.path + "${s}tom.o.ii", "-o=tom.o"))
+    }
+
+    @Test
+    fun preProcessRemovesAssemblerFlags() {
+        val folder = isolatedTestFolder()
+        val flags = ClangCall(listOf(
+                "-Wa,--noexecstack", "tom.cpp", "-o=tom.o"))
+                .toPreprocessEquivalent(folder)
+        val s = os.fileSeparator
+        assertThat(flags.flags.map { it.flag })
+                .isEqualTo(listOf(
+                        "tom.cpp", "-o=" + folder.path + "${s}tom.o.ii", "-E"))
     }
 }
