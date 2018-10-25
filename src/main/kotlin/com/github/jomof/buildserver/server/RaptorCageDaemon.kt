@@ -2,10 +2,13 @@ package com.github.jomof.buildserver.server
 
 import com.github.jomof.buildserver.server.workitems.NewRequestWorkItem
 import com.github.jomof.buildserver.common.localPortAgreementFile
+import com.github.jomof.buildserver.common.localPortAgrementServerLockFile
 import com.github.jomof.buildserver.server.workitems.WorkItem
 import java.net.ServerSocket
 import java.io.IOException
+import java.io.RandomAccessFile
 import java.net.Socket
+import java.util.*
 
 class RaptorCageDaemon(
         val serverName: String,
@@ -99,34 +102,40 @@ class RaptorCageDaemon(
         @JvmStatic
         fun main(args: Array<String>) {
             val serverName = args[0]
-            // Fully start the server before publishing the port
-            val server = RaptorCageDaemon(serverName, ServerSocket(0))
-            Thread(server).start()
-            // At this point, we could serve requests but no one knows
-            // our port number.
-            val portAgreementFile = localPortAgreementFile(serverName)
-            portAgreementFile.writeText(server.port().toString())
+            val serverLock = localPortAgrementServerLockFile(serverName)
+            val lockFile = RandomAccessFile(serverLock, "rw")
+            lockFile.use { lockFile ->
+                lockFile.channel.lock()
 
-            // Now we spin, periodically checking health
-            do {
-                // If at any point the agreement port changes then we no longer
-                // control this cache directory. We have to stop to avoid racing
-                // with another server.
-                if (!portAgreementFile.exists()) {
-                    log(serverName, "Agreement port disappeared. Stopping.")
-                    server.stop()
-                    return
+                // Fully start the server before publishing the port
+                val server = RaptorCageDaemon(serverName, ServerSocket(0))
+                Thread(server).start()
+                // At this point, we could serve requests but no one knows
+                // our port number.
+                val portAgreementFile = localPortAgreementFile(serverName)
+                portAgreementFile.writeText(server.port().toString())
 
-                }
-                val agreementPort = portAgreementFile.readText().toInt()
-                if (agreementPort != server.port()) {
-                    log(serverName, "Agreement port changed from ${server.port()} to $agreementPort, stopping server")
-                    server.stop()
-                    return
+                // Now we spin, periodically checking health
+                do {
+                    // If at any point the agreement port changes then we no longer
+                    // control this cache directory. We have to stop to avoid racing
+                    // with another server.
+                    if (!portAgreementFile.exists()) {
+                        log(serverName, "Agreement port disappeared. Stopping.")
+                        server.stop()
+                        return
 
-                }
-                Thread.sleep(500)
-            } while (true)
+                    }
+                    val agreementPort = portAgreementFile.readText().toInt()
+                    if (agreementPort != server.port()) {
+                        log(serverName, "Agreement port changed from ${server.port()} to $agreementPort, stopping server")
+                        server.stop()
+                        return
+
+                    }
+                    Thread.sleep(500)
+                } while (true)
+            }
         }
     }
 }

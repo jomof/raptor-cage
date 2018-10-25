@@ -16,6 +16,7 @@ class ClangEntryPoint {
                     args = args.toList()).code
 
             log("main", "Reached the end of main")
+            System.exit(code)
         }
     }
 }

@@ -28,7 +28,6 @@ class ClangExecutionKtTest {
             }
         }
         println(sb)
-
     }
 
     @Test

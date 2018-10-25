@@ -16,7 +16,7 @@ val clangCompilerToolExample = File(tools, "${os.tag}/ndk/18.0/toolchains/llvm/p
 
 
 fun isolatedTestFolder() : File {
-    val folder = File("./build/test-isolated/${Random().nextLong()}")
+    val folder = File("./build/test-isolated/${Random().nextLong().toString(16)}")
     folder.mkdirs()
     return folder
 }

@@ -8,6 +8,6 @@ class ServerManagementKtTest {
     fun testGetOrStartServer() {
         val connection = getOrStartServer("testGetOrStartServer")
         assertThat(connection.version()).isEqualTo(1)
-        //connection.stop()
+        connection.stop()
     }
 }

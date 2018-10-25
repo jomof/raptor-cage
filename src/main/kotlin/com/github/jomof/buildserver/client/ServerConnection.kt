@@ -30,7 +30,7 @@ class ServerConnection(
 
     fun version() = hello.version
 
-    private fun hello() : HelloResponse {
+    fun hello() : HelloResponse {
         return send(HelloRequest()) as HelloResponse
     }
 

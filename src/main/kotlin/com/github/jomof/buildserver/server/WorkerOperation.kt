@@ -28,7 +28,7 @@ class WorkerOperation(
                                 when (request) {
                                     is HelloRequest -> {
                                         println("hello")
-                                        write.writeObject(HelloResponse(version = 1))
+                                        write.writeObject(HelloResponse(version = serverVersion))
                                     }
                                     is ClangRequest -> {
                                         println("Server executing clang")

@@ -12,6 +12,14 @@ fun localPortAgreementFile(serverName : String) : File {
     return File(localCachePath(serverName), "port")
 }
 
+fun localPortAgrementServerLockFile(serverName : String) : File {
+    return File(localCachePath(serverName), "port-server-lock")
+}
+
+fun localPortAgrementClientLockFile(serverName : String) : File {
+    return File(localCachePath(serverName), "port-client-lock")
+}
+
 fun localCacheClientLogFile(serverName : String) : File {
     return File(localCachePath(serverName), "client-log.txt")
 }
