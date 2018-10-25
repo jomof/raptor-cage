@@ -24,16 +24,16 @@ fun getOrStartServer(serverName : String): ServerConnection {
     if (connection != null) {
         return connection
     }
-    RandomAccessFile(lockFile, "rw").use { lockFile ->
-        var lockInfo = tryLock(lockFile)
+    RandomAccessFile(lockFile, "rw").use { lock ->
+        var lockInfo = tryLock(lock)
         while (lockInfo == null) {
             // If couldn't take the lock then spin and try to connect
             Thread.sleep(100)
-            val connection = connectServer(serverName)
-            if (connection != null) {
-                return connection
+            val afterSleepConnection = connectServer(serverName)
+            if (afterSleepConnection != null) {
+                return afterSleepConnection
             }
-            lockInfo = tryLock(lockFile)
+            lockInfo = tryLock(lock)
         }
 
         // Was able to acquire the lock, start the server
@@ -52,9 +52,9 @@ fun getOrStartServer(serverName : String): ServerConnection {
         var i = 0
         while (true) {
             log(serverName, "Spin while attaching")
-            val connection = connectServer(serverName)
-            if (connection != null) {
-                return connection
+            val spinAttachConnection = connectServer(serverName)
+            if (spinAttachConnection != null) {
+                return spinAttachConnection
             }
             Thread.sleep(1000)
             if (++i > 10) {
