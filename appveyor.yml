@@ -4,4 +4,4 @@ build_script:
   - gradlew.bat assemble
   
 test_script:
-  - gradlew.bat --info test
+  - gradlew.bat test
