@@ -1,7 +1,7 @@
 version: 1.0.{build}
 
 build_script:
-  - gradlew.bat assemble
+  - gradlew.bat assemble packageArtifacts
   
 test_script:
   - gradlew.bat test
