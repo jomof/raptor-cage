@@ -32,11 +32,9 @@ class MasterServerTest {
 
             --remaining
         }
-
         (0 until remaining).onEach {
             Thread { spin(10) }.start()
         }
-
         while(remaining > 0) {
             spin(10)
         }
