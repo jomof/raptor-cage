@@ -19,6 +19,7 @@ private fun tryLock(lockFile : RandomAccessFile) : FileLock? {
 
 fun getOrStartServer(serverName : String): ServerConnection {
     val lockFile = localPortAgrementClientLockFile(serverName)
+    lockFile.parentFile.mkdirs()
     val connection = connectServer(serverName)
     if (connection != null) {
         return connection
