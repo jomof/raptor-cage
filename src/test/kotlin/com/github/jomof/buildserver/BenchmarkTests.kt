@@ -29,46 +29,9 @@ class BenchmarkTests {
 
     @Test
     fun basic() {
-        val sdkCandidates = listOf(
-                "C:/android-sdk-windows",
-                "C:/Users/jomof/AppData/Local/Android/Sdk")
-        val localSdkFolder = sdkCandidates
-                .mapNotNull { path ->
-                    val folder = File(path)
-                    if (folder.isDirectory) {
-                        folder
-                    } else {
-                        null
-                    }
-                }.first()
-        val folder = isolatedTestFolder()
-        val localProperties = File(folder, "local.properties")
-        val javaExeFolder =
-                File(System.getProperties().getProperty("java.home"))
-
-        folder.mkdirs()
-
-        benchmarkSubmodule.copyRecursively(folder)
-        println(sdkFolder.toString())
-        localProperties.writeText(
-                "sdk.dir=${localSdkFolder.path.replace("\\", "/")}")
-
-
-        fun execute(vararg args : String) {
-            withStdio { stdio ->
-                try {
-                    val process = ProcessBuilder(args.toList())
-                            .directory(folder)
-                    process.environment()["JAVA_HOME"] = javaExeFolder.path
-                    process
-                            .start()
-                            .redirectAndWaitFor(stdio)
-                } finally {
-                    stdio.exit()
-                }
-            }
-        }
-        execute("./gradlew${os.bat}", "assemble", "clean")
-        execute("./gradlew${os.bat}", "assemble")
+        Benchmark()
+            .prepare()
+            .execute("./gradlew${os.bat}", "assemble", "clean")
+            .execute("./gradlew${os.bat}", "assemble")
     }
 }
