@@ -8,11 +8,12 @@ import java.util.*
 
 val resources = File("./src/test/resources").absoluteFile!!
 val postProcessCppExample = File(resources, "native-lib.cpp.o.cpp")
-val postProcessIiExample = File(resources, "native-lib.cpp.o.ii")
 val postProcessCppExampleFlags = File(resources, "native-lib.cpp.o.flags")
 val clangFlagsExample = File(resources, "clang-flags.txt")
-val tools = File("./tools").absoluteFile
+val tools = File("./tools").absoluteFile!!
 val clangCompilerToolExample = File(tools, "${os.tag}/ndk/18.0/toolchains/llvm/prebuilt/${os.tag}-x86_64/bin/clang++${os.exe}")
+val submodule = File("./submodule").absoluteFile!!
+val benchmarkSubmodule = File(submodule, "native-scaling-benchmark-template")
 
 
 fun isolatedTestFolder() : File {
@@ -34,5 +35,10 @@ class Locations{
         assertThat(clangCompilerToolExample.isFile)
                 .named(clangCompilerToolExample.toString())
                 .isTrue()
+    }
+
+    @Test
+    fun checkBenchmarkTemplate() {
+        assertThat(benchmarkSubmodule.isDirectory).isTrue()
     }
 }
