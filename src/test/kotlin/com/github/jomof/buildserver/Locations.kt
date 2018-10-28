@@ -12,12 +12,14 @@ val postProcessCppExampleFlags = File(resources, "native-lib.cpp.o.flags")
 val clangFlagsExample = File(resources, "clang-flags.txt")
 val tools = File("./tools").absoluteFile!!
 val clangCompilerToolExample = File(tools, "${os.tag}/ndk/18.0/toolchains/llvm/prebuilt/${os.tag}-x86_64/bin/clang++${os.exe}")
+val sdkFolder = File(tools, "${os.tag}/sdk")
 val submodule = File("./submodule").absoluteFile!!
 val benchmarkSubmodule = File(submodule, "native-scaling-benchmark-template")
 
 
 fun isolatedTestFolder() : File {
-    val folder = File("./build/test-isolated/${Random().nextLong().toString(16)}")
+    val folder = File("./build/test-isolated/${Random().nextLong()
+            .toString(36).replace("-", "")}")
     folder.mkdirs()
     return folder
 }

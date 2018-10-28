@@ -3,11 +3,12 @@ package com.github.jomof.buildserver.common
 enum class Os(
         val tag : String,
         val exe : String,
+        val bat : String,
         val classPathSeparator : String,
         val fileSeparator : String) {
-    WINDOWS("windows", ".exe", ";", "\\"),
-    LINUX("linux", "", ":", "//"),
-    DARWIN("darwin", "", ":", "//")
+    WINDOWS("windows", ".exe", ".bat", ";", "\\"),
+    LINUX("linux", "", "", ":", "//"),
+    DARWIN("darwin", "", "", ":", "//")
 }
 
 private val osName = System.getProperty("os.name")
