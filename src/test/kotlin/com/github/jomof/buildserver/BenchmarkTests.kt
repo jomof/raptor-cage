@@ -11,4 +11,13 @@ class BenchmarkTests {
             .execute("./gradlew${os.bat}", "assemble", "clean")
             .execute("./gradlew${os.bat}", "assemble")
     }
+
+    @Test
+    fun ndks() {
+        val ndks = listOf("r13b", "r14b", "r15c", "r16b", "r17c")
+        ndks.onEach { ndk ->
+            val path = getNdkDownloadIfNecessary(ndk)
+            System.err.println("Downloaded and unzipped $path")
+        }
+    }
 }

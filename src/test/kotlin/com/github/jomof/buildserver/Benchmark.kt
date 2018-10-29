@@ -11,8 +11,7 @@ data class Benchmark(
         val javaHome : String = System.getProperties().getProperty("java.home"),
         val benchmarkSource : File = benchmarkSubmodule,
         val workingFolder : File = isolatedTestFolder(),
-        val moduleCount : Int = 2
-) {
+        val moduleCount : Int = 2) {
 
     private fun withStdio(call : (RemoteStdio) -> Unit) {
         val byteStream = ByteArrayOutputStream()
