@@ -2,6 +2,7 @@ package com.github.jomof.buildserver
 
 import com.github.jomof.buildserver.common.io.RemoteStdio
 import com.github.jomof.buildserver.common.io.teleportStdio
+import com.github.jomof.buildserver.common.os
 import com.github.jomof.buildserver.common.process.redirectAndWaitFor
 import java.io.*
 
@@ -9,7 +10,8 @@ data class Benchmark(
         val sdkFolder : String = sdkFolder(),
         val javaHome : String = System.getProperties().getProperty("java.home"),
         val benchmarkSource : File = benchmarkSubmodule,
-        val workingFolder : File = isolatedTestFolder()
+        val workingFolder : File = isolatedTestFolder(),
+        val moduleCount : Int = 2
 ) {
 
     private fun withStdio(call : (RemoteStdio) -> Unit) {
@@ -32,9 +34,23 @@ data class Benchmark(
 
     fun prepare() : Benchmark {
         val localProperties = File(workingFolder, "local.properties")
+        val settingsGradle = File(workingFolder, "settings.gradle")
         benchmarkSubmodule.copyRecursively(workingFolder)
         println(com.github.jomof.buildserver.sdkFolder.toString())
         localProperties.writeText("sdk.dir=$sdkFolder")
+        val sourceLibrary = File(workingFolder, "mylibrary")
+        assert(sourceLibrary.isDirectory)
+
+        execute("./gradlew${os.bat}", "assemble")
+
+        val settingsGradleText = StringBuilder("include ':app', ':mylibrary'")
+        (2 ..  moduleCount).onEach { i ->
+            val libraryName = "mylibrary-$i"
+            val moduleFolder = File(workingFolder, libraryName)
+            sourceLibrary.copyRecursively(moduleFolder)
+            settingsGradleText.append(", ':$libraryName'")
+        }
+        settingsGradle.writeText(settingsGradleText.toString())
         return this
     }
 

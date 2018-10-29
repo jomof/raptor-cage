@@ -29,7 +29,7 @@ class BenchmarkTests {
 
     @Test
     fun basic() {
-        Benchmark()
+        Benchmark(moduleCount = 20)
             .prepare()
             .execute("./gradlew${os.bat}", "assemble", "clean")
             .execute("./gradlew${os.bat}", "assemble")
