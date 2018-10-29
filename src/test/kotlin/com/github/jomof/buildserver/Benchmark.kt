@@ -23,11 +23,23 @@ data class Benchmark(
         val bytes = byteStream.toByteArray()
         val byteInputStream = ByteArrayInputStream(bytes)
         val read = ObjectInputStream(byteInputStream)
+        var lastTimeStamp = System.currentTimeMillis()
         teleportStdio(read) { err, message ->
-            if (err) {
-                println("ERR: $message")
+            val currentTimestamp = System.currentTimeMillis()
+            val elapsed = synchronized(lastTimeStamp) {
+                val diff = currentTimestamp - lastTimeStamp
+                lastTimeStamp = currentTimestamp
+                diff
+            }
+            val time = if (elapsed > 10) {
+                "[[$elapsed]]"
             } else {
-                println("OUT: $message")
+                ""
+            }
+            if (err) {
+                println("ERR$time: $message")
+            } else {
+                println("OUT$time: $message")
             }
         }
     }
