@@ -11,4 +11,5 @@ install:
   - yes | C:\android-sdk-windows\tools\bin\sdkmanager.bat --licenses > nul
   
 build_script:
-  - gradlew.bat assemble test packageArtifacts
+  - gradlew.bat assemble packageArtifacts
+  - gradlew.bat --info test
