@@ -14,6 +14,7 @@ val tools = File("./tools").absoluteFile!!
 val clangCompilerToolExample = File(tools, "${os.tag}/ndk/18.0/toolchains/llvm/prebuilt/${os.tag}-x86_64/bin/clang++${os.exe}")
 val sdkFolder = File(tools, "${os.tag}/sdk")
 val submodule = File("./submodule").absoluteFile!!
+val cmakeRuns = File("./cmake-runs").absoluteFile!!
 val benchmarkSubmodule = File(submodule, "native-scaling-benchmark-template")
 
 

@@ -8,10 +8,12 @@ import java.io.*
 
 data class Benchmark(
         val sdkFolder : String = sdkFolder(),
+        val ndkFolder : String = getNdkDownloadIfNecessary("r17c").path,
         val javaHome : String = System.getProperties().getProperty("java.home"),
         val benchmarkSource : File = benchmarkSubmodule,
         val workingFolder : File = isolatedTestFolder(),
-        val moduleCount : Int = 2) {
+        val moduleCount : Int = 2,
+        val cmakeArguments : String = "") {
 
     private fun withStdio(call : (RemoteStdio) -> Unit) {
         val byteStream = ByteArrayOutputStream()
@@ -43,13 +45,32 @@ data class Benchmark(
         }
     }
 
+    fun withNdk(ndk : String) : Benchmark {
+        return copy(ndkFolder = getNdkDownloadIfNecessary(ndk).path)
+    }
+
+    fun resetWorkingFolder() : Benchmark {
+        return this.copy(workingFolder = isolatedTestFolder())
+    }
+
     fun prepare() : Benchmark {
         val localProperties = File(workingFolder, "local.properties")
         val settingsGradle = File(workingFolder, "settings.gradle")
         benchmarkSubmodule.copyRecursively(workingFolder)
         println(com.github.jomof.buildserver.sdkFolder.toString())
-        localProperties.writeText("sdk.dir=$sdkFolder")
+        val ndkFolder = ndkFolder.replace("\\", "/")
+        localProperties.writeText(
+                "sdk.dir=$sdkFolder\n" +
+                "ndk.dir=$ndkFolder\n")
         val sourceLibrary = File(workingFolder, "mylibrary")
+
+        if (!cmakeArguments.isEmpty()){
+            val sourceLibraryBuildGradle = File(sourceLibrary, "build.gradle")
+            sourceLibraryBuildGradle
+                    .writeText(sourceLibraryBuildGradle.readText()
+                        .replace("//<<arguments>>", "arguments $cmakeArguments"))
+        }
+
         assert(sourceLibrary.isDirectory)
 
         execute("./gradlew${os.bat}", "assemble")
@@ -63,6 +84,10 @@ data class Benchmark(
         }
         settingsGradle.writeText(settingsGradleText.toString())
         return this
+    }
+
+    fun withCmakeArguments(arguments : String) : Benchmark{
+        return this.copy(cmakeArguments = arguments)
     }
 
     fun execute(vararg args : String) : Benchmark {
