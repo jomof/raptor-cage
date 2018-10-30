@@ -55,7 +55,7 @@ class BenchmarkTests {
         }
     }
 
-    @Test
+    //@Test
     fun slurp() {
         val before = Benchmark(moduleCount = 1)
                 .prepare()

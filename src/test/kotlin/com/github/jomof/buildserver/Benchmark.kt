@@ -71,7 +71,10 @@ data class Benchmark(
                         .replace("//<<arguments>>", "arguments $cmakeArguments"))
         }
 
-        assert(sourceLibrary.isDirectory)
+        if (!sourceLibrary.isDirectory) {
+            System.err.println("Directory $sourceLibrary did not exist.")
+            assert(sourceLibrary.isDirectory)
+        }
 
         execute("./gradlew${os.bat}", "assemble")
 

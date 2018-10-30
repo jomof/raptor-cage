@@ -12,4 +12,4 @@ install:
   
 build_script:
   - gradlew.bat assemble packageArtifacts
-  - gradlew.bat --info test
+  - gradlew.bat test
