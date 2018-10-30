@@ -76,6 +76,17 @@ data class Benchmark(
             assert(sourceLibrary.isDirectory)
         }
 
+        if (os.tag != "windows") {
+            for (file in workingFolder.walk()) {
+                when(file.name) {
+                    "gradlew", "clang++" -> {
+                        file.setExecutable(true)
+                    }
+                    else -> {}
+                }
+            }
+        }
+
         execute("./gradlew${os.bat}", "assemble")
 
         val settingsGradleText = StringBuilder("include ':app', ':mylibrary'")
@@ -112,6 +123,7 @@ data class Benchmark(
 
 private fun sdkFolder() : String {
     val sdkCandidates = listOf(
+            "/usr/local/google/home/jomof/Android/Sdk",
             "C:/android-sdk-windows",
             "C:/Users/jomof/AppData/Local/Android/Sdk")
     return sdkCandidates

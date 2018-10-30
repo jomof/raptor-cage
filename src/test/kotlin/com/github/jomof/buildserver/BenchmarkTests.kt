@@ -16,11 +16,11 @@ class BenchmarkTests {
     @Test
     fun ndks() {
         val ndks = listOf(
-//                "r13", "r13b",
-//                "r14", "r14b",
-//                "r15", "r15b", "r15c",
-//                "r16", "r16b",
-//                "r17", "r17b",
+                "r13", "r13b",
+                "r14", "r14b",
+                "r15", "r15b", "r15c",
+                "r16", "r16b",
+                "r17", "r17b",
                 "r17c")
         ndks.onEach { ndk ->
             gatherCmakeMetadata(ndk)
@@ -39,7 +39,8 @@ class BenchmarkTests {
 
     private fun runBenchmark(type: String, ndk: String, basis: Benchmark) {
         val folder = File(cmakeRuns, type)
-        val sentinel = File(folder, "$ndk.txt")
+        val sentinel = if (os.tag == "windows") { File(folder, "$ndk.txt") }
+            else { File(folder, "$ndk-${os.tag}.txt") }
         println(sentinel.path)
         if (!sentinel.exists()) {
             folder.mkdirs()
@@ -49,7 +50,8 @@ class BenchmarkTests {
             mylibrary.listFiles { file ->
                 file.name.startsWith("variables") && file.name.endsWith(".txt")
             }.toList().onEach { file ->
-                file.copyTo(File(folder, file.name))
+                val baseName = file.name.substringBefore(".txt") + "-" + os.tag + ".txt"
+                file.copyTo(File(folder, baseName))
             }
             sentinel.writeText("done")
         }

@@ -4,6 +4,7 @@ import com.github.jomof.buildserver.common.os
 import java.io.*
 import java.net.URL
 import java.util.zip.ZipEntry
+import java.util.zip.ZipException
 import java.util.zip.ZipFile
 
 fun localNdkPath(ndk : String) : File {
@@ -91,7 +92,20 @@ fun getNdkDownloadIfNecessary(ndk : String) : File {
             val stream = tryGetUrlInputStream(url)!!
             copyInputStreamToLocalFile(stream, downloadTo)
         }
-        unzip(downloadTo, path.parentFile)
+        try {
+            unzip(downloadTo, path.parentFile)
+        } catch (e : ZipException) {
+            downloadTo.delete()
+            return getNdkDownloadIfNecessary(ndk)
+        }
+
+    }
+    if (os.tag != "windows") {
+        for (file in path.walk()) {
+            if (!file.name.contains(".")) {
+                file.setExecutable(true)
+            }
+        }
     }
     return path
 }
