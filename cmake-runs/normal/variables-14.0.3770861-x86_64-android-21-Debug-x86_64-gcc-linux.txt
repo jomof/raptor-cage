@@ -1,0 +1,987 @@
+set ANDROID=1
+set ANDROID_ABI=x86_64
+set ANDROID_ALLOW_UNDEFINED_SYMBOLS=FALSE
+set ANDROID_AR=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ar
+set ANDROID_ARCH_NAME=x86_64
+set ANDROID_ARM_MODE=thumb
+set ANDROID_ASM_COMPILER=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc
+set ANDROID_COMPILER_FLAGS=-g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security
+set ANDROID_COMPILER_FLAGS_CXX=
+set ANDROID_COMPILER_FLAGS_DEBUG=-O0
+set ANDROID_COMPILER_FLAGS_RELEASE=-O2 -DNDEBUG
+set ANDROID_CXX_COMPILER=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-g++
+set ANDROID_CXX_STANDARD_LIBRARIES="/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/sources/cxx-stl/gnu-libstdc++/4.9/libs/x86_64/libgnustl_static.a"
+set ANDROID_C_COMPILER=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc
+set ANDROID_DISABLE_NO_EXECUTE=FALSE
+set ANDROID_DISABLE_RELRO=FALSE
+set ANDROID_FUNCTION_LEVEL_LINKING=TRUE
+set ANDROID_GOLD_LINKER=TRUE
+set ANDROID_HEADER_TRIPLE=x86_64-linux-android
+set ANDROID_HOST_TAG=linux-x86_64
+set ANDROID_LINKER_FLAGS=-Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now
+set ANDROID_LINKER_FLAGS_EXE=-Wl,--gc-sections -Wl,-z,nocopyreloc -pie -fPIE
+set ANDROID_LLVM_TRIPLE=x86_64-none-linux-android
+set ANDROID_NATIVE_API_LEVEL=21
+set ANDROID_NDK=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14
+set ANDROID_NDK=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14
+set ANDROID_NDK_ABI_NAME=x86_64
+set ANDROID_NDK_HOST_SYSTEM_NAME=linux-x86_64
+set ANDROID_NDK_HOST_X64=TRUE
+set ANDROID_NDK_LAYOUT=RELEASE
+set ANDROID_NDK_RELEASE=r140.3770861
+
+set ANDROID_NDK_REVISION=140.3770861
+
+set ANDROID_NDK_SOURCE_PROPERTIES=Pkg.Desc = Android NDK
+Pkg.Revision = 14.0.3770861
+
+set ANDROID_NDK_SOURCE_PROPERTIES_REGEX=^Pkg\.Desc = Android NDK
+Pkg\.Revision = ([0-9]+)\.
+set ANDROID_NOEXECSTACK=TRUE
+set ANDROID_NO_UNDEFINED=TRUE
+set ANDROID_PIE=TRUE
+set ANDROID_PLATFORM=android-21
+set ANDROID_PLATFORM_LEVEL=21
+set ANDROID_RANLIB=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ranlib
+set ANDROID_RELRO=TRUE
+set ANDROID_STL=gnustl_static
+set ANDROID_STL_PREFIX=gnu-libstdc++/4.9
+set ANDROID_STL_STATIC_LIBRARIES=gnustl_static
+set ANDROID_SYSROOT=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/platforms/android-21/arch-x86_64
+set ANDROID_SYSROOT_ABI=x86_64
+set ANDROID_TOOLCHAIN=gcc
+set ANDROID_TOOLCHAIN_NAME=x86_64-linux-android-4.9
+set ANDROID_TOOLCHAIN_PREFIX=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-
+set ANDROID_TOOLCHAIN_ROOT=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64
+set CAP=variables-14.0.3770861-x86_64-android-21-Debug-x86_64.txt
+set CMAKE_ANDROID_ARCH_ABI=x86_64
+set CMAKE_ANDROID_ARCH_ABI=x86_64
+set CMAKE_ANDROID_NDK=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14
+set CMAKE_AR=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ar
+set CMAKE_AR=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ar
+set CMAKE_ASM_FLAGS=-g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security 
+set CMAKE_ASM_FLAGS=-g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security 
+set CMAKE_ASM_FLAGS_DEBUG=-O0 -O0 
+set CMAKE_ASM_FLAGS_DEBUG=-O0 -O0 
+set CMAKE_ASM_FLAGS_RELEASE=-O2 -DNDEBUG -O2 -DNDEBUG 
+set CMAKE_ASM_FLAGS_RELEASE=-O2 -DNDEBUG -O2 -DNDEBUG 
+set CMAKE_AUTOMOC_COMPILER_PREDEFINES=ON
+set CMAKE_AUTOMOC_MACRO_NAMES=Q_OBJECT;Q_GADGET;Q_NAMESPACE
+set CMAKE_BASE_NAME=g++
+set CMAKE_BINARY_DIR=/usr/local/google/home/jomof/projects/raptor-cage/build/test-isolated/176vceap1cl5/mylibrary/.externalNativeBuild/cmake/debug/x86_64
+set CMAKE_BUILD_TOOL=/usr/local/google/home/jomof/Android/Sdk/cmake/3.10.2.4988404/bin/ninja
+set CMAKE_BUILD_TYPE=Debug
+set CMAKE_C11_COMPILE_FEATURES=c_std_11;c_static_assert
+set CMAKE_C11_EXTENSION_COMPILE_OPTION=-std=gnu11
+set CMAKE_C11_STANDARD_COMPILE_OPTION=-std=c11
+set CMAKE_C90_COMPILE_FEATURES=c_std_90;c_function_prototypes
+set CMAKE_C90_EXTENSION_COMPILE_OPTION=-std=gnu90
+set CMAKE_C90_STANDARD_COMPILE_OPTION=-std=c90
+set CMAKE_C99_COMPILE_FEATURES=c_std_99;c_restrict;c_variadic_macros
+set CMAKE_C99_EXTENSION_COMPILE_OPTION=-std=gnu99
+set CMAKE_C99_STANDARD_COMPILE_OPTION=-std=c99
+set CMAKE_CFG_INTDIR=.
+set CMAKE_COMMAND=/usr/local/google/home/jomof/Android/Sdk/cmake/3.10.2.4988404/bin/cmake
+set CMAKE_COMPILER_IS_GNUCC=1
+set CMAKE_COMPILER_IS_GNUCXX=1
+set CMAKE_CPACK_COMMAND=/usr/local/google/home/jomof/Android/Sdk/cmake/3.10.2.4988404/bin/cpack
+set CMAKE_CROSSCOMPILING=TRUE
+set CMAKE_CTEST_COMMAND=/usr/local/google/home/jomof/Android/Sdk/cmake/3.10.2.4988404/bin/ctest
+set CMAKE_CUDA_IMPLICIT_INCLUDE_DIRECTORIES=/usr/include
+set CMAKE_CURRENT_BINARY_DIR=/usr/local/google/home/jomof/projects/raptor-cage/build/test-isolated/176vceap1cl5/mylibrary/.externalNativeBuild/cmake/debug/x86_64
+set CMAKE_CURRENT_LIST_DIR=/usr/local/google/home/jomof/projects/raptor-cage/build/test-isolated/176vceap1cl5/mylibrary
+set CMAKE_CURRENT_LIST_FILE=/usr/local/google/home/jomof/projects/raptor-cage/build/test-isolated/176vceap1cl5/mylibrary/CMakeLists.txt
+set CMAKE_CURRENT_SOURCE_DIR=/usr/local/google/home/jomof/projects/raptor-cage/build/test-isolated/176vceap1cl5/mylibrary
+set CMAKE_CXX11_COMPILE_FEATURES=cxx_std_11;cxx_alias_templates;cxx_alignas;cxx_alignof;cxx_attributes;cxx_auto_type;cxx_constexpr;cxx_decltype;cxx_decltype_incomplete_return_types;cxx_default_function_template_args;cxx_defaulted_functions;cxx_defaulted_move_initializers;cxx_delegating_constructors;cxx_deleted_functions;cxx_enum_forward_declarations;cxx_explicit_conversions;cxx_extended_friend_declarations;cxx_extern_templates;cxx_final;cxx_func_identifier;cxx_generalized_initializers;cxx_inheriting_constructors;cxx_inline_namespaces;cxx_lambdas;cxx_local_type_template_args;cxx_long_long_type;cxx_noexcept;cxx_nonstatic_member_init;cxx_nullptr;cxx_override;cxx_range_for;cxx_raw_string_literals;cxx_reference_qualified_functions;cxx_right_angle_brackets;cxx_rvalue_references;cxx_sizeof_member;cxx_static_assert;cxx_strong_enums;cxx_thread_local;cxx_trailing_return_types;cxx_unicode_literals;cxx_uniform_initialization;cxx_unrestricted_unions;cxx_user_literals;cxx_variadic_macros;cxx_variadic_templates
+set CMAKE_CXX11_EXTENSION_COMPILE_OPTION=-std=gnu++11
+set CMAKE_CXX11_STANDARD_COMPILE_OPTION=-std=c++11
+set CMAKE_CXX14_COMPILE_FEATURES=cxx_std_14;cxx_attribute_deprecated;cxx_binary_literals;cxx_contextual_conversions;cxx_decltype_auto;cxx_digit_separators;cxx_generic_lambdas;cxx_lambda_init_captures;cxx_return_type_deduction
+set CMAKE_CXX14_EXTENSION_COMPILE_OPTION=-std=gnu++14
+set CMAKE_CXX14_STANDARD_COMPILE_OPTION=-std=c++14
+set CMAKE_CXX17_COMPILE_FEATURES=
+set CMAKE_CXX98_COMPILE_FEATURES=cxx_std_98;cxx_template_template_parameters
+set CMAKE_CXX98_EXTENSION_COMPILE_OPTION=-std=gnu++98
+set CMAKE_CXX98_STANDARD_COMPILE_OPTION=-std=c++98
+set CMAKE_CXX_ABI_COMPILED=TRUE
+set CMAKE_CXX_ARCHIVE_APPEND=<CMAKE_AR> q  <TARGET> <LINK_FLAGS> <OBJECTS>
+set CMAKE_CXX_ARCHIVE_APPEND_IPO="/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ar" r <TARGET> <LINK_FLAGS> <OBJECTS>
+set CMAKE_CXX_ARCHIVE_CREATE=<CMAKE_AR> qc <TARGET> <LINK_FLAGS> <OBJECTS>
+set CMAKE_CXX_ARCHIVE_CREATE_IPO="/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ar" cr <TARGET> <LINK_FLAGS> <OBJECTS>
+set CMAKE_CXX_ARCHIVE_FINISH=<CMAKE_RANLIB> <TARGET>
+set CMAKE_CXX_ARCHIVE_FINISH_IPO="/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ranlib" <TARGET>
+set CMAKE_CXX_CL_SHOWINCLUDES_PREFIX=
+set CMAKE_CXX_COMPILER=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-g++
+set CMAKE_CXX_COMPILER=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-g++
+set CMAKE_CXX_COMPILER_ABI=ELF
+set CMAKE_CXX_COMPILER_AR=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ar
+set CMAKE_CXX_COMPILER_AR=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ar
+set CMAKE_CXX_COMPILER_ARCHITECTURE_ID=
+set CMAKE_CXX_COMPILER_ARG1=
+set CMAKE_CXX_COMPILER_ENV_VAR=CXX
+set CMAKE_CXX_COMPILER_ID=GNU
+set CMAKE_CXX_COMPILER_ID_PLATFORM_CONTENT=#define STRINGIFY_HELPER(X) #X
+#define STRINGIFY(X) STRINGIFY_HELPER(X)
+
+/* Identify known platforms by name.  */
+#if defined(__linux) || defined(__linux__) || defined(linux)
+# define PLATFORM_ID "Linux"
+
+#elif defined(__CYGWIN__)
+# define PLATFORM_ID "Cygwin"
+
+#elif defined(__MINGW32__)
+# define PLATFORM_ID "MinGW"
+
+#elif defined(__APPLE__)
+# define PLATFORM_ID "Darwin"
+
+#elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+# define PLATFORM_ID "Windows"
+
+#elif defined(__FreeBSD__) || defined(__FreeBSD)
+# define PLATFORM_ID "FreeBSD"
+
+#elif defined(__NetBSD__) || defined(__NetBSD)
+# define PLATFORM_ID "NetBSD"
+
+#elif defined(__OpenBSD__) || defined(__OPENBSD)
+# define PLATFORM_ID "OpenBSD"
+
+#elif defined(__sun) || defined(sun)
+# define PLATFORM_ID "SunOS"
+
+#elif defined(_AIX) || defined(__AIX) || defined(__AIX__) || defined(__aix) || defined(__aix__)
+# define PLATFORM_ID "AIX"
+
+#elif defined(__sgi) || defined(__sgi__) || defined(_SGI)
+# define PLATFORM_ID "IRIX"
+
+#elif defined(__hpux) || defined(__hpux__)
+# define PLATFORM_ID "HP-UX"
+
+#elif defined(__HAIKU__)
+# define PLATFORM_ID "Haiku"
+
+#elif defined(__BeOS) || defined(__BEOS__) || defined(_BEOS)
+# define PLATFORM_ID "BeOS"
+
+#elif defined(__QNX__) || defined(__QNXNTO__)
+# define PLATFORM_ID "QNX"
+
+#elif defined(__tru64) || defined(_tru64) || defined(__TRU64__)
+# define PLATFORM_ID "Tru64"
+
+#elif defined(__riscos) || defined(__riscos__)
+# define PLATFORM_ID "RISCos"
+
+#elif defined(__sinix) || defined(__sinix__) || defined(__SINIX__)
+# define PLATFORM_ID "SINIX"
+
+#elif defined(__UNIX_SV__)
+# define PLATFORM_ID "UNIX_SV"
+
+#elif defined(__bsdos__)
+# define PLATFORM_ID "BSDOS"
+
+#elif defined(_MPRAS) || defined(MPRAS)
+# define PLATFORM_ID "MP-RAS"
+
+#elif defined(__osf) || defined(__osf__)
+# define PLATFORM_ID "OSF1"
+
+#elif defined(_SCO_SV) || defined(SCO_SV) || defined(sco_sv)
+# define PLATFORM_ID "SCO_SV"
+
+#elif defined(__ultrix) || defined(__ultrix__) || defined(_ULTRIX)
+# define PLATFORM_ID "ULTRIX"
+
+#elif defined(__XENIX__) || defined(_XENIX) || defined(XENIX)
+# define PLATFORM_ID "Xenix"
+
+#elif defined(__WATCOMC__)
+# if defined(__LINUX__)
+#  define PLATFORM_ID "Linux"
+
+# elif defined(__DOS__)
+#  define PLATFORM_ID "DOS"
+
+# elif defined(__OS2__)
+#  define PLATFORM_ID "OS2"
+
+# elif defined(__WINDOWS__)
+#  define PLATFORM_ID "Windows3x"
+
+# else /* unknown platform */
+#  define PLATFORM_ID
+# endif
+
+#else /* unknown platform */
+# define PLATFORM_ID
+
+#endif
+
+/* For windows compilers MSVC and Intel we can determine
+   the architecture of the compiler being used.  This is because
+   the compilers do not have flags that can change the architecture,
+   but rather depend on which compiler is being used
+*/
+#if defined(_WIN32) && defined(_MSC_VER)
+# if defined(_M_IA64)
+#  define ARCHITECTURE_ID "IA64"
+
+# elif defined(_M_X64) || defined(_M_AMD64)
+#  define ARCHITECTURE_ID "x64"
+
+# elif defined(_M_IX86)
+#  define ARCHITECTURE_ID "X86"
+
+# elif defined(_M_ARM64)
+#  define ARCHITECTURE_ID "ARM64"
+
+# elif defined(_M_ARM)
+#  if _M_ARM == 4
+#   define ARCHITECTURE_ID "ARMV4I"
+#  elif _M_ARM == 5
+#   define ARCHITECTURE_ID "ARMV5I"
+#  else
+#   define ARCHITECTURE_ID "ARMV" STRINGIFY(_M_ARM)
+#  endif
+
+# elif defined(_M_MIPS)
+#  define ARCHITECTURE_ID "MIPS"
+
+# elif defined(_M_SH)
+#  define ARCHITECTURE_ID "SHx"
+
+# else /* unknown architecture */
+#  define ARCHITECTURE_ID ""
+# endif
+
+#elif defined(__WATCOMC__)
+# if defined(_M_I86)
+#  define ARCHITECTURE_ID "I86"
+
+# elif defined(_M_IX86)
+#  define ARCHITECTURE_ID "X86"
+
+# else /* unknown architecture */
+#  define ARCHITECTURE_ID ""
+# endif
+
+#elif defined(__IAR_SYSTEMS_ICC__) || defined(__IAR_SYSTEMS_ICC)
+# if defined(__ICCARM__)
+#  define ARCHITECTURE_ID "ARM"
+
+# elif defined(__ICCAVR__)
+#  define ARCHITECTURE_ID "AVR"
+
+# else /* unknown architecture */
+#  define ARCHITECTURE_ID ""
+# endif
+#else
+#  define ARCHITECTURE_ID
+#endif
+
+/* Convert integer to decimal digit literals.  */
+#define DEC(n)                   \
+  ('0' + (((n) / 10000000)%10)), \
+  ('0' + (((n) / 1000000)%10)),  \
+  ('0' + (((n) / 100000)%10)),   \
+  ('0' + (((n) / 10000)%10)),    \
+  ('0' + (((n) / 1000)%10)),     \
+  ('0' + (((n) / 100)%10)),      \
+  ('0' + (((n) / 10)%10)),       \
+  ('0' +  ((n) % 10))
+
+/* Convert integer to hex digit literals.  */
+#define HEX(n)             \
+  ('0' + ((n)>>28 & 0xF)), \
+  ('0' + ((n)>>24 & 0xF)), \
+  ('0' + ((n)>>20 & 0xF)), \
+  ('0' + ((n)>>16 & 0xF)), \
+  ('0' + ((n)>>12 & 0xF)), \
+  ('0' + ((n)>>8  & 0xF)), \
+  ('0' + ((n)>>4  & 0xF)), \
+  ('0' + ((n)     & 0xF))
+
+/* Construct a string literal encoding the version number components. */
+#ifdef COMPILER_VERSION_MAJOR
+char const info_version[] = {
+  'I', 'N', 'F', 'O', ':',
+  'c','o','m','p','i','l','e','r','_','v','e','r','s','i','o','n','[',
+  COMPILER_VERSION_MAJOR,
+# ifdef COMPILER_VERSION_MINOR
+  '.', COMPILER_VERSION_MINOR,
+#  ifdef COMPILER_VERSION_PATCH
+   '.', COMPILER_VERSION_PATCH,
+#   ifdef COMPILER_VERSION_TWEAK
+    '.', COMPILER_VERSION_TWEAK,
+#   endif
+#  endif
+# endif
+  ']','\0'};
+#endif
+
+/* Construct a string literal encoding the internal version number. */
+#ifdef COMPILER_VERSION_INTERNAL
+char const info_version_internal[] = {
+  'I', 'N', 'F', 'O', ':',
+  'c','o','m','p','i','l','e','r','_','v','e','r','s','i','o','n','_',
+  'i','n','t','e','r','n','a','l','[',
+  COMPILER_VERSION_INTERNAL,']','\0'};
+#endif
+
+/* Construct a string literal encoding the version number components. */
+#ifdef SIMULATE_VERSION_MAJOR
+char const info_simulate_version[] = {
+  'I', 'N', 'F', 'O', ':',
+  's','i','m','u','l','a','t','e','_','v','e','r','s','i','o','n','[',
+  SIMULATE_VERSION_MAJOR,
+# ifdef SIMULATE_VERSION_MINOR
+  '.', SIMULATE_VERSION_MINOR,
+#  ifdef SIMULATE_VERSION_PATCH
+   '.', SIMULATE_VERSION_PATCH,
+#   ifdef SIMULATE_VERSION_TWEAK
+    '.', SIMULATE_VERSION_TWEAK,
+#   endif
+#  endif
+# endif
+  ']','\0'};
+#endif
+
+/* Construct the string literal in pieces to prevent the source from
+   getting matched.  Store it in a pointer rather than an array
+   because some compilers will just produce instructions to fill the
+   array rather than assigning a pointer to a static array.  */
+char const* info_platform = "INFO" ":" "platform[" PLATFORM_ID "]";
+char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";
+
+
+set CMAKE_CXX_COMPILER_ID_RUN=1
+set CMAKE_CXX_COMPILER_ID_TEST_FLAGS=-c;--c++;--ec++
+set CMAKE_CXX_COMPILER_ID_TOOL_MATCH_INDEX=2
+set CMAKE_CXX_COMPILER_ID_TOOL_MATCH_REGEX=
+Ld[^
+]*(
+[ 	]+[^
+]*)*
+[ 	]+([^ 	
+]+)[^
+]*-o[^
+]*CompilerIdCXX/(\./)?(CompilerIdCXX.xctest/)?CompilerIdCXX[ 	
+\"]
+set CMAKE_CXX_COMPILER_ID_VENDORS=IAR
+set CMAKE_CXX_COMPILER_ID_VENDOR_REGEX_IAR=IAR .+ Compiler
+set CMAKE_CXX_COMPILER_LOADED=1
+set CMAKE_CXX_COMPILER_NAMES=CC
+set CMAKE_CXX_COMPILER_PRODUCED_FILES=CMakeCXXCompilerId.o
+set CMAKE_CXX_COMPILER_PRODUCED_OUTPUT=
+set CMAKE_CXX_COMPILER_RANLIB=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ranlib
+set CMAKE_CXX_COMPILER_RANLIB=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ranlib
+set CMAKE_CXX_COMPILER_VERSION=4.9.0
+set CMAKE_CXX_COMPILER_VERSION_INTERNAL=
+set CMAKE_CXX_COMPILER_WORKS=TRUE
+set CMAKE_CXX_COMPILER_WRAPPER=
+set CMAKE_CXX_COMPILE_FEATURES=cxx_std_98;cxx_template_template_parameters;cxx_std_11;cxx_alias_templates;cxx_alignas;cxx_alignof;cxx_attributes;cxx_auto_type;cxx_constexpr;cxx_decltype;cxx_decltype_incomplete_return_types;cxx_default_function_template_args;cxx_defaulted_functions;cxx_defaulted_move_initializers;cxx_delegating_constructors;cxx_deleted_functions;cxx_enum_forward_declarations;cxx_explicit_conversions;cxx_extended_friend_declarations;cxx_extern_templates;cxx_final;cxx_func_identifier;cxx_generalized_initializers;cxx_inheriting_constructors;cxx_inline_namespaces;cxx_lambdas;cxx_local_type_template_args;cxx_long_long_type;cxx_noexcept;cxx_nonstatic_member_init;cxx_nullptr;cxx_override;cxx_range_for;cxx_raw_string_literals;cxx_reference_qualified_functions;cxx_right_angle_brackets;cxx_rvalue_references;cxx_sizeof_member;cxx_static_assert;cxx_strong_enums;cxx_thread_local;cxx_trailing_return_types;cxx_unicode_literals;cxx_uniform_initialization;cxx_unrestricted_unions;cxx_user_literals;cxx_variadic_macros;cxx_variadic_templates;cxx_std_14;cxx_attribute_deprecated;cxx_binary_literals;cxx_contextual_conversions;cxx_decltype_auto;cxx_digit_separators;cxx_generic_lambdas;cxx_lambda_init_captures;cxx_return_type_deduction
+set CMAKE_CXX_COMPILE_OBJECT=<CMAKE_CXX_COMPILER>  <DEFINES> <INCLUDES> <FLAGS> -o <OBJECT> -c <SOURCE>
+set CMAKE_CXX_COMPILE_OPTIONS_IPO=-flto;-fno-fat-lto-objects
+set CMAKE_CXX_COMPILE_OPTIONS_PIC=-fPIC
+set CMAKE_CXX_COMPILE_OPTIONS_PIE=-fPIE
+set CMAKE_CXX_COMPILE_OPTIONS_SYSROOT=--sysroot=
+set CMAKE_CXX_COMPILE_OPTIONS_VISIBILITY=-fvisibility=
+set CMAKE_CXX_COMPILE_OPTIONS_VISIBILITY_INLINES_HIDDEN=-fvisibility-inlines-hidden
+set CMAKE_CXX_CREATE_ASSEMBLY_SOURCE=<CMAKE_CXX_COMPILER> <DEFINES> <INCLUDES> <FLAGS> -S <SOURCE> -o <ASSEMBLY_SOURCE>
+set CMAKE_CXX_CREATE_PREPROCESSED_SOURCE=<CMAKE_CXX_COMPILER> <DEFINES> <INCLUDES> <FLAGS> -E <SOURCE> > <PREPROCESSED_SOURCE>
+set CMAKE_CXX_CREATE_SHARED_LIBRARY=<CMAKE_CXX_COMPILER> <CMAKE_SHARED_LIBRARY_CXX_FLAGS> <LANGUAGE_COMPILE_FLAGS> <LINK_FLAGS> <CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS> <SONAME_FLAG><TARGET_SONAME> -o <TARGET> <OBJECTS> <LINK_LIBRARIES>
+set CMAKE_CXX_CREATE_SHARED_MODULE=<CMAKE_CXX_COMPILER> <CMAKE_SHARED_LIBRARY_CXX_FLAGS> <LANGUAGE_COMPILE_FLAGS> <LINK_FLAGS> <CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS> <SONAME_FLAG><TARGET_SONAME> -o <TARGET> <OBJECTS> <LINK_LIBRARIES>
+set CMAKE_CXX_FLAGS=-g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security  -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security  
+set CMAKE_CXX_FLAGS=-g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security  -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security  
+set CMAKE_CXX_FLAGS_DEBUG=-O0 -O0 
+set CMAKE_CXX_FLAGS_DEBUG=-O0 -O0 
+set CMAKE_CXX_FLAGS_DEBUG_INIT=-g
+set CMAKE_CXX_FLAGS_INIT=
+set CMAKE_CXX_FLAGS_MINSIZEREL=-Os -DNDEBUG
+set CMAKE_CXX_FLAGS_MINSIZEREL_INIT=-Os -DNDEBUG
+set CMAKE_CXX_FLAGS_RELEASE=-O2 -DNDEBUG -O2 -DNDEBUG 
+set CMAKE_CXX_FLAGS_RELEASE=-O2 -DNDEBUG -O2 -DNDEBUG 
+set CMAKE_CXX_FLAGS_RELEASE_INIT=-O3 -DNDEBUG
+set CMAKE_CXX_FLAGS_RELWITHDEBINFO=-O2 -g -DNDEBUG
+set CMAKE_CXX_FLAGS_RELWITHDEBINFO_INIT=-O2 -g -DNDEBUG
+set CMAKE_CXX_IGNORE_EXTENSIONS=inl;h;hpp;HPP;H;o;O;obj;OBJ;def;DEF;rc;RC
+set CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES=/usr/include
+set CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/lib/gcc/x86_64-linux-android/4.9.x;/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/lib/gcc;/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/x86_64-linux-android/lib64;/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/platforms/android-21/arch-x86_64/usr/lib64;/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/x86_64-linux-android/lib;/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/platforms/android-21/arch-x86_64/usr/lib
+set CMAKE_CXX_IMPLICIT_LINK_FRAMEWORK_DIRECTORIES=
+set CMAKE_CXX_IMPLICIT_LINK_LIBRARIES=stdc++;m;gcc;c;dl;gcc
+set CMAKE_CXX_INFORMATION_LOADED=1
+set CMAKE_CXX_LIBRARY_ARCHITECTURE=
+set CMAKE_CXX_LINKER_PREFERENCE=30
+set CMAKE_CXX_LINKER_PREFERENCE_PROPAGATES=1
+set CMAKE_CXX_LINK_EXECUTABLE=<CMAKE_CXX_COMPILER>  <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET> <LINK_LIBRARIES>
+set CMAKE_CXX_OUTPUT_EXTENSION=.o
+set CMAKE_CXX_PLATFORM_ID=Linux
+set CMAKE_CXX_SIMULATE_ID=
+set CMAKE_CXX_SIMULATE_VERSION=
+set CMAKE_CXX_SIZEOF_DATA_PTR=8
+set CMAKE_CXX_SOURCE_FILE_EXTENSIONS=C;M;c++;cc;cpp;cxx;mm;CPP
+set CMAKE_CXX_STANDARD_COMPUTED_DEFAULT=98
+set CMAKE_CXX_STANDARD_DEFAULT=98
+set CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/sources/cxx-stl/gnu-libstdc++/4.9/include;/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/sources/cxx-stl/gnu-libstdc++/4.9/libs/x86_64/include;/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/sources/cxx-stl/gnu-libstdc++/4.9/include/backward
+set CMAKE_CXX_STANDARD_LIBRARIES=-lm "/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/sources/cxx-stl/gnu-libstdc++/4.9/libs/x86_64/libgnustl_static.a"
+set CMAKE_CXX_STANDARD_LIBRARIES_INIT=-lm "/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/sources/cxx-stl/gnu-libstdc++/4.9/libs/x86_64/libgnustl_static.a"
+set CMAKE_CXX_VERBOSE_FLAG=-v
+set CMAKE_CXX_XCODE_CURRENT_ARCH=
+set CMAKE_C_ABI_COMPILED=TRUE
+set CMAKE_C_ARCHIVE_APPEND=<CMAKE_AR> q  <TARGET> <LINK_FLAGS> <OBJECTS>
+set CMAKE_C_ARCHIVE_APPEND_IPO="/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ar" r <TARGET> <LINK_FLAGS> <OBJECTS>
+set CMAKE_C_ARCHIVE_CREATE=<CMAKE_AR> qc <TARGET> <LINK_FLAGS> <OBJECTS>
+set CMAKE_C_ARCHIVE_CREATE_IPO="/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ar" cr <TARGET> <LINK_FLAGS> <OBJECTS>
+set CMAKE_C_ARCHIVE_FINISH=<CMAKE_RANLIB> <TARGET>
+set CMAKE_C_ARCHIVE_FINISH_IPO="/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ranlib" <TARGET>
+set CMAKE_C_CL_SHOWINCLUDES_PREFIX=
+set CMAKE_C_COMPILER=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc
+set CMAKE_C_COMPILER=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc
+set CMAKE_C_COMPILER_ABI=ELF
+set CMAKE_C_COMPILER_AR=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ar
+set CMAKE_C_COMPILER_AR=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ar
+set CMAKE_C_COMPILER_ARCHITECTURE_ID=
+set CMAKE_C_COMPILER_ARG1=
+set CMAKE_C_COMPILER_ENV_VAR=CC
+set CMAKE_C_COMPILER_ID=GNU
+set CMAKE_C_COMPILER_ID_PLATFORM_CONTENT=#define STRINGIFY_HELPER(X) #X
+#define STRINGIFY(X) STRINGIFY_HELPER(X)
+
+/* Identify known platforms by name.  */
+#if defined(__linux) || defined(__linux__) || defined(linux)
+# define PLATFORM_ID "Linux"
+
+#elif defined(__CYGWIN__)
+# define PLATFORM_ID "Cygwin"
+
+#elif defined(__MINGW32__)
+# define PLATFORM_ID "MinGW"
+
+#elif defined(__APPLE__)
+# define PLATFORM_ID "Darwin"
+
+#elif defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
+# define PLATFORM_ID "Windows"
+
+#elif defined(__FreeBSD__) || defined(__FreeBSD)
+# define PLATFORM_ID "FreeBSD"
+
+#elif defined(__NetBSD__) || defined(__NetBSD)
+# define PLATFORM_ID "NetBSD"
+
+#elif defined(__OpenBSD__) || defined(__OPENBSD)
+# define PLATFORM_ID "OpenBSD"
+
+#elif defined(__sun) || defined(sun)
+# define PLATFORM_ID "SunOS"
+
+#elif defined(_AIX) || defined(__AIX) || defined(__AIX__) || defined(__aix) || defined(__aix__)
+# define PLATFORM_ID "AIX"
+
+#elif defined(__sgi) || defined(__sgi__) || defined(_SGI)
+# define PLATFORM_ID "IRIX"
+
+#elif defined(__hpux) || defined(__hpux__)
+# define PLATFORM_ID "HP-UX"
+
+#elif defined(__HAIKU__)
+# define PLATFORM_ID "Haiku"
+
+#elif defined(__BeOS) || defined(__BEOS__) || defined(_BEOS)
+# define PLATFORM_ID "BeOS"
+
+#elif defined(__QNX__) || defined(__QNXNTO__)
+# define PLATFORM_ID "QNX"
+
+#elif defined(__tru64) || defined(_tru64) || defined(__TRU64__)
+# define PLATFORM_ID "Tru64"
+
+#elif defined(__riscos) || defined(__riscos__)
+# define PLATFORM_ID "RISCos"
+
+#elif defined(__sinix) || defined(__sinix__) || defined(__SINIX__)
+# define PLATFORM_ID "SINIX"
+
+#elif defined(__UNIX_SV__)
+# define PLATFORM_ID "UNIX_SV"
+
+#elif defined(__bsdos__)
+# define PLATFORM_ID "BSDOS"
+
+#elif defined(_MPRAS) || defined(MPRAS)
+# define PLATFORM_ID "MP-RAS"
+
+#elif defined(__osf) || defined(__osf__)
+# define PLATFORM_ID "OSF1"
+
+#elif defined(_SCO_SV) || defined(SCO_SV) || defined(sco_sv)
+# define PLATFORM_ID "SCO_SV"
+
+#elif defined(__ultrix) || defined(__ultrix__) || defined(_ULTRIX)
+# define PLATFORM_ID "ULTRIX"
+
+#elif defined(__XENIX__) || defined(_XENIX) || defined(XENIX)
+# define PLATFORM_ID "Xenix"
+
+#elif defined(__WATCOMC__)
+# if defined(__LINUX__)
+#  define PLATFORM_ID "Linux"
+
+# elif defined(__DOS__)
+#  define PLATFORM_ID "DOS"
+
+# elif defined(__OS2__)
+#  define PLATFORM_ID "OS2"
+
+# elif defined(__WINDOWS__)
+#  define PLATFORM_ID "Windows3x"
+
+# else /* unknown platform */
+#  define PLATFORM_ID
+# endif
+
+#else /* unknown platform */
+# define PLATFORM_ID
+
+#endif
+
+/* For windows compilers MSVC and Intel we can determine
+   the architecture of the compiler being used.  This is because
+   the compilers do not have flags that can change the architecture,
+   but rather depend on which compiler is being used
+*/
+#if defined(_WIN32) && defined(_MSC_VER)
+# if defined(_M_IA64)
+#  define ARCHITECTURE_ID "IA64"
+
+# elif defined(_M_X64) || defined(_M_AMD64)
+#  define ARCHITECTURE_ID "x64"
+
+# elif defined(_M_IX86)
+#  define ARCHITECTURE_ID "X86"
+
+# elif defined(_M_ARM64)
+#  define ARCHITECTURE_ID "ARM64"
+
+# elif defined(_M_ARM)
+#  if _M_ARM == 4
+#   define ARCHITECTURE_ID "ARMV4I"
+#  elif _M_ARM == 5
+#   define ARCHITECTURE_ID "ARMV5I"
+#  else
+#   define ARCHITECTURE_ID "ARMV" STRINGIFY(_M_ARM)
+#  endif
+
+# elif defined(_M_MIPS)
+#  define ARCHITECTURE_ID "MIPS"
+
+# elif defined(_M_SH)
+#  define ARCHITECTURE_ID "SHx"
+
+# else /* unknown architecture */
+#  define ARCHITECTURE_ID ""
+# endif
+
+#elif defined(__WATCOMC__)
+# if defined(_M_I86)
+#  define ARCHITECTURE_ID "I86"
+
+# elif defined(_M_IX86)
+#  define ARCHITECTURE_ID "X86"
+
+# else /* unknown architecture */
+#  define ARCHITECTURE_ID ""
+# endif
+
+#elif defined(__IAR_SYSTEMS_ICC__) || defined(__IAR_SYSTEMS_ICC)
+# if defined(__ICCARM__)
+#  define ARCHITECTURE_ID "ARM"
+
+# elif defined(__ICCAVR__)
+#  define ARCHITECTURE_ID "AVR"
+
+# else /* unknown architecture */
+#  define ARCHITECTURE_ID ""
+# endif
+#else
+#  define ARCHITECTURE_ID
+#endif
+
+/* Convert integer to decimal digit literals.  */
+#define DEC(n)                   \
+  ('0' + (((n) / 10000000)%10)), \
+  ('0' + (((n) / 1000000)%10)),  \
+  ('0' + (((n) / 100000)%10)),   \
+  ('0' + (((n) / 10000)%10)),    \
+  ('0' + (((n) / 1000)%10)),     \
+  ('0' + (((n) / 100)%10)),      \
+  ('0' + (((n) / 10)%10)),       \
+  ('0' +  ((n) % 10))
+
+/* Convert integer to hex digit literals.  */
+#define HEX(n)             \
+  ('0' + ((n)>>28 & 0xF)), \
+  ('0' + ((n)>>24 & 0xF)), \
+  ('0' + ((n)>>20 & 0xF)), \
+  ('0' + ((n)>>16 & 0xF)), \
+  ('0' + ((n)>>12 & 0xF)), \
+  ('0' + ((n)>>8  & 0xF)), \
+  ('0' + ((n)>>4  & 0xF)), \
+  ('0' + ((n)     & 0xF))
+
+/* Construct a string literal encoding the version number components. */
+#ifdef COMPILER_VERSION_MAJOR
+char const info_version[] = {
+  'I', 'N', 'F', 'O', ':',
+  'c','o','m','p','i','l','e','r','_','v','e','r','s','i','o','n','[',
+  COMPILER_VERSION_MAJOR,
+# ifdef COMPILER_VERSION_MINOR
+  '.', COMPILER_VERSION_MINOR,
+#  ifdef COMPILER_VERSION_PATCH
+   '.', COMPILER_VERSION_PATCH,
+#   ifdef COMPILER_VERSION_TWEAK
+    '.', COMPILER_VERSION_TWEAK,
+#   endif
+#  endif
+# endif
+  ']','\0'};
+#endif
+
+/* Construct a string literal encoding the internal version number. */
+#ifdef COMPILER_VERSION_INTERNAL
+char const info_version_internal[] = {
+  'I', 'N', 'F', 'O', ':',
+  'c','o','m','p','i','l','e','r','_','v','e','r','s','i','o','n','_',
+  'i','n','t','e','r','n','a','l','[',
+  COMPILER_VERSION_INTERNAL,']','\0'};
+#endif
+
+/* Construct a string literal encoding the version number components. */
+#ifdef SIMULATE_VERSION_MAJOR
+char const info_simulate_version[] = {
+  'I', 'N', 'F', 'O', ':',
+  's','i','m','u','l','a','t','e','_','v','e','r','s','i','o','n','[',
+  SIMULATE_VERSION_MAJOR,
+# ifdef SIMULATE_VERSION_MINOR
+  '.', SIMULATE_VERSION_MINOR,
+#  ifdef SIMULATE_VERSION_PATCH
+   '.', SIMULATE_VERSION_PATCH,
+#   ifdef SIMULATE_VERSION_TWEAK
+    '.', SIMULATE_VERSION_TWEAK,
+#   endif
+#  endif
+# endif
+  ']','\0'};
+#endif
+
+/* Construct the string literal in pieces to prevent the source from
+   getting matched.  Store it in a pointer rather than an array
+   because some compilers will just produce instructions to fill the
+   array rather than assigning a pointer to a static array.  */
+char const* info_platform = "INFO" ":" "platform[" PLATFORM_ID "]";
+char const* info_arch = "INFO" ":" "arch[" ARCHITECTURE_ID "]";
+
+
+set CMAKE_C_COMPILER_ID_RUN=1
+set CMAKE_C_COMPILER_ID_TEST_FLAGS=-c;-Aa;-D__CLASSIC_C__
+set CMAKE_C_COMPILER_ID_TOOL_MATCH_INDEX=2
+set CMAKE_C_COMPILER_ID_TOOL_MATCH_REGEX=
+Ld[^
+]*(
+[ 	]+[^
+]*)*
+[ 	]+([^ 	
+]+)[^
+]*-o[^
+]*CompilerIdC/(\./)?(CompilerIdC.xctest/)?CompilerIdC[ 	
+\"]
+set CMAKE_C_COMPILER_ID_VENDORS=IAR
+set CMAKE_C_COMPILER_ID_VENDOR_REGEX_IAR=IAR .+ Compiler
+set CMAKE_C_COMPILER_LOADED=1
+set CMAKE_C_COMPILER_NAMES=cc
+set CMAKE_C_COMPILER_PRODUCED_FILES=CMakeCCompilerId.o
+set CMAKE_C_COMPILER_PRODUCED_OUTPUT=
+set CMAKE_C_COMPILER_RANLIB=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ranlib
+set CMAKE_C_COMPILER_RANLIB=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ranlib
+set CMAKE_C_COMPILER_VERSION=4.9.0
+set CMAKE_C_COMPILER_VERSION_INTERNAL=
+set CMAKE_C_COMPILER_WORKS=TRUE
+set CMAKE_C_COMPILER_WRAPPER=
+set CMAKE_C_COMPILE_FEATURES=c_std_90;c_function_prototypes;c_std_99;c_restrict;c_variadic_macros;c_std_11;c_static_assert
+set CMAKE_C_COMPILE_OBJECT=<CMAKE_C_COMPILER> <DEFINES> <INCLUDES> <FLAGS> -o <OBJECT>   -c <SOURCE>
+set CMAKE_C_COMPILE_OPTIONS_IPO=-flto;-fno-fat-lto-objects
+set CMAKE_C_COMPILE_OPTIONS_PIC=-fPIC
+set CMAKE_C_COMPILE_OPTIONS_PIE=-fPIE
+set CMAKE_C_COMPILE_OPTIONS_SYSROOT=--sysroot=
+set CMAKE_C_COMPILE_OPTIONS_VISIBILITY=-fvisibility=
+set CMAKE_C_CREATE_ASSEMBLY_SOURCE=<CMAKE_C_COMPILER> <DEFINES> <INCLUDES> <FLAGS> -S <SOURCE> -o <ASSEMBLY_SOURCE>
+set CMAKE_C_CREATE_PREPROCESSED_SOURCE=<CMAKE_C_COMPILER> <DEFINES> <INCLUDES> <FLAGS> -E <SOURCE> > <PREPROCESSED_SOURCE>
+set CMAKE_C_CREATE_SHARED_LIBRARY=<CMAKE_C_COMPILER> <CMAKE_SHARED_LIBRARY_C_FLAGS> <LANGUAGE_COMPILE_FLAGS> <LINK_FLAGS> <CMAKE_SHARED_LIBRARY_CREATE_C_FLAGS> <SONAME_FLAG><TARGET_SONAME> -o <TARGET> <OBJECTS> <LINK_LIBRARIES>
+set CMAKE_C_CREATE_SHARED_MODULE=<CMAKE_C_COMPILER> <CMAKE_SHARED_LIBRARY_C_FLAGS> <LANGUAGE_COMPILE_FLAGS> <LINK_FLAGS> <CMAKE_SHARED_LIBRARY_CREATE_C_FLAGS> <SONAME_FLAG><TARGET_SONAME> -o <TARGET> <OBJECTS> <LINK_LIBRARIES>
+set CMAKE_C_FLAGS=-g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security 
+set CMAKE_C_FLAGS=-g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security 
+set CMAKE_C_FLAGS_DEBUG=-O0 -O0 
+set CMAKE_C_FLAGS_DEBUG=-O0 -O0 
+set CMAKE_C_FLAGS_DEBUG_INIT=-g
+set CMAKE_C_FLAGS_INIT=
+set CMAKE_C_FLAGS_MINSIZEREL=-Os -DNDEBUG
+set CMAKE_C_FLAGS_MINSIZEREL_INIT=-Os -DNDEBUG
+set CMAKE_C_FLAGS_RELEASE=-O2 -DNDEBUG -O2 -DNDEBUG 
+set CMAKE_C_FLAGS_RELEASE=-O2 -DNDEBUG -O2 -DNDEBUG 
+set CMAKE_C_FLAGS_RELEASE_INIT=-O3 -DNDEBUG
+set CMAKE_C_FLAGS_RELWITHDEBINFO=-O2 -g -DNDEBUG
+set CMAKE_C_FLAGS_RELWITHDEBINFO_INIT=-O2 -g -DNDEBUG
+set CMAKE_C_IGNORE_EXTENSIONS=h;H;o;O;obj;OBJ;def;DEF;rc;RC
+set CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES=/usr/include
+set CMAKE_C_IMPLICIT_LINK_DIRECTORIES=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/lib/gcc/x86_64-linux-android/4.9.x;/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/lib/gcc;/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/x86_64-linux-android/lib64;/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/platforms/android-21/arch-x86_64/usr/lib64;/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/x86_64-linux-android/lib;/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/platforms/android-21/arch-x86_64/usr/lib
+set CMAKE_C_IMPLICIT_LINK_FRAMEWORK_DIRECTORIES=
+set CMAKE_C_IMPLICIT_LINK_LIBRARIES=gcc;c;dl;gcc
+set CMAKE_C_INFORMATION_LOADED=1
+set CMAKE_C_LIBRARY_ARCHITECTURE=
+set CMAKE_C_LINKER_PREFERENCE=10
+set CMAKE_C_LINK_EXECUTABLE=<CMAKE_C_COMPILER> <FLAGS> <CMAKE_C_LINK_FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET> <LINK_LIBRARIES>
+set CMAKE_C_OUTPUT_EXTENSION=.o
+set CMAKE_C_PLATFORM_ID=Linux
+set CMAKE_C_SIMULATE_ID=
+set CMAKE_C_SIMULATE_VERSION=
+set CMAKE_C_SIZEOF_DATA_PTR=8
+set CMAKE_C_SOURCE_FILE_EXTENSIONS=c;m
+set CMAKE_C_STANDARD_COMPUTED_DEFAULT=90
+set CMAKE_C_STANDARD_DEFAULT=90
+set CMAKE_C_STANDARD_LIBRARIES=-lm
+set CMAKE_C_STANDARD_LIBRARIES_INIT=-lm
+set CMAKE_C_VERBOSE_FLAG=-v
+set CMAKE_C_XCODE_CURRENT_ARCH=
+set CMAKE_DEPFILE_FLAGS_C=-MD -MT <OBJECT> -MF <DEPFILE>
+set CMAKE_DEPFILE_FLAGS_CXX=-MD -MT <OBJECT> -MF <DEPFILE>
+set CMAKE_DL_LIBS=dl
+set CMAKE_EXECUTABLE_FORMAT=ELF
+set CMAKE_EXECUTABLE_RPATH_LINK_CXX_FLAG=-Wl,-rpath-link,
+set CMAKE_EXECUTABLE_RPATH_LINK_C_FLAG=-Wl,-rpath-link,
+set CMAKE_EXECUTABLE_RUNTIME_CXX_FLAG_SEP=:
+set CMAKE_EXECUTABLE_RUNTIME_C_FLAG_SEP=:
+set CMAKE_EXECUTABLE_SUFFIX=
+set CMAKE_EXE_EXPORTS_CXX_FLAG=-Wl,--export-dynamic
+set CMAKE_EXE_EXPORTS_C_FLAG=-Wl,--export-dynamic
+set CMAKE_EXE_LINKER_FLAGS=-Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -Wl,--gc-sections -Wl,-z,nocopyreloc -pie -fPIE -Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -Wl,--gc-sections -Wl,-z,nocopyreloc -pie -fPIE 
+set CMAKE_EXE_LINKER_FLAGS=-Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -Wl,--gc-sections -Wl,-z,nocopyreloc -pie -fPIE -Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -Wl,--gc-sections -Wl,-z,nocopyreloc -pie -fPIE 
+set CMAKE_EXE_LINKER_FLAGS_DEBUG=
+set CMAKE_EXE_LINKER_FLAGS_DEBUG_INIT=
+set CMAKE_EXE_LINKER_FLAGS_INIT=
+set CMAKE_EXE_LINKER_FLAGS_MINSIZEREL=
+set CMAKE_EXE_LINKER_FLAGS_MINSIZEREL_INIT=
+set CMAKE_EXE_LINKER_FLAGS_RELEASE=
+set CMAKE_EXE_LINKER_FLAGS_RELEASE_INIT=
+set CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO=
+set CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO_INIT=
+set CMAKE_EXE_LINK_DYNAMIC_CXX_FLAGS=-Wl,-Bdynamic
+set CMAKE_EXE_LINK_DYNAMIC_C_FLAGS=-Wl,-Bdynamic
+set CMAKE_EXE_LINK_STATIC_CXX_FLAGS=-Wl,-Bstatic
+set CMAKE_EXE_LINK_STATIC_C_FLAGS=-Wl,-Bstatic
+set CMAKE_EXPORT_COMPILE_COMMANDS=ON
+set CMAKE_EXTRA_GENERATOR=
+set CMAKE_FILES_DIRECTORY=/CMakeFiles
+set CMAKE_FIND_LIBRARY_PREFIXES=lib
+set CMAKE_FIND_LIBRARY_SUFFIXES=.so;.a
+set CMAKE_FIND_ROOT_PATH=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14;/usr/local/google/home/jomof/.test/ndks/android-ndk-r14
+set CMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY
+set CMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY
+set CMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY
+set CMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER
+set CMAKE_GENERATOR=Ninja
+set CMAKE_GENERATOR_PLATFORM=
+set CMAKE_GENERATOR_TOOLSET=
+set CMAKE_HOME_DIRECTORY=/usr/local/google/home/jomof/projects/raptor-cage/build/test-isolated/176vceap1cl5/mylibrary
+set CMAKE_HOST_SYSTEM=Linux-4.17.0-3rodete2-amd64
+set CMAKE_HOST_SYSTEM_NAME=Linux
+set CMAKE_HOST_SYSTEM_PROCESSOR=x86_64
+set CMAKE_HOST_SYSTEM_VERSION=4.17.0-3rodete2-amd64
+set CMAKE_HOST_UNIX=1
+set CMAKE_INCLUDE_FLAG_C=-I
+set CMAKE_INCLUDE_FLAG_CXX=-I
+set CMAKE_INCLUDE_FLAG_C_SEP=
+set CMAKE_INCLUDE_SYSTEM_FLAG_C=-isystem 
+set CMAKE_INCLUDE_SYSTEM_FLAG_CXX=-isystem 
+set CMAKE_INSTALL_DEFAULT_COMPONENT_NAME=Unspecified
+set CMAKE_INSTALL_PREFIX=/usr/local
+set CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT=1
+set CMAKE_INSTALL_SO_NO_EXE=1
+set CMAKE_INTERNAL_PLATFORM_ABI=ELF
+set CMAKE_LIBRARY_ARCHITECTURE_REGEX=[a-z0-9_]+(-[a-z0-9_]+)?-linux-gnu[a-z0-9_]*
+set CMAKE_LIBRARY_OUTPUT_DIRECTORY=/usr/local/google/home/jomof/projects/raptor-cage/build/test-isolated/176vceap1cl5/mylibrary/build/intermediates/cmake/debug/obj/x86_64
+set CMAKE_LIBRARY_PATH_FLAG=-L
+set CMAKE_LIBRARY_PATH_TERMINATOR=
+set CMAKE_LINKER=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-ld
+set CMAKE_LINKER=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-ld
+set CMAKE_LINK_LIBRARY_FLAG=-l
+set CMAKE_LINK_LIBRARY_SUFFIX=
+set CMAKE_MAJOR_VERSION=3
+set CMAKE_MAKE_PROGRAM=/usr/local/google/home/jomof/Android/Sdk/cmake/3.10.2.4988404/bin/ninja
+set CMAKE_MATCH_0=Pkg.Desc = Android NDK
+Pkg.Revision = 14.0.3770861
+set CMAKE_MATCH_1=14
+set CMAKE_MATCH_2=0
+set CMAKE_MATCH_3=3770861
+set CMAKE_MATCH_COUNT=3
+set CMAKE_MINIMUM_REQUIRED_VERSION=3.4.1
+set CMAKE_MINOR_VERSION=10
+set CMAKE_MODULE_LINKER_FLAGS=-Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now 
+set CMAKE_MODULE_LINKER_FLAGS=-Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now 
+set CMAKE_MODULE_LINKER_FLAGS_DEBUG=
+set CMAKE_MODULE_LINKER_FLAGS_DEBUG_INIT=
+set CMAKE_MODULE_LINKER_FLAGS_INIT=
+set CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL=
+set CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL_INIT=
+set CMAKE_MODULE_LINKER_FLAGS_RELEASE=
+set CMAKE_MODULE_LINKER_FLAGS_RELEASE_INIT=
+set CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO=
+set CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO_INIT=
+set CMAKE_NM=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-nm
+set CMAKE_OBJCOPY=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-objcopy
+set CMAKE_OBJDUMP=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-objdump
+set CMAKE_PARENT_LIST_FILE=/usr/local/google/home/jomof/projects/raptor-cage/build/test-isolated/176vceap1cl5/mylibrary/CMakeLists.txt
+set CMAKE_PATCH_VERSION=2
+set CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES=/lib;/lib32;/lib64;/usr/lib;/usr/lib32;/usr/lib64
+set CMAKE_PLATFORM_INFO_DIR=/usr/local/google/home/jomof/projects/raptor-cage/build/test-isolated/176vceap1cl5/mylibrary/.externalNativeBuild/cmake/debug/x86_64/CMakeFiles/3.10.2
+set CMAKE_PLATFORM_INFO_INITIALIZED=1
+set CMAKE_PLATFORM_NO_VERSIONED_SONAME=1
+set CMAKE_PLATFORM_USES_PATH_WHEN_NO_SONAME=1
+set CMAKE_POSITION_INDEPENDENT_CODE=TRUE
+set CMAKE_PROJECT_NAME=Project
+set CMAKE_RANLIB=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ranlib
+set CMAKE_RANLIB=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-gcc-ranlib
+set CMAKE_ROOT=/usr/local/google/home/jomof/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10
+set CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS=-shared
+set CMAKE_SHARED_LIBRARY_CREATE_C_FLAGS=-shared
+set CMAKE_SHARED_LIBRARY_CXX_FLAGS=-fPIC
+set CMAKE_SHARED_LIBRARY_C_FLAGS=-fPIC
+set CMAKE_SHARED_LIBRARY_LINK_C_FLAGS=
+set CMAKE_SHARED_LIBRARY_LINK_DYNAMIC_CXX_FLAGS=-Wl,-Bdynamic
+set CMAKE_SHARED_LIBRARY_LINK_DYNAMIC_C_FLAGS=-Wl,-Bdynamic
+set CMAKE_SHARED_LIBRARY_LINK_STATIC_CXX_FLAGS=-Wl,-Bstatic
+set CMAKE_SHARED_LIBRARY_LINK_STATIC_C_FLAGS=-Wl,-Bstatic
+set CMAKE_SHARED_LIBRARY_PREFIX=lib
+set CMAKE_SHARED_LIBRARY_RPATH_LINK_CXX_FLAG=-Wl,-rpath-link,
+set CMAKE_SHARED_LIBRARY_RPATH_LINK_C_FLAG=-Wl,-rpath-link,
+set CMAKE_SHARED_LIBRARY_RUNTIME_CXX_FLAG_SEP=:
+set CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG=
+set CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG_SEP=:
+set CMAKE_SHARED_LIBRARY_SONAME_CXX_FLAG=-Wl,-soname,
+set CMAKE_SHARED_LIBRARY_SONAME_C_FLAG=-Wl,-soname,
+set CMAKE_SHARED_LIBRARY_SUFFIX=.so
+set CMAKE_SHARED_LINKER_FLAGS=-Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now 
+set CMAKE_SHARED_LINKER_FLAGS=-Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -Wl,--build-id -Wl,--warn-shared-textrel -Wl,--fatal-warnings -Wl,--no-undefined -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now 
+set CMAKE_SHARED_LINKER_FLAGS_DEBUG=
+set CMAKE_SHARED_LINKER_FLAGS_DEBUG_INIT=
+set CMAKE_SHARED_LINKER_FLAGS_INIT=
+set CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL=
+set CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL_INIT=
+set CMAKE_SHARED_LINKER_FLAGS_RELEASE=
+set CMAKE_SHARED_LINKER_FLAGS_RELEASE_INIT=
+set CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO=
+set CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO_INIT=
+set CMAKE_SHARED_MODULE_CREATE_CXX_FLAGS=-shared
+set CMAKE_SHARED_MODULE_CREATE_C_FLAGS=-shared
+set CMAKE_SHARED_MODULE_CXX_FLAGS=-fPIC
+set CMAKE_SHARED_MODULE_C_FLAGS=-fPIC
+set CMAKE_SHARED_MODULE_LINK_DYNAMIC_CXX_FLAGS=-Wl,-Bdynamic
+set CMAKE_SHARED_MODULE_LINK_DYNAMIC_C_FLAGS=-Wl,-Bdynamic
+set CMAKE_SHARED_MODULE_LINK_STATIC_CXX_FLAGS=-Wl,-Bstatic
+set CMAKE_SHARED_MODULE_LINK_STATIC_C_FLAGS=-Wl,-Bstatic
+set CMAKE_SHARED_MODULE_PREFIX=lib
+set CMAKE_SHARED_MODULE_SUFFIX=.so
+set CMAKE_SIZEOF_VOID_P=8
+set CMAKE_SKIP_INSTALL_RPATH=NO
+set CMAKE_SKIP_RPATH=NO
+set CMAKE_SOURCE_DIR=/usr/local/google/home/jomof/projects/raptor-cage/build/test-isolated/176vceap1cl5/mylibrary
+set CMAKE_STATIC_LIBRARY_PREFIX=lib
+set CMAKE_STATIC_LIBRARY_SUFFIX=.a
+set CMAKE_STATIC_LINKER_FLAGS=
+set CMAKE_STATIC_LINKER_FLAGS_DEBUG=
+set CMAKE_STATIC_LINKER_FLAGS_DEBUG_INIT=
+set CMAKE_STATIC_LINKER_FLAGS_INIT=
+set CMAKE_STATIC_LINKER_FLAGS_MINSIZEREL=
+set CMAKE_STATIC_LINKER_FLAGS_MINSIZEREL_INIT=
+set CMAKE_STATIC_LINKER_FLAGS_RELEASE=
+set CMAKE_STATIC_LINKER_FLAGS_RELEASE_INIT=
+set CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO=
+set CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO_INIT=
+set CMAKE_STRIP=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-strip
+set CMAKE_SYSROOT=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/platforms/android-21/arch-x86_64
+set CMAKE_SYSTEM=Android-1
+set CMAKE_SYSTEM_INCLUDE_PATH=/usr/include/X11
+set CMAKE_SYSTEM_INFO_FILE=Platform/Android
+set CMAKE_SYSTEM_LIBRARY_PATH=/usr/lib/X11
+set CMAKE_SYSTEM_LOADED=1
+set CMAKE_SYSTEM_NAME=Android
+set CMAKE_SYSTEM_NAME=Android
+set CMAKE_SYSTEM_PREFIX_PATH=/usr/local;/usr;/;/usr/local/google/home/jomof/Android/Sdk/cmake/3.10.2.4988404;/usr/local;/usr/X11R6;/usr/pkg;/opt
+set CMAKE_SYSTEM_PROCESSOR=x86_64
+set CMAKE_SYSTEM_SPECIFIC_INFORMATION_LOADED=1
+set CMAKE_SYSTEM_SPECIFIC_INITIALIZE_LOADED=1
+set CMAKE_SYSTEM_VERSION=1
+set CMAKE_SYSTEM_VERSION=1
+set CMAKE_TOOLCHAIN_FILE=/usr/local/google/home/jomof/projects/raptor-cage/build/test-isolated/176vceap1cl5/mylibrary/.externalNativeBuild/cmake/debug/x86_64/pre-ndk-r15-wrapper-android.toolchain.cmake
+set CMAKE_TRY_COMPILE_PLATFORM_VARIABLES=ANDROID_TOOLCHAIN;ANDROID_ABI;ANDROID_PLATFORM;ANDROID_STL;ANDROID_PIE;ANDROID_CPP_FEATURES;ANDROID_ALLOW_UNDEFINED_SYMBOLS;ANDROID_ARM_MODE;ANDROID_ARM_NEON;ANDROID_DISABLE_NO_EXECUTE;ANDROID_DISABLE_RELRO;ANDROID_DISABLE_FORMAT_STRING_CHECKS;ANDROID_CCACHE;ANDROID_UNIFIED_HEADERS
+set CMAKE_TWEAK_VERSION=0
+set CMAKE_UNAME=/bin/uname
+set CMAKE_VERBOSE_MAKEFILE=FALSE
+set CMAKE_VERSION=3.10.2
+set CXX_TEST_WAS_RUN=1
+set C_TEST_WAS_RUN=1
+set INCLUDE_CMAKE_TOOLCHAIN_FILE_IF_REQUIRED=include("/usr/local/google/home/jomof/projects/raptor-cage/build/test-isolated/176vceap1cl5/mylibrary/.externalNativeBuild/cmake/debug/x86_64/pre-ndk-r15-wrapper-android.toolchain.cmake")
+set MSVC_CXX_ARCHITECTURE_ID=
+set MSVC_C_ARCHITECTURE_ID=
+set PRESET_CMAKE_SYSTEM_NAME=TRUE
+set PROJECT_BINARY_DIR=/usr/local/google/home/jomof/projects/raptor-cage/build/test-isolated/176vceap1cl5/mylibrary/.externalNativeBuild/cmake/debug/x86_64
+set PROJECT_NAME=Project
+set PROJECT_SOURCE_DIR=/usr/local/google/home/jomof/projects/raptor-cage/build/test-isolated/176vceap1cl5/mylibrary
+set Project_BINARY_DIR=/usr/local/google/home/jomof/projects/raptor-cage/build/test-isolated/176vceap1cl5/mylibrary/.externalNativeBuild/cmake/debug/x86_64
+set Project_SOURCE_DIR=/usr/local/google/home/jomof/projects/raptor-cage/build/test-isolated/176vceap1cl5/mylibrary
+set RUN_CONFIGURE=ON
+set TEST_ANDROID_NDKBETA=0
+set TEST_ANDROID_NDKBUILD=3770861
+set TEST_ANDROID_NDKMAJOR=14
+set TEST_ANDROID_NDKMINOR=0
+set TEST_ANDROID_NDKREVISION=14.0.3770861
+set TEST_ANDROID_NDKREVISION_REGEX=^Pkg\.Desc = Android NDK
+Pkg\.Revision = ([0-9]+)\.([0-9]+)\.([0-9]+)(-beta([0-9]+))?
+set TEST_ANDROID_NDKSOURCE_PROPERTIES=Pkg.Desc = Android NDK
+Pkg.Revision = 14.0.3770861
+
+set UNIX=1
+set X86_64=TRUE
+set _CMAKE_CXX_IPO_MAY_BE_SUPPORTED_BY_COMPILER=YES
+set _CMAKE_CXX_IPO_SUPPORTED_BY_CMAKE=YES
+set _CMAKE_C_IPO_MAY_BE_SUPPORTED_BY_COMPILER=YES
+set _CMAKE_C_IPO_SUPPORTED_BY_CMAKE=YES
+set _CMAKE_INSTALL_DIR=/usr/local/google/home/jomof/Android/Sdk/cmake/3.10.2.4988404
+set _CMAKE_TOOLCHAIN_LOCATION=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin
+set _CMAKE_TOOLCHAIN_PREFIX=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin/x86_64-linux-android-
+set _CMAKE_USER_CXX_COMPILER_PATH=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin
+set _CMAKE_USER_C_COMPILER_PATH=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin
+set _INCLUDED_FILE=/usr/local/google/home/jomof/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Platform/Android-GNU-CXX.cmake
+set _INCLUDED_SYSTEM_INFO_FILE=/usr/local/google/home/jomof/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Platform/Android.cmake
+set _INCLUDED_TOOLCHAIN_FILE=/usr/local/google/home/jomof/projects/raptor-cage/build/test-isolated/176vceap1cl5/mylibrary/.externalNativeBuild/cmake/debug/x86_64/pre-ndk-r15-wrapper-android.toolchain.cmake
+set _IN_TC=0
+set _SET_CMAKE_CXX_COMPILER_ARCHITECTURE_ID=
+set _SET_CMAKE_C_COMPILER_ARCHITECTURE_ID=
+set __ANDROID_COMPILER_GNU=1
+set __ANDROID_DETERMINE_COMPILER=1
+set __COMPILER_CMAKE_COMMON_COMPILER_MACROS=1
+set __COMPILER_GNU=1
+set __UNIX_PATHS_INCLUDED=1
+set __gcc_hints=/usr/local/google/home/jomof/.test/ndks/android-ndk-r14/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin
+set __lto_flags=-flto;-fno-fat-lto-objects
+set __version_x=4
+set __version_x_y=4.9
+set c=
+set f=
+set library=
+set native-lib_LIB_DEPENDS=
+set t=
+set type=
+set val=0
