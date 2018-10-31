@@ -13,7 +13,7 @@ data class Benchmark(
         val benchmarkSource : File = benchmarkSubmodule,
         val workingFolder : File = isolatedTestFolder(),
         val moduleCount : Int = 2,
-        val cmakeArguments : String = "") {
+        val cmakeArguments : List<String> = listOf()) {
 
     private fun withStdio(call : (RemoteStdio) -> Unit) {
         val byteStream = ByteArrayOutputStream()
@@ -66,9 +66,10 @@ data class Benchmark(
 
         if (!cmakeArguments.isEmpty()){
             val sourceLibraryBuildGradle = File(sourceLibrary, "build.gradle")
+            val joined = cmakeArguments.joinToString { "\"$it\"" }
             sourceLibraryBuildGradle
                     .writeText(sourceLibraryBuildGradle.readText()
-                        .replace("//<<arguments>>", "arguments $cmakeArguments"))
+                        .replace("//<<arguments>>", "arguments $joined"))
         }
 
         if (!sourceLibrary.isDirectory) {
@@ -100,8 +101,8 @@ data class Benchmark(
         return this
     }
 
-    fun withCmakeArguments(arguments : String) : Benchmark{
-        return this.copy(cmakeArguments = arguments)
+    fun withCmakeArguments(vararg arguments : String) : Benchmark{
+        return this.copy(cmakeArguments = cmakeArguments + arguments.toList())
     }
 
     fun execute(vararg args : String) : Benchmark {
