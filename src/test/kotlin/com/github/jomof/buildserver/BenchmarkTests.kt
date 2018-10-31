@@ -18,10 +18,10 @@ class BenchmarkTests {
     fun ndks() {
         val ndks = listOf(
                 "r13", "r13b",
-//                "r14", "r14b",
-//                "r15", "r15b", "r15c",
-//                "r16", "r16b",
-//                "r17", "r17b",
+                "r14", "r14b",
+                "r15", "r15b", "r15c",
+                "r16", "r16b",
+                "r17", "r17b",
                 "r17c")
         ndks.onEach { ndk ->
             gatherCmakeMetadata(ndk)
@@ -38,13 +38,23 @@ class BenchmarkTests {
                         "-DCMAKE_C_COMPILER_FORCED=true")
         )
 
+        val withClang = basis
+                .withCmakeArguments("-DANDROID_TOOLCHAIN=clang")
+                .withNdk(ndk)
+        runMetadataCapture("normal", "-clang", ndk, withClang)
+        runMetadataCapture("forced", "-clang", ndk,
+                withClang.withCmakeArguments(
+                    "-DCMAKE_CXX_COMPILER_FORCED=true",
+                        "-DCMAKE_C_COMPILER_FORCED=true")
+        )
+
         val withGcc = basis
                 .withCmakeArguments("-DANDROID_TOOLCHAIN=gcc")
                 .withNdk(ndk)
         runMetadataCapture("normal", "-gcc", ndk, withGcc)
         runMetadataCapture("forced", "-gcc", ndk,
                 withGcc.withCmakeArguments(
-                    "-DCMAKE_CXX_COMPILER_FORCED=true",
+                        "-DCMAKE_CXX_COMPILER_FORCED=true",
                         "-DCMAKE_C_COMPILER_FORCED=true")
         )
     }
@@ -95,8 +105,12 @@ class BenchmarkTests {
         val bucketKeys : List<List<String>> = listOf(
                 listOf(),
                 listOf("ANDROID_ABI"),
+                listOf("ANDROID_TOOLCHAIN"),
+                listOf("ANDROID_TOOLCHAIN", "ANDROID_ABI"),
                 listOf("TEST_ANDROID_NDKREVISION"),
-                listOf("TEST_ANDROID_NDKREVISION", "ANDROID_ABI")
+                listOf("TEST_ANDROID_NDKREVISION", "ANDROID_ABI"),
+                listOf("ANDROID_TOOLCHAIN", "TEST_ANDROID_NDKREVISION"),
+                listOf("ANDROID_TOOLCHAIN", "TEST_ANDROID_NDKREVISION", "ANDROID_ABI")
         )
 
         val substitutions = listOf<String>(
@@ -109,6 +123,7 @@ class BenchmarkTests {
                 "CMAKE_CXX_ANDROID_TOOLCHAIN_MACHINE",
                 "ANDROID_HOST_TAG",
                 "ANDROID_ABI"
+//                "ANDROID_TOOLCHAIN"
 //                "ANDROID_ARCH_NAME",
 //                "ANDROID_TOOLCHAIN_NAME"
         )
