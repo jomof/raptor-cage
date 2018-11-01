@@ -98,14 +98,14 @@ fun getNdkDownloadIfNecessary(ndk : String) : File {
             downloadTo.delete()
             return getNdkDownloadIfNecessary(ndk)
         }
-
-    }
-    if (os.tag != "windows") {
-        for (file in path.walk()) {
-            if (!file.name.contains(".")) {
-                file.setExecutable(true)
+        if (os.tag != "windows") {
+            for (file in path.walk()) {
+                if (!file.name.contains(".")) {
+                    file.setExecutable(true)
+                }
             }
         }
     }
+
     return path
 }

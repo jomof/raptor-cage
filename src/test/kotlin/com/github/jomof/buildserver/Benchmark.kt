@@ -88,8 +88,6 @@ data class Benchmark(
             }
         }
 
-        execute("./gradlew${os.bat}", "assemble")
-
         val settingsGradleText = StringBuilder("include ':app', ':mylibrary'")
         (2 ..  moduleCount).onEach { i ->
             val libraryName = "mylibrary-$i"

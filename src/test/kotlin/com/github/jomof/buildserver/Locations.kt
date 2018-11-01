@@ -15,6 +15,8 @@ val clangCompilerToolExample = File(tools, "${os.tag}/ndk/18.0/toolchains/llvm/p
 val sdkFolder = File(tools, "${os.tag}/sdk")
 val submodule = File("./submodule").absoluteFile!!
 val cmakeRuns = File("./cmake-runs").absoluteFile!!
+val cmakeScripts = File("./cmake").absoluteFile!!
+val raptorCageToolchain = File(cmakeScripts, "raptor-cage.android.toolchain.cmake")
 val benchmarkSubmodule = File(submodule, "native-scaling-benchmark-template")
 
 
