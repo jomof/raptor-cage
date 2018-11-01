@@ -8,7 +8,7 @@ import java.io.File
 class BenchmarkTests {
   @Test
   fun basic() {
-    Benchmark(moduleCount = 1)
+    Benchmark(moduleCount = 100)
         .withCmakeArguments(
                 "-DRAPTOR_CAGE_CACHE_FOLDER=${cacheInProject.path.replace("\\", "/")}",
                 "-DCMAKE_TOOLCHAIN_FILE=${raptorCageToolchain.path.replace("\\", "/")}")
