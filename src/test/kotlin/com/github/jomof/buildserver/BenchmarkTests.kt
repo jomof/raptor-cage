@@ -8,10 +8,13 @@ import java.io.File
 class BenchmarkTests {
   @Test
   fun basic() {
-    Benchmark(moduleCount = 100)
-        //.withCmakeArguments("-DCMAKE_TOOLCHAIN_FILE=$raptorCageToolchain")
+    Benchmark(moduleCount = 1)
+        .withCmakeArguments(
+                "-DRAPTOR_CAGE_CACHE_FOLDER=${cacheInProject.path.replace("\\", "/")}",
+                "-DCMAKE_TOOLCHAIN_FILE=${raptorCageToolchain.path.replace("\\", "/")}")
         .prepare()
-        .execute("./gradlew${os.bat}", "assemble")
+        .execute("./gradlew${os.bat}", "--parallel",
+                "generateJsonModelRelease", "generateJsonModelDebug")
   }
 
   @Test
