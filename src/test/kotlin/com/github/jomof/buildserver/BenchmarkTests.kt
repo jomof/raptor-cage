@@ -8,7 +8,7 @@ import java.io.File
 class BenchmarkTests {
   @Test
   fun basic() {
-    Benchmark(moduleCount = 100)
+    Benchmark(moduleCount = 1)
         .withCmakeArguments(
                 "-DRAPTOR_CAGE_CACHE_FOLDER=${cacheInProject.path.replace("\\", "/")}",
                 "-DCMAKE_TOOLCHAIN_FILE=${raptorCageToolchain.path.replace("\\", "/")}")
@@ -20,12 +20,12 @@ class BenchmarkTests {
   @Test
   fun ndks() {
     val ndks = listOf(
-        "r13",
-        "r13b",
-        "r14", "r14b",
-        "r15", "r15b", "r15c",
-        "r16", "r16b",
-        "r17", "r17b",
+//        "r13",
+//        "r13b",
+//        "r14", "r14b",
+//        "r15", "r15b", "r15c",
+//        "r16", "r16b",
+//        "r17", "r17b",
         "r17c"
     )
     ndks.onEach { ndk ->
