@@ -11,8 +11,7 @@ val postProcessCppExample = File(resources, "native-lib.cpp.o.cpp")
 val postProcessCppExampleFlags = File(resources, "native-lib.cpp.o.flags")
 val clangFlagsExample = File(resources, "clang-flags.txt")
 val tools = File("./tools").absoluteFile!!
-val clangCompilerToolExample =
-        File(getNdkDownloadIfNecessary("r17c"), "toolchains/llvm/prebuilt/${os.tag}-x86_64/bin/clang++${os.exe}")
+val clangCompilerToolExample = File(tools, "${os.tag}/ndk/18.0/toolchains/llvm/prebuilt/${os.tag}-x86_64/bin/clang++${os.exe}")
 val sdkFolder = File(tools, "${os.tag}/sdk")
 val submodule = File("./submodule").absoluteFile!!
 val cmakeRuns = File("./cmake-runs").absoluteFile!!

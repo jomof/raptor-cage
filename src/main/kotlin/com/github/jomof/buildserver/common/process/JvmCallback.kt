@@ -2,7 +2,7 @@ package com.github.jomof.buildserver.common.process
 
 import com.github.jomof.buildserver.common.*
 import java.io.File
-import java.util.ArrayList
+import java.util.*
 import kotlin.jvm.internal.Intrinsics
 import kotlin.reflect.KClass
 
@@ -55,6 +55,7 @@ class JvmCallbackBuilder(clazz : KClass<*>) {
                 shellArgs.add("/c")
                 shellArgs.add("start")
                 shellArgs.add(title)
+                shellArgs.add("/b") // Don't open a new command window
                 shellArgs.add("/d")
                 ProcessBuilder(shellArgs + args)
             } else {

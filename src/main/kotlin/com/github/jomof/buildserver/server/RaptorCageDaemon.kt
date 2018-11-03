@@ -1,14 +1,14 @@
 package com.github.jomof.buildserver.server
 
-import com.github.jomof.buildserver.server.workitems.NewRequestWorkItem
 import com.github.jomof.buildserver.common.localPortAgreementFile
 import com.github.jomof.buildserver.common.localPortAgrementServerLockFile
+import com.github.jomof.buildserver.server.workitems.NewRequestWorkItem
 import com.github.jomof.buildserver.server.workitems.WorkItem
-import java.net.ServerSocket
 import java.io.IOException
 import java.io.RandomAccessFile
+import java.net.ServerSocket
 import java.net.Socket
-import java.util.*
+import java.net.SocketTimeoutException
 
 class RaptorCageDaemon(
         val serverName: String,
@@ -24,10 +24,14 @@ class RaptorCageDaemon(
                 this.runningThread = Thread.currentThread()
             }
             log(serverName, "Started")
+            this.serverSocket.soTimeout = 5000
             while (!isStopped()) {
-                var clientSocket: Socket?
+                var clientSocket: Socket? = null
                 try {
                     clientSocket = this.serverSocket.accept()
+                } catch (e: SocketTimeoutException) {
+                    log(serverName, "Shutting down due to inactivity")
+                    stop()
                 } catch (e: IOException) {
                     if (isStopped()) {
                         log(serverName, "Server stopped")
@@ -38,11 +42,13 @@ class RaptorCageDaemon(
                             "Error accepting client connection", e)
                 }
 
-                // Deserialize the request
-                addWorkItem(NewRequestWorkItem(clientSocket))
+                if (clientSocket != null) {
+                    // Deserialize the request
+                    addWorkItem(NewRequestWorkItem(clientSocket))
 
-                if (workersRunning < 10) {
-                    Thread(WorkerOperation(this)).start()
+                    if (workersRunning < 10) {
+                        Thread(WorkerOperation(this)).start()
+                    }
                 }
             }
             log(serverName, "Server stopped after loop")
@@ -134,7 +140,7 @@ class RaptorCageDaemon(
 
                     }
                     Thread.sleep(500)
-                } while (true)
+                } while (server.isStopped)
             }
         }
     }
