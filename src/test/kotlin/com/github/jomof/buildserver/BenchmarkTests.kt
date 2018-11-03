@@ -19,14 +19,14 @@ class BenchmarkTests {
 
   @Test
   fun ndks() {
-    val ndks = listOf(
+      val ndks = listOf<String>(
 //        "r13",
 //        "r13b",
 //        "r14", "r14b",
 //        "r15", "r15b", "r15c",
 //        "r16", "r16b",
 //        "r17", "r17b",
-        "r17c"
+//        "r17c"
     )
     ndks.onEach { ndk ->
       gatherCmakeMetadata(ndk)
