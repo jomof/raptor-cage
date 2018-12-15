@@ -1,0 +1,5 @@
+.cache-in-project/
+.gradle/
+.idea/
+build/
+out/
