@@ -109,8 +109,7 @@ class RaptorCageDaemon(
         fun main(args: Array<String>) {
             val serverName = args[0]
             val serverLock = localPortAgrementServerLockFile(serverName)
-            val lockFile = RandomAccessFile(serverLock, "rw")
-            lockFile.use { lockFile ->
+            RandomAccessFile(serverLock, "rw").use { lockFile ->
                 lockFile.channel.lock()
 
                 // Fully start the server before publishing the port

@@ -205,9 +205,9 @@ class BenchmarkTests {
         throw RuntimeException("$normalOnlyKey was not satisfied")
       }
     }
-    bucketKeys.onEach { bucketKeys ->
-      if (satisfiers.containsKey(bucketKeys)) {
-        println("$bucketKeys satisfies ${satisfiers[bucketKeys]}")
+    bucketKeys.onEach { bucketKey ->
+      if (satisfiers.containsKey(bucketKey)) {
+        println("$bucketKey satisfies ${satisfiers[bucketKey]}")
       }
     }
   }
