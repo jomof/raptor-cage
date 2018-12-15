@@ -121,10 +121,12 @@ data class Benchmark(
 }
 
 private fun sdkFolder() : String {
+    val windowsHome = System.getenv("LOCALAPPDATA")
     val sdkCandidates = listOf(
-            "/usr/local/google/home/jomof/Android/Sdk",
+            "~/Android/Sdk",
             "C:/android-sdk-windows",
-            "C:/Users/jomof/AppData/Local/Android/Sdk")
+            "$windowsHome/Android/Sdk",
+            "$windowsHome/Android/Sdk")
     return sdkCandidates
             .mapNotNull { path ->
                 val folder = File(path)
