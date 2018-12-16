@@ -8,8 +8,10 @@ android:
     
 before_install:
   - chmod +x gradlew
-
-script:
+  
+install:
   - echo y | sdkmanager "ndk-bundle"
+  
+script:
   - ./gradlew assemble
   - ./gradlew test --info
