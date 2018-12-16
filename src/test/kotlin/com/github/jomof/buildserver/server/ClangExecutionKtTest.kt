@@ -78,7 +78,7 @@ class ClangExecutionKtTest {
         val folder = isolatedTestFolder()
         val flags = ClangCall(clangFlagsExample.readLines())
                 .toPostprocessEquivalent(folder)
-        val s = os.fileSeparator
+        val s = os.fileSeparator.replace("//", "/")
         assertThat(flags.sourceFiles)
                 .isEqualTo(listOf(folder.path + "${s}CMakeFiles${s}native-lib.dir${s}native-lib.cpp.o.ii"))
     }

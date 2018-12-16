@@ -8,7 +8,7 @@ import java.io.*
 
 data class Benchmark(
         val sdkFolder : String = sdkFolder(),
-        val ndkFolder : String = getNdkDownloadIfNecessary("r17c").path,
+        val ndkFolder : String = getNdkDownloadIfNecessary("r18").path,
         val javaHome : String = System.getProperties().getProperty("java.home"),
         val benchmarkSource : File = benchmarkSubmodule,
         val workingFolder : File = isolatedTestFolder(),
