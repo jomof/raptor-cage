@@ -1,0 +1,3 @@
+[submodule "native-scaling-benchmark-template"]
+	path = native-scaling-benchmark-template
+	url = https://github.com/jomof/native-scaling-benchmark-template.git

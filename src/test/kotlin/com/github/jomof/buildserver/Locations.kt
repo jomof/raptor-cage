@@ -19,7 +19,7 @@ val cmakeRuns = File("./cmake-runs").absoluteFile!!
 val cacheInProject = File("./.cache-in-project").absoluteFile!!
 val cmakeScripts = File("./cmake").absoluteFile!!
 val raptorCageToolchain = File(cmakeScripts, "raptor-cage.android.toolchain.cmake")
-val benchmarkSubmodule = File(submodule, "native-scaling-benchmark-template")
+val benchmarkSubmodule = File("./native-scaling-benchmark-template")
 
 
 fun isolatedTestFolder() : File {
