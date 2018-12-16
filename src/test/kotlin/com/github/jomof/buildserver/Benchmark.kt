@@ -121,11 +121,13 @@ data class Benchmark(
 }
 
 private fun sdkFolder() : String {
+    val androidHome = System.getenv("ANDROID_HOME")
     val windowsHome = System.getenv("LOCALAPPDATA")
     val userHome = System.getProperty("user.home")
     val sdkCandidates = listOf(
             "~/Android/Sdk",
             "C:/android-sdk-windows",
+            "$androidHome",
             "$userHome/Android/Sdk",
             "$windowsHome/Android/Sdk")
     return sdkCandidates
