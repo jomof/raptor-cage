@@ -46,7 +46,7 @@ fun clang(
                 is CopyFile -> {
                     val from = File(step.fromFolder, step.toFile)
                     val to = File(step.toFolder, step.toFile)
-                    stdio.stdout("Raptor cage copying $from to $to")
+                    //stdio.stdout("Raptor cage copying $from to $to")
                     from.copyTo(to)
                 }
                 is CommitStore -> {
