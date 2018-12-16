@@ -11,6 +11,8 @@ import org.junit.Test
 import java.io.*
 
 class ClangExecutionKtTest {
+    val s = os.fileSeparator.replace("//", "/")
+
     private fun withStdio(call : (ObjectOutputStream) -> Unit) {
         val byteStream = ByteArrayOutputStream()
         val write = ObjectOutputStream(byteStream)
@@ -78,7 +80,6 @@ class ClangExecutionKtTest {
         val folder = isolatedTestFolder()
         val flags = ClangCall(clangFlagsExample.readLines())
                 .toPostprocessEquivalent(folder)
-        val s = os.fileSeparator.replace("//", "/")
         assertThat(flags.sourceFiles)
                 .isEqualTo(listOf(folder.path + "${s}CMakeFiles${s}native-lib.dir${s}native-lib.cpp.o.ii"))
     }
@@ -100,7 +101,7 @@ class ClangExecutionKtTest {
         val flags = ClangCall(listOf(
                 "-isystem=bob", "tom.cpp", "-o=tom.o"))
                 .toPostprocessEquivalent(folder)
-        val s = os.fileSeparator
+
         assertThat(flags.flags.map { it.flag })
                 .isEqualTo(listOf(folder.path + "${s}tom.o.ii", "-o=tom.o"))
     }
@@ -111,7 +112,6 @@ class ClangExecutionKtTest {
         val flags = ClangCall(listOf(
                 "-Wa,--noexecstack", "tom.cpp", "-o=tom.o"))
                 .toPreprocessEquivalent(folder)
-        val s = os.fileSeparator
         assertThat(flags.flags.map { it.flag })
                 .isEqualTo(listOf(
                         "tom.cpp", "-o=" + folder.path + "${s}tom.o.ii", "-E"))
