@@ -80,7 +80,7 @@ class BenchmarkTests {
     }
     val sentinel = File(folder, "$ndk$annotation.txt")
     if (!sentinel.exists()) {
-      println("Generating $type/${sentinel.name}")
+      //println("Generating $type/${sentinel.name}")
       folder.mkdirs()
       val workspace = basis.resetWorkingFolder()
       val run = workspace.prepare()
@@ -190,7 +190,6 @@ class BenchmarkTests {
           allValues.addAll(bucket.value)
         }
         if (max == 1) {
-          println("$normalOnlyKey is satisfied by $bucketKey: $values")
           val prior = satisfiers[bucketKey] ?: {
             satisfiers[bucketKey] = mutableListOf()
             satisfiers[bucketKey]!!
@@ -201,13 +200,12 @@ class BenchmarkTests {
         }
       }
       if (!satisfied) {
-        println(allValues.joinToString("\r\n"))
         throw RuntimeException("$normalOnlyKey was not satisfied")
       }
     }
     bucketKeys.onEach { bucketKey ->
       if (satisfiers.containsKey(bucketKey)) {
-        println("$bucketKey satisfies ${satisfiers[bucketKey]}")
+        // println("$bucketKey satisfies ${satisfiers[bucketKey]}")
       }
     }
   }
