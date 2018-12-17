@@ -1,5 +1,7 @@
 package com.github.jomof.buildserver.ninja
 
+import com.github.jomof.buildserver.Benchmark
+import com.github.jomof.buildserver.common.os
 import org.junit.Test
 
 import java.io.File
@@ -8,8 +10,11 @@ class ReadNinjaFileKtTest {
 
     @Test
     fun readNinjaFileTest() {
-
-        val projectDir = File("C:\\Users\\Jomo\\IdeaProjects\\raptor-cage\\build\\test-isolated\\nthyuuwa9coe")
+        val benchMark = Benchmark(moduleCount = 1)
+                .prepare()
+                .execute("./gradlew${os.bat}", "--parallel",
+                        "generateJsonModelRelease", "generateJsonModelDebug")
+        val projectDir = benchMark.workingFolder
         val ninjas = mutableMapOf<File, NinjaFileDef>()
         projectDir.walkTopDown().forEach { file ->
             if (file.name == "build.ninja")  {
