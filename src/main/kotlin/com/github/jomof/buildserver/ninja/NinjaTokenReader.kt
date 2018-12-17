@@ -3,15 +3,13 @@ package com.github.jomof.buildserver.ninja
 import java.io.Reader
 
 const val END_OF_LINE_TOKEN = "::END_OF_LINE_TOKEN::"
+const val END_OF_FILE_TOKEN = "::END_OF_FILE_TOKEN::"
 const val INDENT_TOKEN = "::INDENT_TOKEN::"
 
 fun Reader.forEachNonComment(action: (String) -> Unit) {
     forEachLine { line ->
-        val trimmed = line.trim()
-        if (!trimmed.startsWith("#")) {
-            if (!trimmed.isEmpty()) {
-                action(line.trimEnd())
-            }
+        if(line.substringBefore("#").isNotBlank()) {
+            action(line.trimEnd())
         }
     }
 }
@@ -41,24 +39,24 @@ fun Reader.forEachContinuedLine(action: (String) -> Unit) {
     continuation()
 }
 
-private fun escape(line : String) = line
+private fun escape(line: String) = line
         .replace("\$\$", "\$\$dollar\$\$")
         .replace("$:", "\$\$colon\$\$")
         .replace("$ ", "\$\$space\$\$")
 
-private fun unescape(line : String) = line
+private fun unescape(line: String) = line
         .replace("\$\$dollar\$\$", "$")
-        .replace("\$\$colon\$\$$", ":")
+        .replace("\$\$colon\$\$", ":")
         .replace("\$\$space\$\$", " ")
 
-private fun tokenizeAround(separatorToken : Char, value : String, action: (String) -> Unit) {
+private fun tokenizeAround(separatorToken: Char, value: String, action: (String) -> Unit) {
     if (value.isEmpty()) return
     if (!value.contains(separatorToken)) {
         action(value)
         return
     }
     val sb = StringBuilder()
-    for(c in value) {
+    for (c in value) {
         if (c == separatorToken) {
             if (!sb.isEmpty()) {
                 action(unescape(sb.toString()))
@@ -76,23 +74,28 @@ private fun tokenizeAround(separatorToken : Char, value : String, action: (Strin
 
 fun Reader.forEachNinjaToken(action: (String) -> Unit) {
     forEachContinuedLine { line ->
-        val intermediate = escape(line)
-        val unindented = if (intermediate.startsWith(' ')) {
-            action(INDENT_TOKEN)
-            intermediate.trimStart()
+        if (line.contains("=")) {
+            if (line.startsWith(" ")) {
+                action(INDENT_TOKEN)
+            }
+
+            action(line.substringBefore('=').trim())
+            action("=")
+            action(unescape(escape(line.substringAfter('=').trim())))
         } else {
-            intermediate
-        }
-        val spaceSplits = unindented.split(' ')
-        for (spaceSplit in spaceSplits) {
-            tokenizeAround(':', spaceSplit) { colonSplit ->
-                tokenizeAround('|', colonSplit) { pipeSplit ->
-                    tokenizeAround('=', pipeSplit) { equalSplit ->
-                        action(unescape(equalSplit))
+            val escaped = escape(line.substringBefore("#"))
+            val spaceSplits = escaped.split(' ')
+            for (spaceSplit in spaceSplits) {
+                tokenizeAround(':', spaceSplit) { colonSplit ->
+                    tokenizeAround('|', colonSplit) { pipeSplit ->
+                        tokenizeAround('=', pipeSplit) { equalSplit ->
+                            action(unescape(equalSplit))
+                        }
                     }
                 }
             }
         }
         action(END_OF_LINE_TOKEN)
     }
+    action(END_OF_FILE_TOKEN)
 }

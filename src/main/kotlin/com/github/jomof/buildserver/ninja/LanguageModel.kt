@@ -8,7 +8,7 @@ data class IdentifierRef(val value: String) : Node
 data class UninstantiatedLiteral(val value: String) : Literal
 data class InstantiatedLiteral(val value: String) : Literal
 data class NinjaFileRef(val value: String) : NinjaFile
-data class NinjaFileDef(val value: List<Node>) : NinjaFile
+data class NinjaFileDef(val tops: List<Node>) : NinjaFile
 data class BuildRef(val value: String) : Node
 data class RuleRef(val value: String) : Node
 
@@ -45,7 +45,7 @@ data class Default(
  *   restat = 1
  */
 data class BuildDef(
-        val output: BuildRef,
+        val outputs: List<BuildRef>,
         val rule: RuleRef,
         val inputs: List<BuildRef>,
         val properties: List<Assignment>
