@@ -1,4 +1,4 @@
-package com.github.jomof.buildserver.ninja
+package com.github.jomof.ninja
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
@@ -107,9 +107,9 @@ class NinjaParserKtTest {
     fun dollars() {
         val ninja = parseNinja(StringReader("rule foo\n" +
                 "  command = \${out}bar\$\$baz\$\$\$\n" +
-        "blah\n" +
-        "x = \$\$dollar\n" +
-        "build \$x: foo y\n"))
+                "blah\n" +
+                "x = \$\$dollar\n" +
+                "build \$x: foo y\n"))
         val rule = ninja.tops[0] as RuleDef
         val assignment = rule.properties[0]
         val literal = assignment.value as UninstantiatedLiteral

@@ -1,4 +1,4 @@
-package com.github.jomof.buildserver.ninja
+package com.github.jomof.ninja
 
 import com.github.jomof.buildserver.Benchmark
 import com.github.jomof.buildserver.common.os

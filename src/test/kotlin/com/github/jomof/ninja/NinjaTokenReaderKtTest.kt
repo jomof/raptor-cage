@@ -1,4 +1,4 @@
-package com.github.jomof.buildserver.ninja
+package com.github.jomof.ninja
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test

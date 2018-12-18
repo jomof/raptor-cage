@@ -1,4 +1,4 @@
-package com.github.jomof.buildserver.ninja
+package com.github.jomof.ninja
 
 import java.io.File
 import java.io.FileReader

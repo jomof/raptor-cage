@@ -1,10 +1,10 @@
-package com.github.jomof.buildserver.ninja
+package com.github.jomof.ninja
 
 /**
  * Replace // with / everywhere
  */
 fun canonicalizeFiles(original : NinjaFileDef) : NinjaFileDef {
-   return canonicalizeFilesNode(original) as  NinjaFileDef
+   return canonicalizeFilesNode(original) as NinjaFileDef
 }
 private fun canonicalize(value : String) = value.replace("//", "/")
 private fun canonicalizeFilesNode(node : Node) : Node {

@@ -1,6 +1,6 @@
-package com.github.jomof.buildserver.ninja
+package com.github.jomof.ninja
 
-import com.github.jomof.buildserver.ninja.State.*
+import com.github.jomof.ninja.State.*
 import java.io.Reader
 
 private enum class State {
