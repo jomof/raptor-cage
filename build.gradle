@@ -41,11 +41,13 @@ class GenerateBuildInfo extends DefaultTask {
 
     @TaskAction
     generate() {
+        def now = System.currentTimeMillis()
         buildInfoFile.parentFile.mkdirs()
         buildInfoFile.write(
                 """package com.github.jomof.buildserver;
-class BuildInfo {
-  static final String PROJECT_VERSION = "$project.version";
+public class BuildInfo {
+  public static final String PROJECT_VERSION = "$project.version";
+  public static final long BUILD_TIME_MILLIS = ${now}L;
 }""")
     }
 }

@@ -15,6 +15,7 @@ class ReadNinjaFileKtTest {
                 .execute("./gradlew${os.bat}", "--parallel",
                         "generateJsonModelRelease", "generateJsonModelDebug")
         val projectDir = benchMark.workingFolder
+        println(projectDir.toString())
         val ninjas = mutableMapOf<File, NinjaFileDef>()
         projectDir.walkTopDown().forEach { file ->
             if (file.name == "build.ninja")  {

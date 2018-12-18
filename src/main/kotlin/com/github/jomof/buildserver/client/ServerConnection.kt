@@ -2,10 +2,7 @@ package com.github.jomof.buildserver.client
 
 import com.github.jomof.buildserver.common.io.teleportStdio
 import com.github.jomof.buildserver.common.messages.*
-import java.io.DataInputStream
-import java.io.DataOutputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
+import java.io.*
 import java.net.Socket
 
 class ServerConnection(
@@ -25,10 +22,11 @@ class ServerConnection(
             }
             return result
         }
-
     }
 
     fun version() = hello.version
+
+    fun serverBuildTime() = hello.buildTime
 
     fun hello() : HelloResponse {
         return send(HelloRequest()) as HelloResponse
@@ -38,6 +36,18 @@ class ServerConnection(
         val request = ClangRequest(
                 directory = directory,
                 args = args)
+        return execute(request, ClangResponse::class.java)
+    }
+
+    fun watch(directory : String) : WatchResponse {
+        val canonical = File(directory).canonicalFile
+        val request = WatchRequest(
+                directory = canonical.path
+        )
+        return execute(request, WatchResponse::class.java)
+    }
+
+    private fun <TRequest, TResult> execute(request: TRequest, type : Class<TResult>) : TResult {
         Socket("localhost", port).use { clientSocket ->
             val outToServer = DataOutputStream(clientSocket.getOutputStream())
             val objectWrite = ObjectOutputStream(outToServer)
@@ -45,12 +55,18 @@ class ServerConnection(
             val inFromServer = DataInputStream(clientSocket.getInputStream())
             val objectRead = ObjectInputStream(inFromServer)
             teleportStdio(objectRead) { err, message ->
-                if (err) { System.err.println(message) }
-                else { System.out.println(message) }
+                if (err) {
+                    System.err.println(message)
+                } else {
+                    System.out.println(message)
+                }
             }
             val response = objectRead.readObject()
-            return when (response) {
-                is ClangResponse -> response
+            if (response.javaClass.isAssignableFrom(type)) {
+                @Suppress("UNCHECKED_CAST")
+                return response as TResult
+            }
+            when (response) {
                 is ErrorResponse -> throw RuntimeException(response.message)
                 else -> throw RuntimeException(response.toString())
             }

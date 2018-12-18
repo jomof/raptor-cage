@@ -162,7 +162,7 @@ if [[ "$(uname)" == "Darwin" ]] && [[ "$HOME" == "$PWD" ]]; then
   cd "$(dirname "$0")"
 fi
 
-"$JAVACMD" "${JVM_OPTS[@]}" -classpath "$CLASSPATH" com.github.jomof.buildserver.client.ClangEntryPoint $@
+"$JAVACMD" "${JVM_OPTS[@]}" -classpath "$CLASSPATH" com.github.jomof.buildserver.client.MainEntryPoint $@
 if [[ $? != 0 ]]; then
   exit 1f
 fi

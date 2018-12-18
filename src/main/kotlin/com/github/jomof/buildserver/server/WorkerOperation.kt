@@ -1,5 +1,7 @@
 package com.github.jomof.buildserver.server
 
+import com.github.jomof.buildserver.BuildInfo
+import com.github.jomof.buildserver.common.io.RemoteStdio
 import com.github.jomof.buildserver.common.messages.*
 import com.github.jomof.buildserver.server.workitems.NewRequestWorkItem
 import java.io.DataInputStream
@@ -28,7 +30,9 @@ class WorkerOperation(
                                 when (request) {
                                     is HelloRequest -> {
                                         println("hello")
-                                        write.writeObject(HelloResponse(version = serverVersion))
+                                        write.writeObject(HelloResponse(
+                                                version = serverVersion,
+                                                buildTime = BuildInfo.BUILD_TIME_MILLIS))
                                     }
                                     is ClangRequest -> {
                                         println("Server executing clang")
@@ -40,6 +44,13 @@ class WorkerOperation(
                                         println("Server about to write clang-response")
                                         write.writeObject(ClangResponse(code = code))
                                         println("Server wrote clang-response")
+                                    }
+                                    is WatchRequest -> {
+                                        println("Server starting watch of ${request.directory}")
+                                        println("Server about to write watch-response")
+                                        RemoteStdio(write).exit()
+                                        write.writeObject(WatchResponse(watching = request.directory))
+                                        println("Server wrote watch-response")
                                     }
                                     is StopRequest -> {
                                         server.stop()
