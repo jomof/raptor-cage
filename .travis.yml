@@ -23,4 +23,4 @@ before_script:
   - export ANDROID_NDK_HOME=$ANDROID_HOME/ndk-bundle
 script:
   - ./gradlew assemble --info
-  - ./gradlew test
+  - ./gradlew test --stacktrace --info
