@@ -324,7 +324,7 @@ class NinjaParserKtTest {
 
 
             #############################################
-            # Utility command for edit_cache
+            # utility command for edit_cache
 
             build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
               COMMAND = cmd.exe /C "cd /D C:\Users\Jomo\AndroidStudioProjects\MyApplication\app\.externalNativeBuild\cmake\release\arm64-v8a && C:\Users\Jomo\AppData\Local\Android\Sdk\cmake\3.10.2.4988404\bin\cmake.exe -E echo "No interactive CMake dialog available.""
@@ -333,7 +333,7 @@ class NinjaParserKtTest {
             build edit_cache: phony CMakeFiles/edit_cache.util
 
             #############################################
-            # Utility command for rebuild_cache
+            # utility command for rebuild_cache
 
             build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
               COMMAND = cmd.exe /C "cd /D C:\Users\Jomo\AndroidStudioProjects\MyApplication\app\.externalNativeBuild\cmake\release\arm64-v8a && C:\Users\Jomo\AppData\Local\Android\Sdk\cmake\3.10.2.4988404\bin\cmake.exe -HC:\Users\Jomo\AndroidStudioProjects\MyApplication\app\.externalNativeBuild\cxx\release\arm64-v8a -BC:\Users\Jomo\AndroidStudioProjects\MyApplication\app\.externalNativeBuild\cmake\release\arm64-v8a"
@@ -382,7 +382,7 @@ class NinjaParserKtTest {
               TARGET_PDB = native-lib.so.dbg
 
             #############################################
-            # Utility command for edit_cache
+            # utility command for edit_cache
 
             build C${'$'}:/Users/Jomo/AndroidStudioProjects/MyApplication/app/.externalNativeBuild/cxx/release/arm64-v8a/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
               COMMAND = cmd.exe /C "cd /D C:\Users\Jomo\AndroidStudioProjects\MyApplication\app\.externalNativeBuild\cxx\release\arm64-v8a && C:\Users\Jomo\AppData\Local\Android\Sdk\cmake\3.10.2.4988404\bin\cmake.exe -E echo "No interactive CMake dialog available.""
@@ -391,7 +391,7 @@ class NinjaParserKtTest {
             build C${'$'}:/Users/Jomo/AndroidStudioProjects/MyApplication/app/.externalNativeBuild/cxx/release/arm64-v8a/edit_cache: phony C${'$'}:/Users/Jomo/AndroidStudioProjects/MyApplication/app/.externalNativeBuild/cxx/release/arm64-v8a/CMakeFiles/edit_cache.util
 
             #############################################
-            # Utility command for rebuild_cache
+            # utility command for rebuild_cache
 
             build C${'$'}:/Users/Jomo/AndroidStudioProjects/MyApplication/app/.externalNativeBuild/cxx/release/arm64-v8a/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
               COMMAND = cmd.exe /C "cd /D C:\Users\Jomo\AndroidStudioProjects\MyApplication\app\.externalNativeBuild\cxx\release\arm64-v8a && C:\Users\Jomo\AppData\Local\Android\Sdk\cmake\3.10.2.4988404\bin\cmake.exe -HC:\Users\Jomo\AndroidStudioProjects\MyApplication\app\.externalNativeBuild\cxx\release\arm64-v8a -BC:\Users\Jomo\AndroidStudioProjects\MyApplication\app\.externalNativeBuild\cmake\release\arm64-v8a"

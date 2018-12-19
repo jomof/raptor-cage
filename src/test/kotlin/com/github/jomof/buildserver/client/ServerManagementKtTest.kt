@@ -1,11 +1,14 @@
 package com.github.jomof.buildserver.client
 
+import com.github.jomof.buildserver.server.utility.removeCommonSegments
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.io.File
+import java.nio.file.Path
+import java.nio.file.Paths
 
 class ServerManagementKtTest {
-    private class ConnectServer(serverName : String) : AutoCloseable {
+    private class ConnectServer(serverName: String) : AutoCloseable {
         val connection = getOrStartServer(serverName)
         override fun close() {
             connection.stop()
@@ -74,6 +77,8 @@ class ServerManagementKtTest {
         try {
             val connection = getOrStartServer("vscode")
             connection.stop()
-        } catch (e : Throwable) {}
+        } catch (e: Throwable) {
+        }
     }
 }
+

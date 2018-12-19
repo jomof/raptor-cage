@@ -22,7 +22,7 @@ class NinjaWatchDirectoryService(watched: File, storage: File) : WatchDirectoryS
         storage.mkdirs()
     }
     override fun events(events: List<WatchEvent<*>>) {
-        val originalNinjas = ninjas.map{it}.toSet()
+        val newNinjas = ninjas.map{it}.toMutableSet()
         for (event in events) {
             val path = event.context() as Path
             if (path.toFile().name != "build.ninja") {
@@ -32,29 +32,24 @@ class NinjaWatchDirectoryService(watched: File, storage: File) : WatchDirectoryS
                 EVENT_DISCOVERY -> {
                     discovered += event.count()
                     lastDiscovered = path.toString().replace(File.separator, "/")
-                    ninjas.add(path)
+                    newNinjas.add(path)
                 }
                 StandardWatchEventKinds.ENTRY_CREATE -> {
                     created += event.count()
                     lastCreated = path.toString().replace(File.separator, "/")
-                    ninjas.add(path)
+                    newNinjas.add(path)
                 }
                 StandardWatchEventKinds.ENTRY_DELETE -> {
                     deleted += event.count()
                     lastDeleted = path.toString().replace(File.separator, "/")
-                    ninjas.remove(path)
+                    newNinjas.remove(path)
                 }
                 StandardWatchEventKinds.ENTRY_MODIFY -> {
                     modified += event.count()
                     lastModified = path.toString().replace(File.separator, "/")
                 }
             }
-            if (ninjas != originalNinjas) {
-                println("Ninjas changed")
-                ninjasFile.writeText(ninjas.joinToString("\n"));
-            } else {
-                println("Ninjas didn't change")
-            }
+
         }
         counters.writeText("""
             discovered = $discovered
@@ -68,4 +63,24 @@ class NinjaWatchDirectoryService(watched: File, storage: File) : WatchDirectoryS
         """.trimIndent())
     }
 
+    //fun removeNthSegment(path : Path)
+
+    fun computeUniqueNames() {
+        for(ninja in ninjas) {
+            for (segment in ninja) {
+
+            }
+        }
+    }
+
+    fun updateNinjas(newNinjas : Set<Path>) {
+        if (ninjas != newNinjas) {
+            println("Ninjas changed")
+            ninjas.clear()
+            ninjas.addAll(newNinjas)
+            ninjasFile.writeText(ninjas.joinToString("\n"));
+        } else {
+            println("Ninjas didn't change")
+        }
+    }
 }
