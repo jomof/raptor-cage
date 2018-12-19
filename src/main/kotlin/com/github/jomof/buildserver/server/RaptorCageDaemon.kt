@@ -2,6 +2,7 @@ package com.github.jomof.buildserver.server
 
 import com.github.jomof.buildserver.common.localPortAgreementFile
 import com.github.jomof.buildserver.common.localPortAgrementServerLockFile
+import com.github.jomof.buildserver.server.watcher.getFileWatcherService
 import com.github.jomof.buildserver.server.workitems.NewRequestWorkItem
 import com.github.jomof.buildserver.server.workitems.WorkItem
 import java.io.IOException
@@ -24,14 +25,13 @@ class RaptorCageDaemon(
                 this.runningThread = Thread.currentThread()
             }
             log(serverName, "Started")
-            this.serverSocket.soTimeout = 5000
+            this.serverSocket.soTimeout = 75
             while (!isStopped()) {
                 var clientSocket: Socket? = null
                 try {
                     clientSocket = this.serverSocket.accept()
                 } catch (e: SocketTimeoutException) {
-                    log(serverName, "Shutting down due to inactivity")
-                    stop()
+                    getFileWatcherService().poll()
                 } catch (e: IOException) {
                     if (isStopped()) {
                         log(serverName, "Server stopped")

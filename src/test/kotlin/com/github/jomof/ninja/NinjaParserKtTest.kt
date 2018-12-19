@@ -82,10 +82,6 @@ class NinjaParserKtTest {
         println(ninja)
     }
 
-    // "# this is a comment\n"
-    //"foo = not # a comment\n""# this is a comment\n"
-    //"foo = not # a comment\n"
-
     @Test
     fun commentNoComment() {
         val ninja = parseNinja(StringReader("# this is a comment\n" +

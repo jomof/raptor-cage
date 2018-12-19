@@ -3,11 +3,9 @@ package com.github.jomof.buildserver.server
 import com.github.jomof.buildserver.BuildInfo
 import com.github.jomof.buildserver.common.io.RemoteStdio
 import com.github.jomof.buildserver.common.messages.*
+import com.github.jomof.buildserver.server.watcher.getFileWatcherService
 import com.github.jomof.buildserver.server.workitems.NewRequestWorkItem
-import java.io.DataInputStream
-import java.io.DataOutputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
+import java.io.*
 
 class WorkerOperation(
         private val server: RaptorCageDaemon) : Runnable {
@@ -18,59 +16,64 @@ class WorkerOperation(
         try {
             do {
                 val workItem = server.popWorkItem() ?: return
-                workItem.socket.use { socket ->
-                    val inFromClient = DataInputStream(socket.getInputStream())
-                    val read = ObjectInputStream(inFromClient)
-                    val outToClient = DataOutputStream(socket.getOutputStream())
-                    val write = ObjectOutputStream(outToClient)
-                    when (workItem) {
-                        is NewRequestWorkItem -> {
-                            val request = read.readObject()
-                            try {
-                                when (request) {
-                                    is HelloRequest -> {
-                                        println("hello")
-                                        write.writeObject(HelloResponse(
-                                                version = serverVersion,
-                                                buildTime = BuildInfo.BUILD_TIME_MILLIS))
+                synchronized(getFileWatcherService()) {
+                    getFileWatcherService().poll()
+                    workItem.socket.use { socket ->
+                        val inFromClient = DataInputStream(socket.getInputStream())
+                        val read = ObjectInputStream(inFromClient)
+                        val outToClient = DataOutputStream(socket.getOutputStream())
+                        val write = ObjectOutputStream(outToClient)
+                        when (workItem) {
+                            is NewRequestWorkItem -> {
+                                val request = read.readObject()
+                                try {
+                                    when (request) {
+                                        is HelloRequest -> {
+                                            println("hello")
+                                            write.writeObject(HelloResponse(
+                                                    version = serverVersion,
+                                                    buildTime = BuildInfo.BUILD_TIME_MILLIS))
+                                        }
+                                        is ClangRequest -> {
+                                            println("Server executing clang")
+                                            val code = clang(
+                                                    server.serverName,
+                                                    request.directory,
+                                                    request.args,
+                                                    write)
+                                            println("Server about to write clang-response")
+                                            write.writeObject(ClangResponse(code = code))
+                                            println("Server wrote clang-response")
+                                        }
+                                        is WatchRequest -> {
+                                            println("Server starting watch of ${request.directory}")
+                                            println("Server about to write watch-response")
+                                            getFileWatcherService().addWatchFolder(File(request.directory))
+                                            RemoteStdio(write).exit()
+                                            write.writeObject(WatchResponse(watching = request.directory))
+                                            println("Server wrote watch-response")
+                                            getFileWatcherService().poll()
+                                        }
+                                        is StopRequest -> {
+                                            server.stop()
+                                            write.writeObject(StopResponse())
+                                        }
+                                        else -> {
+                                            val error = ErrorResponse(message = "Server did not handle $request")
+                                            write.writeObject(error)
+                                        }
                                     }
-                                    is ClangRequest -> {
-                                        println("Server executing clang")
-                                        val code = clang(
-                                                server.serverName,
-                                                request.directory,
-                                                request.args,
-                                                write)
-                                        println("Server about to write clang-response")
-                                        write.writeObject(ClangResponse(code = code))
-                                        println("Server wrote clang-response")
-                                    }
-                                    is WatchRequest -> {
-                                        println("Server starting watch of ${request.directory}")
-                                        println("Server about to write watch-response")
-                                        RemoteStdio(write).exit()
-                                        write.writeObject(WatchResponse(watching = request.directory))
-                                        println("Server wrote watch-response")
-                                    }
-                                    is StopRequest -> {
-                                        server.stop()
-                                        write.writeObject(StopResponse())
-                                    }
-                                    else -> {
-                                        val error = ErrorResponse(message = "Server did not handle $request")
-                                        write.writeObject(error)
-                                    }
+                                } catch (e: Exception) {
+                                    write.writeObject(ErrorResponse(message = "Exception during $request"))
                                 }
-                            } catch( e: Exception) {
-                                write.writeObject(ErrorResponse(message = "Exception during $request"))
+                            }
+                            else -> {
+                                val error = ErrorResponse(message = "Server did not handle $workItem")
+                                write.writeObject(error)
                             }
                         }
-                        else -> {
-                            val error = ErrorResponse(message = "Server did not handle $workItem")
-                            write.writeObject(error)
-                        }
+                        write.flush()
                     }
-                    write.flush()
                 }
             } while (true)
         } finally {

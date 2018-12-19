@@ -10,7 +10,7 @@ class ReadNinjaFileKtTest {
 
     @Test
     fun readNinjaFileTest() {
-        val benchMark = Benchmark(moduleCount = 4)
+        val benchMark = Benchmark(moduleCount = 1)
                 .prepare()
                 .execute("./gradlew${os.bat}", "--parallel",
                         "generateJsonModelRelease", "generateJsonModelDebug")

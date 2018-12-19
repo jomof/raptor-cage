@@ -2,6 +2,7 @@ package com.github.jomof.buildserver.client
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import java.io.File
 
 class ServerManagementKtTest {
     private class ConnectServer(serverName : String) : AutoCloseable {
@@ -20,8 +21,56 @@ class ServerManagementKtTest {
 
     @Test
     fun testWatch() {
-        ConnectServer("testWatch").use { server ->
-            val response = server.connection.watch(".")
+        (0..1).onEach {
+            val base = "myTestWatch-$it"
+            val testRoot = File("./$base")
+            val subFolder = File(testRoot, "sub")
+            val createdFile = File(subFolder, "created-file.txt")
+            val deletedFile = File(testRoot, "deleted-file.txt")
+            val discoveredFile = File(testRoot, "discovered-file.txt")
+            val modifiedFile = File(testRoot, "modified-file.txt")
+            val countersFile = File(testRoot, ".raptor_cage/log/counters.txt")
+            testRoot.deleteRecursively()
+
+            subFolder.mkdirs()
+
+            discoveredFile.writeText("Hello file watcher")
+            ConnectServer("$base").use { server ->
+                server.connection.watch(testRoot.path)
+                deletedFile.writeText("Hello file watcher")
+                modifiedFile.writeText("Hello file watcher")
+                createdFile.writeText("Hello")
+                deletedFile.delete()
+                server.connection.watch(testRoot.path) // Force a poll() to make sure modifedFile is ca
+                modifiedFile.writeText("Bob")
+                server.connection.watch(testRoot.path) // Force a poll() to make sure modifedFile is ca
+            }
+            val counters = countersFile.readLines()
+            assertThat(counters).containsExactly(
+                    "discovered = 1",
+                    "last_discovered = discovered-file.txt",
+                    "created = 3",
+                    "last_created = sub/created-file.txt",
+                    "deleted = 1",
+                    "last_deleted = deleted-file.txt",
+                    "modified = 6",
+                    "last_modified = modified-file.txt"
+            )
+            testRoot.deleteRecursively()
         }
+    }
+
+    @Test
+    fun vscodeStart() {
+        val connection = getOrStartServer("vscode")
+        connection.watch(File("C:\\Users\\Jomo\\projects\\vscode_workspace\\project").path)
+    }
+
+    @Test
+    fun vscodeStop() {
+        try {
+            val connection = getOrStartServer("vscode")
+            connection.stop()
+        } catch (e : Throwable) {}
     }
 }
