@@ -48,8 +48,11 @@ class WorkerOperation(
                                         is WatchRequest -> {
                                             println("Server starting watch of ${request.directory}")
                                             println("Server about to write watch-response")
-                                            getFileWatcherService().addWatchFolder(File(request.directory))
-                                            RemoteStdio(write).exit()
+                                            try {
+                                                getFileWatcherService().addWatchFolder(File(request.directory))
+                                            } finally {
+                                                RemoteStdio(write).exit()
+                                            }
                                             write.writeObject(WatchResponse(watching = request.directory))
                                             println("Server wrote watch-response")
                                             getFileWatcherService().poll()

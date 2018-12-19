@@ -6,6 +6,8 @@ import com.github.jomof.buildserver.common.os
 import com.github.jomof.buildserver.common.process.redirectAndWaitFor
 import java.io.*
 
+const val LOG_TO_OUTPUT = false
+
 data class Benchmark(
         val sdkFolder : String = sdkFolder(),
         val ndkFolder : String = getNdkDownloadIfNecessary("r18").path,
@@ -32,15 +34,17 @@ data class Benchmark(
                 lastTimeStamp = currentTimestamp
                 diff
             }
-            val time = if (elapsed > 10) {
-                "[[$elapsed]]"
-            } else {
-                ""
-            }
-            if (err) {
-                println("ERR$time: $message")
-            } else {
-                println("OUT$time: $message")
+            if (LOG_TO_OUTPUT) {
+                val time = if (elapsed > 10) {
+                    "[[$elapsed]]"
+                } else {
+                    ""
+                }
+                if (err) {
+                    println("ERR$time: $message")
+                } else {
+                    println("OUT$time: $message")
+                }
             }
         }
     }
