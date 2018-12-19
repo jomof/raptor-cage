@@ -4,7 +4,7 @@ import java.io.File
 
 fun localCachePath(serverName : String) : File {
     val home = File(System.getProperty("user.home"))
-    val buildServer = File(home, ".raptor-cage")
+    val buildServer = File(home, RAPTOR_CAGE_BASE_FOLDER)
     return File(buildServer, serverName)
 }
 

@@ -30,7 +30,7 @@ fun Collection<Path>.removeCommonSegments(): Map<String, String> {
                     Pair(seg.removeSegment(removeSeg), path)
                 }
                 .filter { it.first != null }
-                .map { Pair(it.first!!, it.second) }
+                .map { Pair(it.first, it.second) }
                 .toMap()
         if (removed.size == map.size) {
             map = removed

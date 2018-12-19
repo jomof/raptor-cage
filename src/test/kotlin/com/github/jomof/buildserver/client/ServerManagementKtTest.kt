@@ -1,5 +1,6 @@
 package com.github.jomof.buildserver.client
 
+import com.github.jomof.buildserver.common.RAPTOR_CAGE_BASE_FOLDER
 import com.github.jomof.buildserver.server.utility.removeCommonSegments
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
@@ -32,7 +33,7 @@ class ServerManagementKtTest {
             val deletedFile = File(testRoot, "deleted-file.txt")
             val discoveredFile = File(testRoot, "discovered-file.txt")
             val modifiedFile = File(testRoot, "modified-file.txt")
-            val countersFile = File(testRoot, ".raptor_cage/log/counters.txt")
+            val countersFile = File(testRoot, "$RAPTOR_CAGE_BASE_FOLDER/log/counters.txt")
             testRoot.deleteRecursively()
 
             subFolder.mkdirs()

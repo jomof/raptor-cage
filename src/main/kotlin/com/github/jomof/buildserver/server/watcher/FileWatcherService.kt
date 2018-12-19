@@ -1,5 +1,6 @@
 package com.github.jomof.buildserver.server.watcher
 
+import com.github.jomof.buildserver.common.RAPTOR_CAGE_BASE_FOLDER
 import com.sun.nio.file.ExtendedWatchEventModifier
 import java.io.File
 import java.nio.file.*
@@ -53,7 +54,7 @@ class DefaultFileWatcherService : FileWatcherService {
                     val start = System.currentTimeMillis()
                     folder.walk()
                     .filter { it.isFile }
-                    .filter { !it.path.contains(".raptor_cage") }
+                    .filter { !it.path.contains(RAPTOR_CAGE_BASE_FOLDER) }
                     .map { file ->
                         if (file.isRooted) {
                             val path = file.path.substring(folderNameLength)
@@ -89,7 +90,7 @@ class DefaultFileWatcherService : FileWatcherService {
                 val watchKey = watched[folder]!!
                 val events = watchKey.pollEvents().filter { event ->
                     val path = event.context() as Path
-                    val isOurs = path.toString().contains(".raptor_cage")
+                    val isOurs = path.toString().contains(RAPTOR_CAGE_BASE_FOLDER)
                     !isOurs
                 }
                 if (events.isEmpty()) continue
@@ -106,5 +107,5 @@ class DefaultFileWatcherService : FileWatcherService {
         }
     }
 
-    private fun storage(watched: File) = File(watched, ".raptor_cage")
+    private fun storage(watched: File) = File(watched, RAPTOR_CAGE_BASE_FOLDER)
 }

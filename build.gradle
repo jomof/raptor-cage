@@ -76,6 +76,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     //compile "net.rubygrapefruit:native-platform:0.14"
     //compile 'com.google.code.gson:gson:2.8.5'
+    compile group: 'org.picocontainer', name: 'picocontainer', version: '2.15'
     testCompile 'junit:junit:4.11'
     testCompile 'com.google.truth:truth:0.42'
     testCompile group: 'net.java', name: 'quickcheck', version: '0.6'

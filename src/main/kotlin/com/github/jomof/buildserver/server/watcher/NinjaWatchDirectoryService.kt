@@ -21,6 +21,7 @@ class NinjaWatchDirectoryService(watched: File, storage: File) : WatchDirectoryS
     private val ninjaKeys = mutableMapOf<String, String>()
 
     init {
+        println("Ninja services on $watched")
         storage.mkdirs()
     }
     override fun events(events: List<WatchEvent<*>>) {

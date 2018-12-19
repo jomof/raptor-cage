@@ -2,7 +2,7 @@ package com.github.jomof.buildserver.server.utility
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
-import java.nio.file.Path
+import java.nio.file.Paths
 
 class PathUtilityKtTest {
 
@@ -10,7 +10,7 @@ class PathUtilityKtTest {
     fun oneLine() {
         val paths = """
             mylibrary\.externalNativeBuild\cmake\debug\arm64-v8a\build.ninja
-        """.trimIndent().split("\n").map { Path.of(it) }.toSet()
+        """.trimIndent().split("\n").map { Paths.get(it) }.toSet()
 
         val map = paths.removeCommonSegments()
         assertThat(map).hasSize(paths.size)
@@ -25,7 +25,7 @@ class PathUtilityKtTest {
         val paths = """
             mylibrary\.externalNativeBuild\cmake\debug\arm64-v8a\build.ninja
             mylibrary\.externalNativeBuild\cmake\debug\armeabi-v7a\build.ninja
-        """.trimIndent().split("\n").map { Path.of(it) }.toSet()
+        """.trimIndent().split("\n").map { Paths.get(it) }.toSet()
 
         val map = paths.removeCommonSegments()
         assertThat(map).hasSize(paths.size)
@@ -40,7 +40,7 @@ class PathUtilityKtTest {
         val paths = """
             mylibrary\.externalNativeBuild\cmake\debug\arm64-v8a\build.ninja
             mylibrary\.externalNativeBuild\cmake\release\armeabi-v7a\build.ninja
-        """.trimIndent().split("\n").map { Path.of(it) }.toSet()
+        """.trimIndent().split("\n").map { Paths.get(it) }.toSet()
 
         val map = paths.removeCommonSegments()
         assertThat(map).hasSize(paths.size)
@@ -49,7 +49,7 @@ class PathUtilityKtTest {
         assertThat(map["debug/arm64-v8a"])
                 .isEqualTo("mylibrary/.externalNativeBuild/cmake/debug/arm64-v8a/build.ninja")
     }
-    
+
     @Test
     fun bigTest() {
         val paths = """
@@ -84,7 +84,7 @@ class PathUtilityKtTest {
             mylibrary-4\.externalNativeBuild\cmake\release\armeabi-v7a\build.ninja
             mylibrary-4\.externalNativeBuild\cmake\release\x86\build.ninja
             mylibrary-4\.externalNativeBuild\cmake\release\x86_64\build.ninja
-        """.trimIndent().split("\n").map { Path.of(it) }.toSet()
+        """.trimIndent().split("\n").map { Paths.get(it) }.toSet()
 
         val map = paths.removeCommonSegments()
         assertThat(map).hasSize(paths.size)
