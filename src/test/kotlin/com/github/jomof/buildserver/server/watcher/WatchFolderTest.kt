@@ -17,7 +17,8 @@ class WatchFolderTest {
             }
         }
         if (total < expected) {
-            throw RuntimeException("timeout after ${System.currentTimeMillis() - start}")
+            throw RuntimeException("timeout after ${System.currentTimeMillis() - start}," +
+                    " expected $expected, saw $total")
         }
         if (total > expected) {
             throw RuntimeException("Expected $expected, saw $total")
