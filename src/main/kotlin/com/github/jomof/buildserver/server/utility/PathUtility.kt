@@ -12,7 +12,7 @@ private fun Collection<Path>.commonElements(): Set<Path> {
 private fun Path.removeSegment(remove: Path): Path {
     val filtered = filter { seg -> seg != remove }.map { it.toString() }
     return when {
-        filtered.isEmpty() -> Path.of("")
+        filtered.isEmpty() -> Paths.get("")
         else -> Paths.get(filtered[0], *filtered.drop(1).toTypedArray())
     }
 }

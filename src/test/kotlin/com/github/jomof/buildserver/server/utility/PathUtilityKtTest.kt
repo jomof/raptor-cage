@@ -49,8 +49,7 @@ class PathUtilityKtTest {
         assertThat(map["debug/arm64-v8a"])
                 .isEqualTo("mylibrary/.externalNativeBuild/cmake/debug/arm64-v8a/build.ninja")
     }
-
-
+    
     @Test
     fun bigTest() {
         val paths = """

@@ -1,5 +1,6 @@
 package com.github.jomof.buildserver.server.watcher
 
+import com.github.jomof.buildserver.server.utility.removeCommonSegments
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.StandardWatchEventKinds
@@ -17,6 +18,7 @@ class NinjaWatchDirectoryService(watched: File, storage: File) : WatchDirectoryS
     private val counters = File(storage, "counters.txt")
     private val ninjasFile = File(storage, "ninjas.txt")
     private val ninjas = mutableSetOf<Path>()
+    private val ninjaKeys = mutableMapOf<String, String>()
 
     init {
         storage.mkdirs()
@@ -49,8 +51,8 @@ class NinjaWatchDirectoryService(watched: File, storage: File) : WatchDirectoryS
                     lastModified = path.toString().replace(File.separator, "/")
                 }
             }
-
         }
+        updateNinjas(newNinjas)
         counters.writeText("""
             discovered = $discovered
             last_discovered = $lastDiscovered
@@ -63,22 +65,16 @@ class NinjaWatchDirectoryService(watched: File, storage: File) : WatchDirectoryS
         """.trimIndent())
     }
 
-    //fun removeNthSegment(path : Path)
-
-    fun computeUniqueNames() {
-        for(ninja in ninjas) {
-            for (segment in ninja) {
-
-            }
-        }
-    }
-
-    fun updateNinjas(newNinjas : Set<Path>) {
+    private fun updateNinjas(newNinjas : Set<Path>) {
         if (ninjas != newNinjas) {
             println("Ninjas changed")
             ninjas.clear()
             ninjas.addAll(newNinjas)
-            ninjasFile.writeText(ninjas.joinToString("\n"));
+            ninjaKeys.clear()
+            ninjaKeys.putAll(ninjas.removeCommonSegments())
+            ninjasFile.writeText(ninjaKeys
+                    .map { "${it.key} = ${it.value}"}
+                    .joinToString("\n"))
         } else {
             println("Ninjas didn't change")
         }
