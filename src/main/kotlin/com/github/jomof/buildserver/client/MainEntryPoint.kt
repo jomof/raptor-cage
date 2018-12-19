@@ -1,17 +1,20 @@
 package com.github.jomof.buildserver.client
 
+import com.github.jomof.buildserver.common.ServerName
+
 
 class MainEntryPoint {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
+            val serverName = ServerName("main")
             when(args[0]) {
                 "clang" -> {
-                    doClang(args.asList().drop(1))
+                    doClang(args.asList().drop(1), serverName)
                     return
                 }
                 "version" -> {
-                    doVersion()
+                    doVersion(serverName)
                     return
                 }
                 else -> {

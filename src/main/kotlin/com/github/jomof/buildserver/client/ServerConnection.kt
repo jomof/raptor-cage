@@ -1,12 +1,13 @@
 package com.github.jomof.buildserver.client
 
+import com.github.jomof.buildserver.common.ServerName
 import com.github.jomof.buildserver.common.io.teleportStdio
 import com.github.jomof.buildserver.common.messages.*
 import java.io.*
 import java.net.Socket
 
 class ServerConnection(
-        val serverName : String,
+        val serverName : ServerName,
         val port : Int) {
     private val hello : HelloResponse = hello()
     private fun send(request : Any) : Any {

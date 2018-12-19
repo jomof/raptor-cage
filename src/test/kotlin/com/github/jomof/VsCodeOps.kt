@@ -1,6 +1,7 @@
 package com.github.jomof
 
 import com.github.jomof.buildserver.client.getOrStartServer
+import com.github.jomof.buildserver.common.ServerName
 import org.junit.Test
 import java.io.File
 
@@ -10,7 +11,7 @@ class VsCodeOps {
     fun vscodeStart() {
         val folder = File("C:\\Users\\Jomo\\projects\\vscode_workspace\\project")
         if (folder.exists()) {
-            val connection = getOrStartServer("vscode")
+            val connection = getOrStartServer(ServerName("vscode"))
             connection.watch(folder.path)
         }
     }
@@ -18,7 +19,7 @@ class VsCodeOps {
     @Test
     fun vscodeStop() {
         try {
-            val connection = getOrStartServer("vscode")
+            val connection = getOrStartServer(ServerName("vscode"))
             connection.stop()
         } catch (e: Throwable) {
         }

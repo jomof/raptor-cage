@@ -2,7 +2,7 @@ package com.github.jomof.buildserver.server
 
 import com.github.jomof.buildserver.*
 import com.github.jomof.buildserver.client.getOrStartServer
-import com.github.jomof.buildserver.common.io.teleportStdio
+import com.github.jomof.buildserver.common.ServerName
 import com.github.jomof.buildserver.common.localCacheStoreRoot
 import com.github.jomof.buildserver.server.model.ClangCall
 import com.google.common.truth.Truth.assertThat
@@ -12,7 +12,7 @@ import java.io.*
 class MasterServerTest {
     @Test
     fun spam() {
-        val serverName = "MasterServerTest-spam"
+        val serverName = ServerName("MasterServerTest-spam")
         localCacheStoreRoot(serverName).deleteRecursively()
         var remaining = 10
         val baseCall = ClangCall(postProcessCppExampleFlags.readLines())

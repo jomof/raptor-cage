@@ -1,6 +1,7 @@
 package com.github.jomof.buildserver.server
 
 import com.github.jomof.buildserver.*
+import com.github.jomof.buildserver.common.ServerName
 import com.github.jomof.buildserver.server.model.ClangCall
 import com.github.jomof.buildserver.server.model.ClangOperation
 import com.github.jomof.buildserver.common.io.teleportStdio
@@ -34,7 +35,7 @@ class ClangExecutionKtTest {
 
     @Test
     fun simpleClangCppToO() {
-        localCacheStoreRoot("simpleClangCppToO").deleteRecursively()
+        localCacheStoreRoot(ServerName("simpleClangCppToO")).deleteRecursively()
         val folder = isolatedTestFolder()
         File(folder, "out").mkdirs()
         val clangArgs = postProcessCppExampleFlags.readLines()
@@ -44,7 +45,7 @@ class ClangExecutionKtTest {
                 .withOutput("out/native-lib.cpp.o")
 
         withStdio { write ->
-            clang("simpleClangCppToO", folder.path, clangFlags.rawFlags, write)
+            clang(ServerName("simpleClangCppToO"), folder.path, clangFlags.rawFlags, write)
         }
 
         assertThat(File(folder, "out/native-lib.cpp.o").isFile)
@@ -54,7 +55,7 @@ class ClangExecutionKtTest {
 
     @Test
     fun clangExecutePlan() {
-        localCacheStoreRoot("clangExecutePlan").deleteRecursively()
+        localCacheStoreRoot(ServerName("clangExecutePlan")).deleteRecursively()
         val folder = isolatedTestFolder()
         File(folder, "out").mkdirs()
         val clangArgs = postProcessCppExampleFlags.readLines()
@@ -64,7 +65,7 @@ class ClangExecutionKtTest {
                 .withOutput("out/native-lib.cpp.o")
         val plan = createPlan()
                 .addClangCall(folder, clangFlags)
-                .copyOutputsTo("clangExecutePlan")
+                .copyOutputsTo(ServerName("clangExecutePlan"))
 
         withStdio { write ->
             clang(plan, write)

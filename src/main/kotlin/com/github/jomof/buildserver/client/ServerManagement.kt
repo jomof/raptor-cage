@@ -17,7 +17,7 @@ private fun tryLock(lockFile : RandomAccessFile) : FileLock? {
     }
 }
 
-fun getOrStartServer(serverName : String): ServerConnection {
+fun getOrStartServer(serverName : ServerName): ServerConnection {
     val lockFile = localPortAgrementClientLockFile(serverName)
     lockFile.parentFile.mkdirs()
     val connection = connectServer(serverName)
@@ -43,7 +43,7 @@ fun getOrStartServer(serverName : String): ServerConnection {
         val stderr = File(localCachePath, "server-stderr.txt")
         val pb = RaptorCageDaemon::class.callbackBuilder()
                 .detached()
-                .processBuilder("Raptor Cage", localCachePath, serverName)
+                .processBuilder("Raptor Cage", localCachePath, serverName.name)
                 .directory(localCachePath)
                 .redirectOutput(ProcessBuilder.Redirect.appendTo(stdout))
                 .redirectError(ProcessBuilder.Redirect.appendTo(stderr))
@@ -65,7 +65,7 @@ fun getOrStartServer(serverName : String): ServerConnection {
     throw RuntimeException("Unreachable")
 }
 
-fun connectServer(serverName : String) : ServerConnection? {
+fun connectServer(serverName : ServerName) : ServerConnection? {
     val localPortAgreementFile = localPortAgreementFile(serverName)
     if (localPortAgreementFile.isFile) {
         val port = localPortAgreementFile.readText().toInt()

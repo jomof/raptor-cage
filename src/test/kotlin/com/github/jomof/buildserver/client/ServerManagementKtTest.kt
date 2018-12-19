@@ -1,15 +1,13 @@
 package com.github.jomof.buildserver.client
 
 import com.github.jomof.buildserver.common.RAPTOR_CAGE_BASE_FOLDER
-import com.github.jomof.buildserver.server.utility.removeCommonSegments
+import com.github.jomof.buildserver.common.ServerName
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.io.File
-import java.nio.file.Path
-import java.nio.file.Paths
 
 class ServerManagementKtTest {
-    private class ConnectServer(serverName: String) : AutoCloseable {
+    private class ConnectServer(serverName: ServerName) : AutoCloseable {
         val connection = getOrStartServer(serverName)
         override fun close() {
             connection.stop()
@@ -18,7 +16,7 @@ class ServerManagementKtTest {
 
     @Test
     fun testGetOrStartServer() {
-        ConnectServer("testGetOrStartServer").use { server ->
+        ConnectServer(ServerName("testGetOrStartServer")).use { server ->
             assertThat(server.connection.version()).isEqualTo(2)
         }
     }
@@ -39,7 +37,7 @@ class ServerManagementKtTest {
             subFolder.mkdirs()
 
             discoveredFile.writeText("Hello file watcher")
-            ConnectServer("$base").use { server ->
+            ConnectServer(ServerName(base)).use { server ->
                 server.connection.watch(testRoot.path)
                 deletedFile.writeText("Hello file watcher")
                 modifiedFile.writeText("Hello file watcher")

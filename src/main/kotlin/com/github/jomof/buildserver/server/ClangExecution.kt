@@ -1,5 +1,6 @@
 package com.github.jomof.buildserver.server
 
+import com.github.jomof.buildserver.common.ServerName
 import com.github.jomof.buildserver.server.model.ClangCall
 import com.github.jomof.buildserver.common.io.RemoteStdio
 import com.github.jomof.buildserver.common.process.redirectAndWaitFor
@@ -10,7 +11,7 @@ import java.io.ObjectOutputStream
  * Handles calls to clang on the server.
  */
 fun clang(
-        serverName: String,
+        serverName: ServerName,
         directory: String,
         args: List<String>,
         write: ObjectOutputStream) : Int {

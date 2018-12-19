@@ -1,10 +1,14 @@
 package com.github.jomof.buildserver.server
 
+import com.github.jomof.buildserver.common.ServerLockFile
+import com.github.jomof.buildserver.common.ServerName
 import com.github.jomof.buildserver.common.localPortAgreementFile
 import com.github.jomof.buildserver.common.localPortAgrementServerLockFile
 import com.github.jomof.buildserver.server.watcher.getFileWatcherService
 import com.github.jomof.buildserver.server.workitems.NewRequestWorkItem
 import com.github.jomof.buildserver.server.workitems.WorkItem
+import org.picocontainer.DefaultPicoContainer
+import org.picocontainer.behaviors.Caching
 import java.io.IOException
 import java.io.RandomAccessFile
 import java.net.ServerSocket
@@ -12,7 +16,7 @@ import java.net.Socket
 import java.net.SocketTimeoutException
 
 class RaptorCageDaemon(
-        val serverName: String,
+        val serverName: ServerName,
         private val serverSocket: ServerSocket) : Runnable {
     private lateinit var runningThread: Thread
     private var isStopped = false
@@ -107,9 +111,13 @@ class RaptorCageDaemon(
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            val serverName = args[0]
-            val serverLock = localPortAgrementServerLockFile(serverName)
-            RandomAccessFile(serverLock, "rw").use { lockFile ->
+            val pico = DefaultPicoContainer(Caching())
+            val serverName = ServerName(args[0])
+            val serverLock = ServerLockFile(localPortAgrementServerLockFile(serverName))
+            pico.addComponent(serverName)
+            pico.addComponent(serverLock)
+
+            RandomAccessFile(serverLock.file, "rw").use { lockFile ->
                 lockFile.channel.lock()
 
                 // Fully start the server before publishing the port

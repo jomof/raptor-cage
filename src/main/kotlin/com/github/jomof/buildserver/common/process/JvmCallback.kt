@@ -1,6 +1,7 @@
 package com.github.jomof.buildserver.common.process
 
 import com.github.jomof.buildserver.common.*
+import org.picocontainer.PicoContainer
 import java.io.File
 import java.util.*
 import kotlin.jvm.internal.Intrinsics
@@ -16,6 +17,7 @@ class JvmCallbackBuilder(clazz : KClass<*>) {
     init {
         // Will always need Kotlin intrinsics
         dependsOn(Intrinsics::class)
+        dependsOn(PicoContainer::class)
     }
 
     fun dependsOn(clazz : KClass<*>) : JvmCallbackBuilder {

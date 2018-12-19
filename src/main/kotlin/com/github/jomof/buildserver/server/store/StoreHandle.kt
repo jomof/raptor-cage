@@ -1,5 +1,6 @@
 package com.github.jomof.buildserver.server.store
 
+import com.github.jomof.buildserver.common.ServerName
 import com.github.jomof.buildserver.common.localCacheStoreRoot
 import com.github.jomof.buildserver.server.store.StoreHandleState.*
 import java.io.*
@@ -19,7 +20,7 @@ import java.util.*
  *
  */
 data class StoreHandle(
-        val serverName : String,
+        val serverName : ServerName,
         val keySpace : String,
         val key : Any) {
     var state = OPEN

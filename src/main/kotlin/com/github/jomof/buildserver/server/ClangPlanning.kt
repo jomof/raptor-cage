@@ -1,5 +1,6 @@
 package com.github.jomof.buildserver.server
 
+import com.github.jomof.buildserver.common.ServerName
 import com.github.jomof.buildserver.server.model.ClangCall
 import com.github.jomof.buildserver.server.store.StoreHandle
 import java.io.File
@@ -22,7 +23,7 @@ fun List<PlanStep>.addClangCall(
         workingFolder : File,
         call : ClangCall) = this + ExecuteClang(workingFolder, call)
 
-fun List<PlanStep>.copyOutputsTo(serverName : String) : List<PlanStep> {
+fun List<PlanStep>.copyOutputsTo(serverName : ServerName) : List<PlanStep> {
     return flatMap { step ->
         when(step) {
             is ExecuteClang -> {

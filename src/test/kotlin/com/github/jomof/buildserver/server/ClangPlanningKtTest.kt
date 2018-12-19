@@ -1,6 +1,7 @@
 package com.github.jomof.buildserver.server
 
 import com.github.jomof.buildserver.clangFlagsExample
+import com.github.jomof.buildserver.common.ServerName
 import com.github.jomof.buildserver.isolatedTestFolder
 import com.github.jomof.buildserver.server.model.ClangCall
 import com.google.common.truth.Truth.assertThat
@@ -8,7 +9,7 @@ import org.junit.Test
 import java.io.File
 
 class ClangPlanningKtTest {
-    private val serverName = "ClangPlanningKtTest"
+    private val serverName = ServerName("ClangPlanningKtTest")
 
     private fun simulatePlan(plan : List<PlanStep>) : Map<String, String> {
         val filesMap = mutableMapOf<String, String>()
