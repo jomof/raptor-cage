@@ -15,12 +15,14 @@ class NinjaWatchDirectoryService(watched: File, storage: File) : WatchDirectoryS
     private var lastCreated : String? = "none"
     private var lastModified : String? = "none"
     private val counters = File(storage, "counters.txt")
+    private val ninjasFile = File(storage, "ninjas.txt")
+    private val ninjas = mutableSetOf<Path>()
 
     init {
-        println("Logging $watched")
         storage.mkdirs()
     }
     override fun events(events: List<WatchEvent<*>>) {
+        val originalNinjas = ninjas.map{it}.toSet()
         for (event in events) {
             val path = event.context() as Path
             if (path.toFile().name != "build.ninja") {
@@ -29,20 +31,29 @@ class NinjaWatchDirectoryService(watched: File, storage: File) : WatchDirectoryS
             when (event.kind()) {
                 EVENT_DISCOVERY -> {
                     discovered += event.count()
-                    lastDiscovered = event.context().toString().replace(File.separator, "/")
+                    lastDiscovered = path.toString().replace(File.separator, "/")
+                    ninjas.add(path)
                 }
                 StandardWatchEventKinds.ENTRY_CREATE -> {
                     created += event.count()
-                    lastCreated = event.context().toString().replace(File.separator, "/")
+                    lastCreated = path.toString().replace(File.separator, "/")
+                    ninjas.add(path)
                 }
                 StandardWatchEventKinds.ENTRY_DELETE -> {
                     deleted += event.count()
-                    lastDeleted = event.context().toString().replace(File.separator, "/")
+                    lastDeleted = path.toString().replace(File.separator, "/")
+                    ninjas.remove(path)
                 }
                 StandardWatchEventKinds.ENTRY_MODIFY -> {
                     modified += event.count()
-                    lastModified = event.context().toString().replace(File.separator, "/")
+                    lastModified = path.toString().replace(File.separator, "/")
                 }
+            }
+            if (ninjas != originalNinjas) {
+                println("Ninjas changed")
+                ninjasFile.writeText(ninjas.joinToString("\n"));
+            } else {
+                println("Ninjas didn't change")
             }
         }
         counters.writeText("""

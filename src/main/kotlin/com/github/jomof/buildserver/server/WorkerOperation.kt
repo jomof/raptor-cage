@@ -56,6 +56,7 @@ class WorkerOperation(
                                             write.writeObject(WatchResponse(watching = request.directory))
                                             println("Server wrote watch-response")
                                             getFileWatcherService().poll()
+
                                         }
                                         is StopRequest -> {
                                             server.stop()
@@ -67,7 +68,9 @@ class WorkerOperation(
                                         }
                                     }
                                 } catch (e: Exception) {
-                                    write.writeObject(ErrorResponse(message = "Exception during $request"))
+                                    write.writeObject(ErrorResponse(
+                                            message = "Exception during $request",
+                                            exception = e))
                                 }
                             }
                             else -> {

@@ -67,7 +67,10 @@ class ServerConnection(
                 return response as TResult
             }
             when (response) {
-                is ErrorResponse -> throw RuntimeException(response.message)
+                is ErrorResponse -> {
+                    if (response.exception != null) throw response.exception
+                    throw RuntimeException(response.message)
+                }
                 else -> throw RuntimeException(response.toString())
             }
         }

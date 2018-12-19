@@ -60,13 +60,16 @@ class ServerManagementKtTest {
         }
     }
 
-    //@Test
+    @Test
     fun vscodeStart() {
-        val connection = getOrStartServer("vscode")
-        connection.watch(File("C:\\Users\\Jomo\\projects\\vscode_workspace\\project").path)
+        val folder = File("C:\\Users\\Jomo\\projects\\vscode_workspace\\project")
+        if (folder.exists()) {
+            val connection = getOrStartServer("vscode")
+            connection.watch(folder.path)
+        }
     }
 
-    //@Test
+    @Test
     fun vscodeStop() {
         try {
             val connection = getOrStartServer("vscode")
