@@ -4,7 +4,10 @@ import com.github.jomof.buildserver.common.ServerLockFile
 import com.github.jomof.buildserver.common.ServerName
 import com.github.jomof.buildserver.common.localPortAgreementFile
 import com.github.jomof.buildserver.common.localPortAgrementServerLockFile
-import com.github.jomof.buildserver.server.watcher.getFileWatcherService
+import com.github.jomof.buildserver.server.watcher.DefaultFileWatcherService
+import com.github.jomof.buildserver.server.watcher.FileWatcherService
+import com.github.jomof.buildserver.server.watcher.LoggingWatchDirectoryService
+import com.github.jomof.buildserver.server.watcher.NinjaWatchDirectoryService
 import com.github.jomof.buildserver.server.workitems.NewRequestWorkItem
 import com.github.jomof.buildserver.server.workitems.WorkItem
 import org.picocontainer.DefaultPicoContainer
@@ -17,11 +20,14 @@ import java.net.SocketTimeoutException
 
 class RaptorCageDaemon(
         val serverName: ServerName,
-        private val serverSocket: ServerSocket) : Runnable {
+        private val serverSocket: ServerSocket,
+        private val pico : DefaultPicoContainer,
+        private val fileWatcherService : FileWatcherService) : Runnable {
     private lateinit var runningThread: Thread
     private var isStopped = false
     private var workersRunning = 0
     private val workItems = mutableListOf<WorkItem>()
+
 
     override fun run() {
         try {
@@ -35,7 +41,7 @@ class RaptorCageDaemon(
                 try {
                     clientSocket = this.serverSocket.accept()
                 } catch (e: SocketTimeoutException) {
-                    getFileWatcherService().poll()
+                    fileWatcherService.poll()
                 } catch (e: IOException) {
                     if (isStopped()) {
                         log(serverName, "Server stopped")
@@ -48,10 +54,10 @@ class RaptorCageDaemon(
 
                 if (clientSocket != null) {
                     // Deserialize the request
-                    addWorkItem(NewRequestWorkItem(clientSocket))
+                    addWorkItem(NewRequestWorkItem(clientSocket, pico))
 
                     if (workersRunning < 10) {
-                        Thread(WorkerOperation(this)).start()
+                        Thread(pico.getComponent(WorkerOperation::class.java)).start()
                     }
                 }
             }
@@ -79,11 +85,6 @@ class RaptorCageDaemon(
     @Synchronized
     private fun isStopped(): Boolean {
         return this.isStopped
-    }
-
-    @Synchronized
-    fun workers(): Int {
-        return workersRunning
     }
 
     @Synchronized
@@ -115,13 +116,19 @@ class RaptorCageDaemon(
             val serverName = ServerName(args[0])
             val serverLock = ServerLockFile(localPortAgrementServerLockFile(serverName))
             pico.addComponent(serverName)
+            pico.addComponent(ServerSocket(0))
             pico.addComponent(serverLock)
+            pico.addComponent(pico)
+            pico.addComponent(WorkerOperation::class.java)
+            pico.addComponent(RaptorCageDaemon::class.java)
+            pico.addComponent(DefaultFileWatcherService::class.java)
+
 
             RandomAccessFile(serverLock.file, "rw").use { lockFile ->
                 lockFile.channel.lock()
 
                 // Fully start the server before publishing the port
-                val server = RaptorCageDaemon(serverName, ServerSocket(0))
+                val server = pico.getComponent(RaptorCageDaemon::class.java)
                 Thread(server).start()
                 // At this point, we could serve requests but no one knows
                 // our port number.

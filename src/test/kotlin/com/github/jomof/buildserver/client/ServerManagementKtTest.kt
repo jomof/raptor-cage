@@ -31,7 +31,7 @@ class ServerManagementKtTest {
             val deletedFile = File(testRoot, "deleted-file.txt")
             val discoveredFile = File(testRoot, "discovered-file.txt")
             val modifiedFile = File(testRoot, "modified-file.txt")
-            val countersFile = File(testRoot, "$RAPTOR_CAGE_BASE_FOLDER/log/counters.txt")
+            val countersFile = File(testRoot, "$RAPTOR_CAGE_BASE_FOLDER/$base/log/counters.txt")
             testRoot.deleteRecursively()
 
             subFolder.mkdirs()

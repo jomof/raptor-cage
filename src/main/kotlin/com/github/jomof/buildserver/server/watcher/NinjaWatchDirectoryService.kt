@@ -1,12 +1,13 @@
 package com.github.jomof.buildserver.server.watcher
 
+import com.github.jomof.buildserver.common.DataStorageFolder
 import com.github.jomof.buildserver.server.utility.removeCommonSegments
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.StandardWatchEventKinds
 import java.nio.file.WatchEvent
 
-class NinjaWatchDirectoryService(watched: File, storage: File) : WatchDirectoryService {
+class NinjaWatchDirectoryService(baseStorage: DataStorageFolder) : FileChangeListener {
     private var discovered = 0
     private var deleted = 0
     private var created = 0
@@ -15,16 +16,18 @@ class NinjaWatchDirectoryService(watched: File, storage: File) : WatchDirectoryS
     private var lastDeleted : String? = "none"
     private var lastCreated : String? = "none"
     private var lastModified : String? = "none"
+    private val storage = File(baseStorage.folder, "ninja")
     private val counters = File(storage, "counters.txt")
     private val ninjasFile = File(storage, "ninjas.txt")
     private val ninjas = mutableSetOf<Path>()
     private val ninjaKeys = mutableMapOf<String, String>()
 
     init {
-        println("Ninja services on $watched")
         storage.mkdirs()
+        println("Ninja storage is at $storage")
     }
     override fun events(events: List<WatchEvent<*>>) {
+        storage.mkdirs()
         val newNinjas = ninjas.map{it}.toMutableSet()
         for (event in events) {
             val path = event.context() as Path

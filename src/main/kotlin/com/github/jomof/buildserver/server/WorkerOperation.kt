@@ -3,12 +3,13 @@ package com.github.jomof.buildserver.server
 import com.github.jomof.buildserver.BuildInfo
 import com.github.jomof.buildserver.common.io.RemoteStdio
 import com.github.jomof.buildserver.common.messages.*
-import com.github.jomof.buildserver.server.watcher.getFileWatcherService
+import com.github.jomof.buildserver.server.watcher.FileWatcherService
 import com.github.jomof.buildserver.server.workitems.NewRequestWorkItem
 import java.io.*
 
 class WorkerOperation(
-        private val server: RaptorCageDaemon) : Runnable {
+        private val server: RaptorCageDaemon,
+        private val fileWatcherService : FileWatcherService) : Runnable {
     override fun run() {
         synchronized(server) {
             server.incrementWorkers()
@@ -16,8 +17,8 @@ class WorkerOperation(
         try {
             do {
                 val workItem = server.popWorkItem() ?: return
-                synchronized(getFileWatcherService()) {
-                    getFileWatcherService().poll()
+                synchronized(fileWatcherService) {
+                    fileWatcherService.poll()
                     workItem.socket.use { socket ->
                         val inFromClient = DataInputStream(socket.getInputStream())
                         val read = ObjectInputStream(inFromClient)
@@ -49,13 +50,13 @@ class WorkerOperation(
                                             println("Server starting watch of ${request.directory}")
                                             println("Server about to write watch-response")
                                             try {
-                                                getFileWatcherService().addWatchFolder(File(request.directory))
+                                                fileWatcherService.addWatchFolder(File(request.directory))
                                             } finally {
                                                 RemoteStdio(write).exit()
                                             }
                                             write.writeObject(WatchResponse(watching = request.directory))
                                             println("Server wrote watch-response")
-                                            getFileWatcherService().poll()
+                                            fileWatcherService.poll()
 
                                         }
                                         is StopRequest -> {

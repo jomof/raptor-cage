@@ -1,10 +1,12 @@
 package com.github.jomof.buildserver.server.watcher
 
+import com.github.jomof.buildserver.common.DataStorageFolder
+import com.github.jomof.buildserver.common.FileWatcherFolder
 import java.io.File
 import java.nio.file.StandardWatchEventKinds
 import java.nio.file.WatchEvent
 
-class LoggingWatchDirectoryService(watched: File, storage: File) : WatchDirectoryService {
+class LoggingWatchDirectoryService(baseStorage: DataStorageFolder) : FileChangeListener {
     private var discovered = 0
     private var deleted = 0
     private var created = 0
@@ -13,13 +15,14 @@ class LoggingWatchDirectoryService(watched: File, storage: File) : WatchDirector
     private var lastDeleted : String? = "none"
     private var lastCreated : String? = "none"
     private var lastModified : String? = "none"
+    private val storage = File(baseStorage.folder, "log")
     private val counters = File(storage, "counters.txt")
 
     init {
-        println("Logging $watched")
         storage.mkdirs()
     }
     override fun events(events: List<WatchEvent<*>>) {
+        storage.mkdirs()
         for (event in events) {
             println("Saw file event ${event.kind()} ${event.context()}")
             when (event.kind()) {
