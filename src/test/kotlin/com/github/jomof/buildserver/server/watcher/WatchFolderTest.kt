@@ -41,19 +41,17 @@ class WatchFolderTest {
         File(folder, "sub").mkdirs()
         pollUntil(watchFolder,
             "ENTRY_CREATE = my-File.txt",
-            "ENTRY_MODIFY = my-File.txt",
-            "ENTRY_CREATE = sub")
+            "ENTRY_MODIFY = my-File.txt")
 
         pollUntil(watchFolder)
         File(folder, "./my-dir").mkdirs()
+        File(folder, "./my-dir/my-file.txt").writeText("abc")
         pollUntil(watchFolder,
-                "ENTRY_CREATE = my-dir")
+                "EVENT_DISCOVERY = my-dir/my-file.txt")
         File(folder, "./my-dir/a/b/c/d").mkdirs()
+        File(folder, "./my-dir/a/b/c/d/file.txt").writeText("xyz")
         pollUntil(watchFolder,
-                "ENTRY_CREATE = my-dir/a",
-                "ENTRY_MODIFY = my-dir/a/b",
-                "ENTRY_MODIFY = my-dir/a/b/c",
-                "ENTRY_MODIFY = my-dir/a"
+                "EVENT_DISCOVERY = my-dir/a/b/c/d/file.txt"
                 )
         folder.deleteRecursively()
     }

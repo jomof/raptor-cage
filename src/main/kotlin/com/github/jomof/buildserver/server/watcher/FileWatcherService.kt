@@ -26,48 +26,7 @@ val EVENT_DISCOVERY = object : WatchEvent.Kind<Path> {
 }
 
 class FolderWatchKeyListener(
-        val watcherFolder: FileWatcherFolder,
-        val services : Array<FileChangeListener>) {
-    private val folder = watcherFolder.folder
-
-    init {
-        discover()
-    }
-
-    private fun discover() {
-        // Now discover all of the files in the path, do it in batches to limit the size in memory
-        // of the list of files
-
-        println("Discovering folder $folder")
-        val start = System.currentTimeMillis()
-        val abs = folder.absoluteFile
-        val folderNameLength = abs.path.length
-        abs.walk()
-                .filter { it.isFile }
-                .filter { !it.path.contains(RAPTOR_CAGE_BASE_FOLDER) }
-                .map { file ->
-                    if (file.isRooted) {
-                        val path = file.path.substring(folderNameLength)
-                        val trimmed = path.trimStart(File.separatorChar)
-                        File(trimmed)
-                    } else {
-                        file
-                    }
-                }
-                .windowed(100, 100, true).forEach { files ->
-                    val events = files.map { file ->
-                        object : WatchEvent<Path> {
-                            override fun count() = 1
-                            override fun kind() = EVENT_DISCOVERY
-                            override fun context() = file.toPath()
-                        }
-                    }.toList()
-                    for (directoryService in services) {
-                        directoryService.events(events)
-                    }
-                }
-        println("Watching $folder, discovery took ${System.currentTimeMillis() - start}ms")
-    }
+        private val services : Array<FileChangeListener>) {
 
     fun events(events: List<WatchEvent<*>>) {
         services.forEach { it.events(events) }

@@ -24,7 +24,7 @@ class LoggingWatchDirectoryService(baseStorage: DataStorageFolder) : FileChangeL
     override fun events(events: List<WatchEvent<*>>) {
         storage.mkdirs()
         for (event in events) {
-            println("Saw file event ${event.kind()} ${event.context()}")
+            println("Saw file event ${event.kind().name()} ${event.context()}")
             when (event.kind()) {
                 EVENT_DISCOVERY -> {
                     discovered += event.count()

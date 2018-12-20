@@ -79,6 +79,7 @@ class NinjaWatchDirectoryService(baseStorage: DataStorageFolder) : FileChangeLis
             ninjasFile.writeText(ninjaKeys
                     .map { "${it.key} = ${it.value}"}
                     .joinToString("\n"))
+            println("Wrote to $ninjasFile")
         } else {
             println("Ninjas didn't change")
         }
