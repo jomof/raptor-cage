@@ -9,7 +9,8 @@ private fun expandIncludesNode(node : Node, include : (String) -> NinjaFileDef) 
         is NinjaFileDef -> {
             val newTops : List<Node> = node.tops.flatMap { top ->
                 when(top) {
-                    is Include -> include((top.file as NinjaFileRef).value).tops
+                    is Include ->
+                        include((top.file as NinjaFileRef).value).tops
                     else -> listOf(top)
                 }
             }

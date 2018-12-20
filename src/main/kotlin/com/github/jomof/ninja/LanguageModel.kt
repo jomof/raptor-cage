@@ -18,6 +18,10 @@ data class BuildRef(val value: String, val original : BuildRef? = null) : Node {
         if (value.contains("|")) {
             throw RuntimeException(value)
         }
+
+        if (value.contains("space")) {
+            throw RuntimeException(value)
+        }
     }
 }
 data class RuleRef(val value: String, val original : RuleRef? = null) : Node

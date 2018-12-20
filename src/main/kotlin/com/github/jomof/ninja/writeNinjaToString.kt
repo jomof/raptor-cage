@@ -85,7 +85,10 @@ fun writeNinjaToString(ninja : Node) : String {
             }
             is Default -> with(node) {
                 sb.append("default ")
-                file.onEach { write(it) }
+                file.onEach {
+                    write(it)
+                    sb.append(" ")
+                }
                 sb.append("\n")
             }
             else -> throw RuntimeException(node.toString())

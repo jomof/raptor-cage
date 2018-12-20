@@ -12,6 +12,7 @@ class NinjaTokenReaderKtTest {
         StringReader("foo.dots \$bar.dots \${bar.dots}\n").forEachNinjaToken { lines += it }
         assertThat(lines).containsExactly("foo.dots", "\$bar.dots", "\${bar.dots}", END_OF_LINE_TOKEN, END_OF_FILE_TOKEN)
     }
+
     @Test
     fun skipComments() {
         val lines = mutableListOf<String>()
@@ -19,7 +20,7 @@ class NinjaTokenReaderKtTest {
             # Comment
             Non-comment
         """.trimIndent()).forEachNonComment { lines += it }
-        assertThat(lines).containsExactly("Non-comment")
+        assertThat(lines).containsExactly("", "Non-comment")
     }
 
     @Test
@@ -30,11 +31,11 @@ class NinjaTokenReaderKtTest {
             Non-comment 1
               Non-comment 2
         """.trimIndent()).forEachNonComment { lines += it }
-        assertThat(lines).containsExactly("Non-comment 1", "  Non-comment 2")
+        assertThat(lines).containsExactly("", "Non-comment 1", "  Non-comment 2")
     }
 
     @Test
-    fun skipCommentsRemovesBlankLines() {
+    fun skipCommentsRemovesDoesNotRemoveBlankLines() {
         val lines = mutableListOf<String>()
         StringReader("""
             # Comment
@@ -42,7 +43,7 @@ class NinjaTokenReaderKtTest {
 
             Non-comment 2
         """.trimIndent()).forEachNonComment { lines += it }
-        assertThat(lines).containsExactly("Non-comment 1", "Non-comment 2")
+        assertThat(lines).containsExactly("", "Non-comment 1", "", "Non-comment 2")
     }
 
     @Test
@@ -198,6 +199,23 @@ class NinjaTokenReaderKtTest {
         val lines = mutableListOf<String>()
         StringReader("build build.ninja: RERUN_CMAKE C\$:/abc").forEachNinjaToken { lines += it }
         assertThat(lines).containsExactly("build", "build.ninja", ":", "RERUN_CMAKE", "C:/abc", END_OF_LINE_TOKEN, END_OF_FILE_TOKEN)
+    }
+
+    @Test
+    fun continuedLineTest() {
+        val lines = mutableListOf<String>()
+        StringReader("""
+                build ${'$'}
+                  a: ${'$'}
+                    RULE ${'$'}
+                      b ${'$'}
+
+                build ${'$'}
+                  A: ${'$'}
+                    RULE ${'$'}
+                      B ${'$'}
+                      """.trimIndent()).forEachContinuedLine { lines += it }
+        assertThat(lines).containsExactly("build a: RULE b ", "build A: RULE B ")
     }
 
     @Test

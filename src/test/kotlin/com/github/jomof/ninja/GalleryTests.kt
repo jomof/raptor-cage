@@ -56,11 +56,17 @@ class GalleryTests {
                         assertIdentical(l, r)
                     }
                 }
+                is Default -> {
+                    if (right !is Default) throw error()
+                    (left.file).zip(right.file).onEach { (l, r) ->
+                        assertIdentical(l, r)
+                    }
+                }
                 else -> throw RuntimeException("$left")
             }
         } catch (e : Throwable) {
-            println("Left:\n${writeNinjaToString(left)}")
-            println("Right:\n${writeNinjaToString(right)}")
+            println("Left ${left.javaClass.simpleName}:\n${writeNinjaToString(left)}")
+            println("Right ${right.javaClass.simpleName}:\n${writeNinjaToString(right)}")
             throw e
         }
     }
@@ -103,10 +109,15 @@ class GalleryTests {
     }
 
     private fun roundTrip(ninja: NinjaFileDef) {
-        roundTripSingle(ninja)
-        roundTripSingle(makePathsAbsolute(ninja))
-        roundTripSingle(canonicalizeFiles(ninja))
-        roundTripSingle(qualifyRules("build/x86", ninja))
+        try {
+            roundTripSingle(ninja)
+            roundTripSingle(makePathsAbsolute(ninja))
+            roundTripSingle(canonicalizeFiles(ninja))
+            roundTripSingle(qualifyRules("build/x86", ninja))
+        } catch (e : Exception) {
+            println("File: ${ninja.folder}")
+            throw e
+        }
     }
 
     @Test

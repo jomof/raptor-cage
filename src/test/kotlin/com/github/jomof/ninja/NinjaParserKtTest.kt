@@ -197,6 +197,25 @@ class NinjaParserKtTest {
     }
 
     @Test
+    fun continuedPastEol() {
+        val ninja = parseNinja("/usr/local", StringReader("""
+                build ${'$'}
+                  a: ${'$'}
+                    RULE ${'$'}
+                      b ${'$'}
+
+                build ${'$'}
+                  A: ${'$'}
+                    RULE ${'$'}
+                      B ${'$'}
+                      """.trimIndent()))
+        assertThat(writeNinjaToString(ninja))
+                .isEqualTo("""
+            build a : RULE b
+            build A : RULE B""".trimIndent())
+    }
+
+    @Test
     fun buildTwoInputs() {
         val ninja = parseNinja("/usr/local", StringReader("""
             build output.txt: RULE input1.txt input2.txt

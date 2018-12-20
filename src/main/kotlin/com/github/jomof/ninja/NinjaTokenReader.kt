@@ -10,6 +10,8 @@ fun Reader.forEachNonComment(action: (String) -> Unit) {
     forEachLine { line ->
         if(line.substringBefore("#").isNotBlank()) {
             action(line.trimEnd())
+        } else {
+            action("")
         }
     }
 }

@@ -1,3 +1,6 @@
 [submodule "native-scaling-benchmark-template"]
 	path = native-scaling-benchmark-template
 	url = https://github.com/jomof/native-scaling-benchmark-template.git
+[submodule "ninja\\gallery\\github-dartino-sdk"]
+	path = ninja\\gallery\\github-dartino-sdk
+	url = https://github.com/dartino/sdk.git
