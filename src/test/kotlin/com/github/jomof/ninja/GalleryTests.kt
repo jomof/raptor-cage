@@ -62,6 +62,10 @@ class GalleryTests {
                         assertIdentical(l, r)
                     }
                 }
+                is SubNinja -> {
+                    if (right !is SubNinja) throw error()
+                    assertIdentical(left.original, right.original)
+                }
                 else -> throw RuntimeException("$left")
             }
         } catch (e : Throwable) {
@@ -91,8 +95,10 @@ class GalleryTests {
 
     @Test
     fun roundTripAll() {
-        gallery.walk().filter { it.name == "build.ninja"}.forEach { buildNinja ->
-            val ninja = readNinjaFile(buildNinja)
+        gallery.walk().filter { it.name.endsWith(".ninja") }.forEach { buildNinja ->
+            val topNinja = parseNinja(buildNinja) // Doesn't expand includes
+            roundTrip(topNinja)
+            val ninja = readNinjaFile(buildNinja) // Expands includes
             roundTrip(ninja)
         }
     }

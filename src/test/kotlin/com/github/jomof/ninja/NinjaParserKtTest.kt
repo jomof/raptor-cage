@@ -26,7 +26,6 @@ class NinjaParserKtTest {
                 "  command = date > \$out\n" +
                 "\n" +
                 "build result: cat in_1.cc in-2.O\n"))
-        println(ninja)
         assertThat(((ninja.tops[1] as RuleDef).properties[0].value as UninstantiatedLiteral).value)
                 .isEqualTo("date > \$out")
     }
@@ -60,22 +59,19 @@ class NinjaParserKtTest {
 
     @Test
     fun buildWithNoInputs() {
-        val ninja = parseNinja("/usr/local", StringReader("build cat : Rule"))
-        println(ninja)
+        parseNinja("/usr/local", StringReader("build cat : Rule"))
     }
 
     @Test
     fun indentedCommentsAfterRule() {
-        val ninja = parseNinja("/usr/local", StringReader("rule cat\n" +
+        parseNinja("/usr/local", StringReader("rule cat\n" +
                 "  #command = a"))
-        println(ninja)
     }
 
     @Test
     fun backslash() {
         val ninja = parseNinja("/usr/local", StringReader("foo = bar\\baz\n" +
                 "foo2 = bar\\ baz\n"))
-        println(ninja)
         val assign = ninja.tops[1] as Assignment
         val literal = assign.value as UninstantiatedLiteral
         assertThat(literal.value).isEqualTo("bar\\ baz")
@@ -83,9 +79,8 @@ class NinjaParserKtTest {
 
     @Test
     fun indentedCommentsAfterBuild() {
-        val ninja = parseNinja("/usr/local", StringReader("build cat: Rule\n" +
+        parseNinja("/usr/local", StringReader("build cat: Rule\n" +
                 "  #command = a"))
-        println(ninja)
     }
 
     @Test
@@ -99,10 +94,9 @@ class NinjaParserKtTest {
 
     @Test
     fun indentedBlankLine() {
-        val ninja = parseNinja("/usr/local", StringReader("build cat: Rule\n" +
+        parseNinja("/usr/local", StringReader("build cat: Rule\n" +
                 "  \n" +
                 "  command = a"))
-        println(ninja)
     }
 
     @Test
@@ -116,18 +110,16 @@ class NinjaParserKtTest {
         val assignment = rule.properties[0]
         val literal = assignment.value as UninstantiatedLiteral
         assertThat(literal.value).isEqualTo("\${out}bar\$baz\$blah")
-        println(ninja)
     }
 
     @Test
     fun continuation() {
-        val ninja = parseNinja("/usr/local", StringReader("rule link\n" +
+        parseNinja("/usr/local", StringReader("rule link\n" +
                 "  command = foo bar $\n" +
                 "    baz\n" +
                 "\n" +
                 "build a: link c $\n" +
                 " d e f\n"))
-        println(ninja)
     }
 
     @Test
@@ -155,8 +147,13 @@ class NinjaParserKtTest {
     @Test
     fun include() {
         val ninja = parseNinja("/usr/local", StringReader("include xyz"))
-        assertThat(ninja.tops[0]).isEqualTo(
-                Include(NinjaFileRef("xyz")))
+        assertThat(writeNinjaToString(ninja)).isEqualTo("include xyz")
+    }
+
+    @Test
+    fun subninja() {
+        val ninja = parseNinja("/usr/local", StringReader("subninja xyz"))
+        assertThat(writeNinjaToString(ninja)).isEqualTo("subninja xyz")
     }
 
     @Test

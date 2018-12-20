@@ -83,6 +83,19 @@ fun writeNinjaToString(ninja : Node) : String {
             is BuildRef -> with(node) {
                 sb.append(escape(value))
             }
+            is SubNinja -> with(node) {
+                sb.append("subninja ")
+                write(node.original)
+                sb.append("\n")
+            }
+            is Include -> with(node) {
+                sb.append("include ")
+                write(file)
+                sb.append("\n")
+            }
+            is NinjaFileRef -> with(node) {
+                sb.append(value)
+            }
             is Default -> with(node) {
                 sb.append("default ")
                 file.onEach {
@@ -90,6 +103,9 @@ fun writeNinjaToString(ninja : Node) : String {
                     sb.append(" ")
                 }
                 sb.append("\n")
+            }
+            is NinjaFileNotFound -> with(node) {
+                sb.append(value)
             }
             else -> throw RuntimeException(node.toString())
         }

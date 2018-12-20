@@ -2,6 +2,8 @@ package com.github.jomof.ninja
 
 import com.github.jomof.ninja.FileState.*
 import com.github.jomof.ninja.State.*
+import java.io.File
+import java.io.FileReader
 import java.io.Reader
 
 private enum class State {
@@ -10,6 +12,7 @@ private enum class State {
     START_ASSIGNMENT_STATE,
     AFTER_EQUALS_ASSIGNMENT_STATE,
     START_INCLUDE_STATE,
+    START_SUBNINJA_STATE,
     BUILD_EXPECT_OUTPUT_OR_COLON,
     BUILD_EXPECT_RULE,
     BUILD_AFTER_RULE,
@@ -36,6 +39,10 @@ enum class FileState {
 
 
 typealias BuildRefMap = MutableMap<FileState, MutableList<BuildRef>>
+
+fun parseNinja(file : File) : NinjaFileDef {
+    return parseNinja(file.parentFile.absolutePath, FileReader(file))
+}
 
 @Suppress("UNCHECKED_CAST")
 fun parseNinja(folder : String, reader : Reader) : NinjaFileDef {
@@ -78,6 +85,9 @@ fun parseNinja(folder : String, reader : Reader) : NinjaFileDef {
                             "include" -> {
                                 state = START_INCLUDE_STATE
                             }
+                            "subninja" -> {
+                                state = START_SUBNINJA_STATE
+                            }
                             "build" -> {
                                 push(fileMapOfBuildRef())
                                 state = BUILD_EXPECT_OUTPUT_OR_COLON
@@ -109,6 +119,11 @@ fun parseNinja(folder : String, reader : Reader) : NinjaFileDef {
                     }
                     START_INCLUDE_STATE -> {
                         tops += Include(NinjaFileRef(token))
+                        state = EXPECT_EOL
+                    }
+                    START_SUBNINJA_STATE -> {
+                        val ref = NinjaFileRef(token)
+                        tops += SubNinja(ref, ref)
                         state = EXPECT_EOL
                     }
                     EXPECT_EOL -> {

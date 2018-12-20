@@ -13,6 +13,7 @@ data class NinjaFileRef(val value: String) : NinjaFile
 data class NinjaFileDef(
         val folder : String,
         val tops: List<Node>) : NinjaFile
+data class NinjaFileNotFound(val value: String) : NinjaFile
 data class BuildRef(val value: String, val original : BuildRef? = null) : Node {
     init {
         if (value.contains("|")) {
@@ -33,6 +34,11 @@ data class RuleRef(val value: String, val original : RuleRef? = null) : Node
  */
 data class Include(
         val file: NinjaFile
+) : Node
+
+data class SubNinja(
+        val file: NinjaFile,
+        val original: NinjaFileRef
 ) : Node
 
 /**

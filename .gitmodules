@@ -4,3 +4,6 @@
 [submodule "ninja\\gallery\\github-dartino-sdk"]
 	path = ninja\\gallery\\github-dartino-sdk
 	url = https://github.com/dartino/sdk.git
+[submodule "ninja\\gallery\\github-kyorohiro-cgame"]
+	path = ninja\\gallery\\github-kyorohiro-cgame
+	url = https://github.com/kyorohiro/cgame.git
