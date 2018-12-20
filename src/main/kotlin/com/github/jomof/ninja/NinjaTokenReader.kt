@@ -55,6 +55,10 @@ private fun tokenizeAround(separatorToken: Char, value: String, action: (String)
         action(value)
         return
     }
+    if (value.trim(separatorToken).isEmpty()) {
+        action(value)
+        return
+    }
     val sb = StringBuilder()
     for (c in value) {
         if (c == separatorToken) {

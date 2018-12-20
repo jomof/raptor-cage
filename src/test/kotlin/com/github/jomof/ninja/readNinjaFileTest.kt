@@ -8,7 +8,7 @@ import java.io.File
 
 class ReadNinjaFileKtTest {
 
-    @Test
+    // @Test
     fun readNinjaFileTest() {
         val benchMark = Benchmark(moduleCount = 1)
                 .prepare()

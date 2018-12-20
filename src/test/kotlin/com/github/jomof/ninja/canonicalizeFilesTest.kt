@@ -13,8 +13,8 @@ class CanonicalizeFilesKtTest {
                 "build out//a out//b : cat in/1 in//2")))
 
         val build = ninja.tops[0] as BuildDef
-        assertThat(build.outputs[1].value).isEqualTo("out/b")
-        assertThat(build.inputs[1].value).isEqualTo("in/2")
+        assertThat(build.explicitOutputs[1].value).isEqualTo("out/b")
+        assertThat(build.explicitInputs[1].value).isEqualTo("in/2")
     }
 
     @Test
@@ -26,7 +26,7 @@ class CanonicalizeFilesKtTest {
                     """.trimIndent())))
 
         val build = ninja.tops[1] as BuildDef
-        assertThat(build.outputs[1].value).isEqualTo("out/b")
-        assertThat(build.inputs[1].value).isEqualTo("in/2")
+        assertThat(build.explicitOutputs[1].value).isEqualTo("out/b")
+        assertThat(build.explicitInputs[1].value).isEqualTo("in/2")
     }
 }

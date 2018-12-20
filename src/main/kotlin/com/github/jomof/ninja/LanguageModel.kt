@@ -1,5 +1,7 @@
 package com.github.jomof.ninja
 
+import java.lang.RuntimeException
+
 interface Node
 interface Literal : Node
 interface NinjaFile : Node
@@ -11,8 +13,14 @@ data class NinjaFileRef(val value: String) : NinjaFile
 data class NinjaFileDef(
         val folder : String,
         val tops: List<Node>) : NinjaFile
-data class BuildRef(val value: String, val original : BuildRef? = null) : Node
-data class RuleRef(val value: String) : Node
+data class BuildRef(val value: String, val original : BuildRef? = null) : Node {
+    init {
+        if (value.contains("|")) {
+            throw RuntimeException(value)
+        }
+    }
+}
+data class RuleRef(val value: String, val original : RuleRef? = null) : Node
 
 /**
  * Lexical include into the current folder. Relative to the folder that ninja.exe was invoked in.
@@ -47,9 +55,12 @@ data class Default(
  *   restat = 1
  */
 data class BuildDef(
-        val outputs: List<BuildRef>,
+        val explicitOutputs: List<BuildRef>,
+        val implicitOutputs: List<BuildRef>,
         val rule: RuleRef,
-        val inputs: List<BuildRef>,
+        val explicitInputs: List<BuildRef>,
+        val implicitInputs: List<BuildRef>,
+        val orderOnlyInputs: List<BuildRef>,
         val properties: List<Assignment>
 ) : Node
 

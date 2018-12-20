@@ -13,8 +13,8 @@ class MakePathsAbsoluteKtTest {
                 "build out//a out//b : cat in/1 in//2")))
 
         val build = ninja.tops[0] as BuildDef
-        assertThat(build.outputs[1].value).isEqualTo("X:/a/b//out//b")
-        assertThat(build.inputs[1].value).isEqualTo("X:/a/b//in//2")
+        assertThat(build.explicitOutputs[1].value).isEqualTo("X:/a/b//out//b")
+        assertThat(build.explicitInputs[1].value).isEqualTo("X:/a/b//in//2")
     }
 
     @Test
@@ -25,8 +25,8 @@ class MakePathsAbsoluteKtTest {
                     """.trimIndent())))
 
         val build = ninja.tops[1] as BuildDef
-        assertThat(build.outputs[1].value).isEqualTo("/usr/local/out//b")
-        assertThat(build.inputs[1].value).isEqualTo("/usr/local/in//2")
+        assertThat(build.explicitOutputs[1].value).isEqualTo("/usr/local/out//b")
+        assertThat(build.explicitInputs[1].value).isEqualTo("/usr/local/in//2")
     }
 
 
@@ -38,7 +38,7 @@ class MakePathsAbsoluteKtTest {
                     """.trimIndent())))
 
         val build = ninja.tops[1] as BuildDef
-        assertThat(build.outputs[1].value).isEqualTo("/usr/local1/out//b")
-        assertThat(build.inputs[1].value).isEqualTo("/usr/local1/in//2")
+        assertThat(build.explicitOutputs[1].value).isEqualTo("/usr/local1/out//b")
+        assertThat(build.explicitInputs[1].value).isEqualTo("/usr/local1/in//2")
     }
 }

@@ -12,8 +12,8 @@ private fun canonicalizeFilesNode(node : Node) : Node {
         is NinjaFileDef -> node.copy(
                 tops = node.tops.map { canonicalizeFilesNode(it) })
         is BuildDef -> node.copy(
-            outputs = node.outputs.map { canonicalizeFilesNode(it) as BuildRef },
-            inputs = node.inputs.map { canonicalizeFilesNode(it) as BuildRef } )
+            explicitOutputs = node.explicitOutputs.map { canonicalizeFilesNode(it) as BuildRef },
+            explicitInputs = node.explicitInputs.map { canonicalizeFilesNode(it) as BuildRef } )
         is BuildRef -> node.copy(value = makePathsAbsolute(node.value))
         else -> node
     }

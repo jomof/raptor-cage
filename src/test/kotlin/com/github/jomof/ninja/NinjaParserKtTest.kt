@@ -12,6 +12,12 @@ class NinjaParserKtTest {
     }
 
     @Test
+    fun implicitExplicit() {
+        val ninja = parseNinja("/usr/local", StringReader("build a | b : RULE c | d || e"))
+        assertThat(writeNinjaToString(ninja)).isEqualTo("build a | b : RULE c | d || e")
+    }
+
+    @Test
     fun rules() {
         val ninja = parseNinja("/usr/local", StringReader("rule cat\n" +
                 "  command = cat \$in > \$out\n" +
@@ -162,8 +168,8 @@ class NinjaParserKtTest {
     @Test
     fun build() {
         val ninja = parseNinja("/usr/local", StringReader("build output.txt: RULE input.txt"))
-        assertThat(ninja.tops[0].toString())
-                .isEqualTo("BuildDef(outputs=[BuildRef(value=output.txt, original=null)], rule=RuleRef(value=RULE), inputs=[BuildRef(value=input.txt, original=null)], properties=[])")
+        assertThat(writeNinjaToString(ninja.tops[0]))
+                .isEqualTo("build output.txt : RULE input.txt")
     }
 
     @Test
@@ -171,8 +177,10 @@ class NinjaParserKtTest {
         val ninja = parseNinja("/usr/local", StringReader("""
             build output.txt: RULE input.txt
               property = value""".trimIndent()))
-        assertThat(ninja.tops[0].toString())
-                .isEqualTo("BuildDef(outputs=[BuildRef(value=output.txt, original=null)], rule=RuleRef(value=RULE), inputs=[BuildRef(value=input.txt, original=null)], properties=[Assignment(name=IdentifierRef(value=property), value=UninstantiatedLiteral(value=value))])")
+        assertThat(writeNinjaToString(ninja.tops[0]))
+                .isEqualTo("""
+                    build output.txt : RULE input.txt
+                      property = value""".trimIndent())
     }
 
     @Test
@@ -181,8 +189,11 @@ class NinjaParserKtTest {
             build output.txt: RULE input.txt
               property = value
               property2 = value2""".trimIndent()))
-        assertThat(ninja.tops[0].toString())
-                .isEqualTo("BuildDef(outputs=[BuildRef(value=output.txt, original=null)], rule=RuleRef(value=RULE), inputs=[BuildRef(value=input.txt, original=null)], properties=[Assignment(name=IdentifierRef(value=property), value=UninstantiatedLiteral(value=value)), Assignment(name=IdentifierRef(value=property2), value=UninstantiatedLiteral(value=value2))])")
+        assertThat(writeNinjaToString(ninja))
+                .isEqualTo("""
+            build output.txt : RULE input.txt
+              property = value
+              property2 = value2""".trimIndent())
     }
 
     @Test
@@ -190,15 +201,25 @@ class NinjaParserKtTest {
         val ninja = parseNinja("/usr/local", StringReader("""
             build output.txt: RULE input1.txt input2.txt
               property = value""".trimIndent()))
-        assertThat(ninja.tops[0].toString())
-                .isEqualTo("BuildDef(outputs=[BuildRef(value=output.txt, original=null)], rule=RuleRef(value=RULE), inputs=[BuildRef(value=input1.txt, original=null), BuildRef(value=input2.txt, original=null)], properties=[Assignment(name=IdentifierRef(value=property), value=UninstantiatedLiteral(value=value))])")
+        assertThat(writeNinjaToString(ninja))
+                .isEqualTo("""
+                    build output.txt : RULE input1.txt input2.txt
+                      property = value
+                """.trimIndent())
     }
 
     @Test
     fun buildTwoOutputs() {
         val ninja = parseNinja("/usr/local", StringReader("build output1.txt output2.txt: RULE input1.txt"))
-        assertThat(ninja.tops[0].toString())
-                .isEqualTo("BuildDef(outputs=[BuildRef(value=output1.txt, original=null), BuildRef(value=output2.txt, original=null)], rule=RuleRef(value=RULE), inputs=[BuildRef(value=input1.txt, original=null)], properties=[])")
+        assertThat(writeNinjaToString(ninja.tops[0]))
+                .isEqualTo("build output1.txt output2.txt : RULE input1.txt")
+    }
+
+    @Test
+    fun colonInBuildOutput() {
+        val ninja = parseNinja("/usr/local", StringReader("build build.ninja: RERUN_CMAKE C\$:/abc"))
+        assertThat(writeNinjaToString(ninja))
+                .isEqualTo("build build.ninja : RERUN_CMAKE C\$:/abc")
     }
 
     @Test
@@ -208,15 +229,20 @@ class NinjaParserKtTest {
               COMMAND = cmd.exe /C "cd /D C:\a\b\c && C:\x\y\z\cmake.exe -E echo "No interactive CMake dialog available.""
               DESC = No interactive CMake dialog available...
               restat = 1""".trimIndent()))
-        assertThat(ninja.tops[0].toString())
-                .isEqualTo("BuildDef(outputs=[BuildRef(value=CMakeFiles/edit_cache.util, original=null)], rule=RuleRef(value=CUSTOM_COMMAND), inputs=[], properties=[Assignment(name=IdentifierRef(value=COMMAND), value=UninstantiatedLiteral(value=cmd.exe /C \"cd /D C:\\a\\b\\c && C:\\x\\y\\z\\cmake.exe -E echo \"No interactive CMake dialog available.\"\")), Assignment(name=IdentifierRef(value=DESC), value=UninstantiatedLiteral(value=No interactive CMake dialog available...)), Assignment(name=IdentifierRef(value=restat), value=UninstantiatedLiteral(value=1))])")
+        assertThat(writeNinjaToString(ninja.tops[0]))
+                .isEqualTo("""
+                    build CMakeFiles/edit_cache.util : CUSTOM_COMMAND
+                      COMMAND = cmd.exe /C "cd /D C:\a\b\c && C:\x\y\z\cmake.exe -E echo "No interactive CMake dialog available.""
+                      DESC = No interactive CMake dialog available...
+                      restat = 1
+                """.trimIndent())
     }
 
     @Test
     fun emptyRule() {
         val ninja = parseNinja("/usr/local", StringReader("rule my_rule"))
-        assertThat(ninja.tops[0].toString())
-                .isEqualTo("RuleDef(name=RuleRef(value=my_rule), properties=[])")
+        assertThat(writeNinjaToString(ninja.tops[0]))
+                .isEqualTo("rule my_rule")
     }
 
     @Test
@@ -225,7 +251,7 @@ class NinjaParserKtTest {
         # CMAKE generated file: DO NOT EDIT!
         # Generated by "Ninja" Generator, CMake Version 3.10
 
-        # This file contains all the rules used to get the outputs files
+        # This file contains all the rules used to get the explicitOutputs files
         # built from the input files.
         # It is included in the main 'build.ninja'.
 
@@ -424,7 +450,7 @@ class NinjaParserKtTest {
             default all
 
             #############################################
-            # Re-run CMake if any of its inputs changed.
+            # Re-run CMake if any of its explicitInputs changed.
 
             build build.ninja: RERUN_CMAKE | C${'$'}:/Users/Jomo/AndroidStudioProjects/MyApplication/app/.externalNativeBuild/cxx/release/arm64-v8a/CMakeLists.txt C${'$'}:/Users/Jomo/AndroidStudioProjects/MyApplication/app/src/main/cpp/CMakeLists.txt C${'$'}:/Users/Jomo/AndroidStudioProjects/MyApplication/app/src/main/cpp/muh_chain.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeCCompiler.cmake.in C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeCCompilerABI.c C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeCInformation.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeCXXCompiler.cmake.in C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeCXXCompilerABI.cpp C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeCXXInformation.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeCommonLanguageInclude.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeDetermineCCompiler.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeDetermineCXXCompiler.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeDetermineCompileFeatures.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeDetermineCompiler.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeDetermineCompilerABI.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeDetermineSystem.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeFindBinUtils.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeGenericSystem.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeLanguageInformation.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeParseImplicitLinkInfo.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeSystem.cmake.in C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeSystemSpecificInformation.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeSystemSpecificInitialize.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeTestCCompiler.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeTestCXXCompiler.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/CMakeTestCompilerCommon.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Compiler/CMakeCommonCompilerMacros.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Compiler/Clang-C-FeatureTests.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Compiler/Clang-C.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Compiler/Clang-CXX-FeatureTests.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Compiler/Clang-CXX-TestableFeatures.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Compiler/Clang-CXX.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Compiler/Clang-FindBinUtils.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Compiler/Clang.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Compiler/GNU.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Internal/FeatureTesting.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Platform/Android-Clang-C.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Platform/Android-Clang-CXX.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Platform/Android-Clang.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Platform/Android-Determine-C.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Platform/Android-Determine-CXX.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Platform/Android-Determine.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Platform/Android-Initialize.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Platform/Android.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Platform/Android/Determine-Compiler.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Platform/Linux.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/cmake/3.10.2.4988404/share/cmake-3.10/Modules/Platform/UnixPaths.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/ndk-bundle/build/cmake/android.toolchain.cmake C${'$'}:/Users/Jomo/AppData/Local/Android/Sdk/ndk-bundle/build/cmake/platforms.cmake CMakeCache.txt CMakeFiles/3.10.2/CMakeCCompiler.cmake CMakeFiles/3.10.2/CMakeCXXCompiler.cmake CMakeFiles/3.10.2/CMakeSystem.cmake CMakeFiles/feature_tests.c CMakeFiles/feature_tests.cxx
               pool = console

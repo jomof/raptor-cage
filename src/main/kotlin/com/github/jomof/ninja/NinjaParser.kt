@@ -1,5 +1,6 @@
 package com.github.jomof.ninja
 
+import com.github.jomof.ninja.FileState.*
 import com.github.jomof.ninja.State.*
 import java.io.Reader
 
@@ -27,11 +28,21 @@ private enum class State {
     RULE_EXPECT_PROPERTIES_EOL
 }
 
+enum class FileState {
+    EXPLICIT,
+    IMPLICIT,
+    ORDER_ONLY
+}
+
+
+typealias BuildRefMap = MutableMap<FileState, MutableList<BuildRef>>
+
 @Suppress("UNCHECKED_CAST")
 fun parseNinja(folder : String, reader : Reader) : NinjaFileDef {
     val tops = mutableListOf<Node>()
 
     var state = START
+    var fileState = EXPLICIT
     val stack : MutableList<Any> = mutableListOf()
     fun error(token : String) =
             RuntimeException("$state $token $stack")
@@ -43,179 +54,204 @@ fun parseNinja(folder : String, reader : Reader) : NinjaFileDef {
         stack.removeAt(0)
         return first
     }
+    fun fileMapOfBuildRef() : BuildRefMap {
+        val result = mutableMapOf<FileState, MutableList<BuildRef>>()
+        result[EXPLICIT] = mutableListOf()
+        result[IMPLICIT] = mutableListOf()
+        result[ORDER_ONLY] = mutableListOf()
+        return result
+    }
     reader.forEachNinjaToken { token ->
         var done: Boolean
         do {
             done = true
-            when (state) {
-                START -> {
-                    stack.clear()
-                    when (token) {
-                        "include" -> {
-                            state = START_INCLUDE_STATE
+            if (token == "|") {
+                fileState = IMPLICIT
+            } else if (token == "||") {
+                fileState = ORDER_ONLY
+            } else {
+                when (state) {
+                    START -> {
+                        stack.clear()
+                        fileState = EXPLICIT
+                        when (token) {
+                            "include" -> {
+                                state = START_INCLUDE_STATE
+                            }
+                            "build" -> {
+                                push(fileMapOfBuildRef())
+                                state = BUILD_EXPECT_OUTPUT_OR_COLON
+                            }
+                            "rule" -> {
+                                state = RULE_EXPECT_RULE_NAME
+                            }
+                            "default" -> {
+                                push(mutableListOf<BuildRef>())
+                                state = DEFAULT_EXPECT_BUILD_REF
+                            }
+                            END_OF_FILE_TOKEN, END_OF_LINE_TOKEN -> {
+                            }
+                            else -> {
+                                push(IdentifierRef(token))
+                                state = START_ASSIGNMENT_STATE
+                            }
                         }
-                        "build" -> {
-                            push(mutableListOf<BuildRef>())
-                            state = BUILD_EXPECT_OUTPUT_OR_COLON
+                    }
+                    START_ASSIGNMENT_STATE -> when (token) {
+                        "=" -> state = AFTER_EQUALS_ASSIGNMENT_STATE
+                        else ->
+                            throw error(token)
+                    }
+                    AFTER_EQUALS_ASSIGNMENT_STATE -> {
+                        val identifier = pop() as IdentifierRef
+                        tops += Assignment(identifier, UninstantiatedLiteral(token))
+                        state = EXPECT_EOL
+                    }
+                    START_INCLUDE_STATE -> {
+                        tops += Include(NinjaFileRef(token))
+                        state = EXPECT_EOL
+                    }
+                    EXPECT_EOL -> {
+                        if (token != END_OF_LINE_TOKEN) {
+                            error(token)
                         }
-                        "rule" -> {
-                            state = RULE_EXPECT_RULE_NAME
+                        state = START
+                    }
+                    BUILD_EXPECT_OUTPUT_OR_COLON -> {
+                        when (token) {
+                            ":" -> {
+                                state = BUILD_EXPECT_RULE
+                                fileState = EXPLICIT
+                            }
+                            else -> {
+                                val outputs = pop() as BuildRefMap
+                                outputs[fileState]!! += BuildRef(token)
+                                push(outputs)
+                                state = BUILD_EXPECT_OUTPUT_OR_COLON
+                            }
                         }
-                        "default" -> {
-                            push(mutableListOf<BuildRef>())
-                            state = DEFAULT_EXPECT_BUILD_REF
+                    }
+                    BUILD_EXPECT_RULE -> {
+                        push(RuleRef(token))
+                        push(fileMapOfBuildRef())
+                        state = BUILD_AFTER_RULE
+                    }
+                    BUILD_AFTER_RULE -> {
+                        state = when (token) {
+                            END_OF_LINE_TOKEN -> {
+                                push(mutableListOf<Assignment>())
+                                BUILD_EXPECT_PROPERTIES
+                            }
+                            else -> {
+                                // An input
+                                val outputs = pop() as BuildRefMap
+                                outputs[fileState]!!.add(BuildRef(token))
+                                push(outputs)
+                                BUILD_AFTER_RULE
+                            }
                         }
-                        END_OF_FILE_TOKEN, END_OF_LINE_TOKEN -> {
+                    }
+                    BUILD_EXPECT_PROPERTIES -> when (token) {
+                        INDENT_TOKEN -> {
+                            state = BUILD_EXPECT_PROPERTY_IDENTIFIER
                         }
                         else -> {
-                            push(IdentifierRef(token))
-                            state = START_ASSIGNMENT_STATE
-                        }
-                    }
-                }
-                START_ASSIGNMENT_STATE -> when (token) {
-                    "=" -> state = AFTER_EQUALS_ASSIGNMENT_STATE
-                    else ->
-                        throw error(token)
-                }
-                AFTER_EQUALS_ASSIGNMENT_STATE -> {
-                    val identifier = pop() as IdentifierRef
-                    tops += Assignment(identifier, UninstantiatedLiteral(token))
-                    state = EXPECT_EOL
-                }
-                START_INCLUDE_STATE -> {
-                    tops += Include(NinjaFileRef(token))
-                    state = EXPECT_EOL
-                }
-                EXPECT_EOL -> {
-                    if (token != END_OF_LINE_TOKEN) {
-                        error(token)
-                    }
-                    state = START
-                }
-                BUILD_EXPECT_OUTPUT_OR_COLON -> {
-                    if (token == ":") {
-                        state = BUILD_EXPECT_RULE
-                    } else {
-                        val outputs = pop() as MutableList<BuildRef>
-                        outputs += BuildRef(token)
-                        push(outputs)
-                        state = BUILD_EXPECT_OUTPUT_OR_COLON
-                    }
-                }
-                BUILD_EXPECT_RULE -> {
-                    push(RuleRef(token))
-                    push(mutableListOf<BuildRef>())
-                    state = BUILD_AFTER_RULE
-                }
-                BUILD_AFTER_RULE -> {
-                    state = when (token) {
-                        END_OF_LINE_TOKEN -> {
-                            push(mutableListOf<Assignment>())
-                            BUILD_EXPECT_PROPERTIES
-                        }
-                        else -> {
-                            // An input
-                            val outputs = pop() as MutableList<BuildRef>
-                            outputs.add(BuildRef(token))
-                            push(outputs)
-                            BUILD_AFTER_RULE
-                        }
-                    }
-                }
-                BUILD_EXPECT_PROPERTIES -> when (token) {
-                    INDENT_TOKEN -> {
-                        state = BUILD_EXPECT_PROPERTY_IDENTIFIER
-                    }
-                    else -> {
-                        val properties = pop() as List<Assignment>
-                        val inputs = pop() as List<BuildRef>
-                        val rule = pop() as RuleRef
-                        val outputs = pop() as List<BuildRef>
-                        tops += BuildDef(outputs, rule, inputs, properties)
-                        state = START
-                        done = false
-                    }
-                }
-                RULE_EXPECT_PROPERTIES -> when (token) {
-                    INDENT_TOKEN -> {
-                        state = RULE_EXPECT_PROPERTY_IDENTIFIER
-                    }
-                    else -> {
-                        val properties = pop() as List<Assignment>
-                        val rule = pop() as RuleRef
-                        tops += RuleDef(rule, properties)
-                        state = START
-                        done = false
-                    }
-                }
-                BUILD_EXPECT_PROPERTY_IDENTIFIER -> {
-                    push(IdentifierRef(token))
-                    state = BUILD_EXPECT_PROPERTY_EQUALS
-                }
-                RULE_EXPECT_PROPERTY_IDENTIFIER -> {
-                    push(IdentifierRef(token))
-                    state = RULE_EXPECT_PROPERTY_EQUALS
-                }
-                BUILD_EXPECT_PROPERTY_EQUALS -> {
-                    if (token != "=") throw error(token)
-                    state = BUILD_EXPECT_PROPERTY_VALUE
-                }
-                RULE_EXPECT_PROPERTY_EQUALS -> {
-                    if (token != "=") throw error(token)
-                    state = RULE_EXPECT_PROPERTY_VALUE
-                }
-                BUILD_EXPECT_PROPERTY_VALUE -> {
-                    val identifier = pop() as IdentifierRef
-                    val properties = pop() as MutableList<Assignment>
-                    properties += Assignment(identifier, UninstantiatedLiteral(token))
-                    push(properties)
-                    state = BUILD_EXPECT_PROPERTIES_EOL
-                }
-                RULE_EXPECT_PROPERTY_VALUE -> {
-                    val identifier = pop() as IdentifierRef
-                    val properties = pop() as MutableList<Assignment>
-                    properties += Assignment(identifier, UninstantiatedLiteral(token))
-                    push(properties)
-                    state = RULE_EXPECT_PROPERTIES_EOL
-                }
-                BUILD_EXPECT_PROPERTIES_EOL -> {
-                    when(token) {
-                        END_OF_LINE_TOKEN, END_OF_FILE_TOKEN -> {
-                            state = BUILD_EXPECT_PROPERTIES
-                        }
-                        else -> throw error(token)
-                    }
-                }
-                RULE_EXPECT_PROPERTIES_EOL -> {
-                    when(token) {
-                        END_OF_LINE_TOKEN, END_OF_FILE_TOKEN -> {
-                            state = RULE_EXPECT_PROPERTIES
-                        }
-                        else -> throw error(token)
-                    }
-                }
-                DEFAULT_EXPECT_BUILD_REF -> {
-                    when(token) {
-                        END_OF_LINE_TOKEN, END_OF_FILE_TOKEN -> {
-                            val targets = pop() as MutableList<BuildRef>
-                            tops += Default(targets)
+                            val properties = pop() as List<Assignment>
+                            val inputs = pop() as BuildRefMap
+                            val rule = pop() as RuleRef
+                            val outputs = pop() as BuildRefMap
+                            tops += BuildDef(
+                                    explicitOutputs = outputs[EXPLICIT]!!,
+                                    implicitOutputs = outputs[IMPLICIT]!!,
+                                    rule = rule,
+                                    explicitInputs = inputs[EXPLICIT]!!,
+                                    implicitInputs = inputs[IMPLICIT]!!,
+                                    orderOnlyInputs = inputs[ORDER_ONLY]!!,
+                                    properties = properties)
                             state = START
-                        }
-                        else -> {
-                            val targets = pop() as MutableList<BuildRef>
-                            targets.add(BuildRef(token))
-                            push(targets)
+                            done = false
                         }
                     }
-                }
-                RULE_EXPECT_RULE_NAME -> {
-                    push(RuleRef(token))
-                    state = RULE_EXPECT_EOL_AFTER_RULE_NAME
-                }
-                RULE_EXPECT_EOL_AFTER_RULE_NAME -> {
-                    push(mutableListOf<Assignment>())
-                    state = RULE_EXPECT_PROPERTIES
+                    RULE_EXPECT_PROPERTIES -> when (token) {
+                        INDENT_TOKEN -> {
+                            state = RULE_EXPECT_PROPERTY_IDENTIFIER
+                        }
+                        else -> {
+                            val properties = pop() as List<Assignment>
+                            val rule = pop() as RuleRef
+                            tops += RuleDef(rule, properties)
+                            state = START
+                            done = false
+                        }
+                    }
+                    BUILD_EXPECT_PROPERTY_IDENTIFIER -> {
+                        push(IdentifierRef(token))
+                        state = BUILD_EXPECT_PROPERTY_EQUALS
+                    }
+                    RULE_EXPECT_PROPERTY_IDENTIFIER -> {
+                        push(IdentifierRef(token))
+                        state = RULE_EXPECT_PROPERTY_EQUALS
+                    }
+                    BUILD_EXPECT_PROPERTY_EQUALS -> {
+                        if (token != "=") throw error(token)
+                        state = BUILD_EXPECT_PROPERTY_VALUE
+                    }
+                    RULE_EXPECT_PROPERTY_EQUALS -> {
+                        if (token != "=") throw error(token)
+                        state = RULE_EXPECT_PROPERTY_VALUE
+                    }
+                    BUILD_EXPECT_PROPERTY_VALUE -> {
+                        val identifier = pop() as IdentifierRef
+                        val properties = pop() as MutableList<Assignment>
+                        properties += Assignment(identifier, UninstantiatedLiteral(token))
+                        push(properties)
+                        state = BUILD_EXPECT_PROPERTIES_EOL
+                    }
+                    RULE_EXPECT_PROPERTY_VALUE -> {
+                        val identifier = pop() as IdentifierRef
+                        val properties = pop() as MutableList<Assignment>
+                        properties += Assignment(identifier, UninstantiatedLiteral(token))
+                        push(properties)
+                        state = RULE_EXPECT_PROPERTIES_EOL
+                    }
+                    BUILD_EXPECT_PROPERTIES_EOL -> {
+                        when (token) {
+                            END_OF_LINE_TOKEN, END_OF_FILE_TOKEN -> {
+                                state = BUILD_EXPECT_PROPERTIES
+                            }
+                            else -> throw error(token)
+                        }
+                    }
+                    RULE_EXPECT_PROPERTIES_EOL -> {
+                        when (token) {
+                            END_OF_LINE_TOKEN, END_OF_FILE_TOKEN -> {
+                                state = RULE_EXPECT_PROPERTIES
+                            }
+                            else -> throw error(token)
+                        }
+                    }
+                    DEFAULT_EXPECT_BUILD_REF -> {
+                        when (token) {
+                            END_OF_LINE_TOKEN, END_OF_FILE_TOKEN -> {
+                                val targets = pop() as MutableList<BuildRef>
+                                tops += Default(targets)
+                                state = START
+                            }
+                            else -> {
+                                val targets = pop() as MutableList<BuildRef>
+                                targets.add(BuildRef(token))
+                                push(targets)
+                            }
+                        }
+                    }
+                    RULE_EXPECT_RULE_NAME -> {
+                        push(RuleRef(token))
+                        state = RULE_EXPECT_EOL_AFTER_RULE_NAME
+                    }
+                    RULE_EXPECT_EOL_AFTER_RULE_NAME -> {
+                        push(mutableListOf<Assignment>())
+                        state = RULE_EXPECT_PROPERTIES
+                    }
                 }
             }
         } while(!done)

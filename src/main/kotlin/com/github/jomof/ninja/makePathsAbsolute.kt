@@ -22,8 +22,8 @@ fun makePathsAbsolute(baseFolder : String, node : Node) : Node {
         is NinjaFileDef -> node.copy(
                 tops = node.tops.map { makePathsAbsolute(baseFolder, it) })
         is BuildDef -> node.copy(
-                outputs = node.outputs.map { makePathsAbsolute(baseFolder, it) as BuildRef },
-                inputs = node.inputs.map { makePathsAbsolute(baseFolder, it) as BuildRef } )
+                explicitOutputs = node.explicitOutputs.map { makePathsAbsolute(baseFolder, it) as BuildRef },
+                explicitInputs = node.explicitInputs.map { makePathsAbsolute(baseFolder, it) as BuildRef } )
         is BuildRef -> node.copy(
                 value = makePathsAbsolute(baseFolder, node.value),
                 original = node)

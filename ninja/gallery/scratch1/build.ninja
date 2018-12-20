@@ -1,0 +1,7 @@
+build CMakeFiles/native-lib.dir/myfile.cpp.o: CXX_COMPILER__native-lib ../../../../myfile.cpp || cmake_object_order_depends_target_native-lib
+  DEFINES = -Dnative_lib_EXPORTS
+  DEP_FILE = CMakeFiles\native-lib.dir\myfile.cpp.o.d
+  FLAGS = -isystem C:/Users/Jomo/.test/ndks/android-ndk-r18/sysroot/usr/include/aarch64-linux-android -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security -std=c++11  -O0 -fno-limit-debug-info  -fPIC
+  INCLUDES = -isystem C:/Users/Jomo/.test/ndks/android-ndk-r18/sources/cxx-stl/llvm-libc++/include -isystem C:/Users/Jomo/.test/ndks/android-ndk-r18/sources/cxx-stl/llvm-libc++abi/include
+  OBJECT_DIR = CMakeFiles\native-lib.dir
+  OBJECT_FILE_DIR = CMakeFiles\native-lib.dir
