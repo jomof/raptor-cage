@@ -209,7 +209,7 @@ class NinjaParserKtTest {
               DESC = No interactive CMake dialog available...
               restat = 1""".trimIndent()))
         assertThat(ninja.tops[0].toString())
-                .isEqualTo("BuildDef(outputs=[BuildRef(value=CMakeFiles/edit_cache.util)], rule=RuleRef(value=CUSTOM_COMMAND), inputs=[], properties=[Assignment(name=IdentifierRef(value=COMMAND), value=UninstantiatedLiteral(value=cmd.exe /C \"cd /D C:\\a\\b\\c && C:\\x\\y\\z\\cmake.exe -E echo \"No interactive CMake dialog available.\"\")), Assignment(name=IdentifierRef(value=DESC), value=UninstantiatedLiteral(value=No interactive CMake dialog available...)), Assignment(name=IdentifierRef(value=restat), value=UninstantiatedLiteral(value=1))])")
+                .isEqualTo("BuildDef(outputs=[BuildRef(value=CMakeFiles/edit_cache.util, original=null)], rule=RuleRef(value=CUSTOM_COMMAND), inputs=[], properties=[Assignment(name=IdentifierRef(value=COMMAND), value=UninstantiatedLiteral(value=cmd.exe /C \"cd /D C:\\a\\b\\c && C:\\x\\y\\z\\cmake.exe -E echo \"No interactive CMake dialog available.\"\")), Assignment(name=IdentifierRef(value=DESC), value=UninstantiatedLiteral(value=No interactive CMake dialog available...)), Assignment(name=IdentifierRef(value=restat), value=UninstantiatedLiteral(value=1))])")
     }
 
     @Test
