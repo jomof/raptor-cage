@@ -1,31 +1,35 @@
 package com.github.jomof.buildserver.server.watcher
 
+import com.github.jomof.buildserver.server.utility.toForwardSlashString
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.io.File
-import java.lang.RuntimeException
 import java.nio.file.FileSystems
+import java.nio.file.Path
+import java.nio.file.WatchEvent
+
+typealias Event = WatchEvent<*>
+typealias EventList = List<Event>
 
 class WatchFolderTest {
-    fun pollUntil(watchFolder : WatchFolder, expected: Int) : Int {
-        var total = 0
-        val start = System.currentTimeMillis()
-        while (total < expected && (System.currentTimeMillis() - start) < 5000) {
-            total += watchFolder.pollEvents().size
-            if (total < expected) {
-                Thread.sleep(50)
-            }
-        }
-        if (total < expected) {
-            throw RuntimeException("timeout after ${System.currentTimeMillis() - start}," +
-                    " expected $expected, saw $total")
-        }
-        if (total > expected) {
-            throw RuntimeException("Expected $expected, saw $total")
-        }
-        return total
 
+    private fun pollUntil(watchFolder : WatchFolder, vararg expect : String)  {
+        val events = mutableListOf<Event>()
+        val start = System.currentTimeMillis()
+        do {
+            events += watchFolder.pollEvents()
+        } while (events.size < expect.size && (System.currentTimeMillis() - start) < 5000)
+        val actual = eventToString(events)
+        val expected = expect.toList().toSet()
+        assertThat(actual).containsExactlyElementsIn(expected)
     }
+
+    private fun eventToString(events : EventList) : Set<String> {
+        return events.map { event ->
+            "${event.kind().name()} = ${(event.context() as Path).toForwardSlashString()}"
+        }.toSet()
+    }
+
     @Test
     fun test() {
         val folder = File("./my-watch-folder-test")
@@ -35,12 +39,22 @@ class WatchFolderTest {
         val watchFolder = WatchFolder(watcher, folder.toPath())
         File(folder, "./my-File.txt").writeText("Hello")
         File(folder, "sub").mkdirs()
-        pollUntil(watchFolder, 3)
-        pollUntil(watchFolder, 0)
+        pollUntil(watchFolder,
+            "ENTRY_CREATE = my-File.txt",
+            "ENTRY_MODIFY = my-File.txt",
+            "ENTRY_CREATE = sub")
+
+        pollUntil(watchFolder)
         File(folder, "./my-dir").mkdirs()
-        pollUntil(watchFolder, 1)
+        pollUntil(watchFolder,
+                "ENTRY_CREATE = my-dir")
         File(folder, "./my-dir/a/b/c/d").mkdirs()
-        pollUntil(watchFolder, 4)
+        pollUntil(watchFolder,
+                "ENTRY_CREATE = my-dir/a",
+                "ENTRY_MODIFY = my-dir/a/b",
+                "ENTRY_MODIFY = my-dir/a/b/c",
+                "ENTRY_MODIFY = my-dir/a"
+                )
         folder.deleteRecursively()
     }
 }
