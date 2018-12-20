@@ -1,12 +1,10 @@
 package com.github.jomof.buildserver.server.watcher
 
-import com.github.jomof.buildserver.client.ServerManagementKtTest
 import com.github.jomof.buildserver.common.RAPTOR_CAGE_BASE_FOLDER
 import com.github.jomof.buildserver.common.ServerName
 import com.google.common.truth.Truth
 import org.junit.Test
 
-import org.junit.Assert.*
 import java.io.File
 
 class DefaultFileWatcherServiceTest {

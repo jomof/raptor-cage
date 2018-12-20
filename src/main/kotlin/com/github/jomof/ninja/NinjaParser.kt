@@ -28,7 +28,7 @@ private enum class State {
 }
 
 @Suppress("UNCHECKED_CAST")
-fun parseNinja(reader : Reader) : NinjaFileDef {
+fun parseNinja(folder : String, reader : Reader) : NinjaFileDef {
     val tops = mutableListOf<Node>()
 
     var state = START
@@ -223,6 +223,5 @@ fun parseNinja(reader : Reader) : NinjaFileDef {
     if (!stack.isEmpty()) {
         throw RuntimeException(stack.toString())
     }
-    return NinjaFileDef(tops)
-
+    return NinjaFileDef(folder, tops)
 }

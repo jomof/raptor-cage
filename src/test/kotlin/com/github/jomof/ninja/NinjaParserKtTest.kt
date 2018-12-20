@@ -8,12 +8,12 @@ class NinjaParserKtTest {
 
     @Test
     fun empty() {
-        parseNinja(StringReader(""))
+        parseNinja("/usr/local", StringReader(""))
     }
 
     @Test
     fun rules() {
-        val ninja = parseNinja(StringReader("rule cat\n" +
+        val ninja = parseNinja("/usr/local", StringReader("rule cat\n" +
                 "  command = cat \$in > \$out\n" +
                 "\n" +
                 "rule date\n" +
@@ -27,7 +27,7 @@ class NinjaParserKtTest {
 
     @Test
     fun ruleAttributes() {
-        parseNinja(StringReader("rule cat\n" +
+        parseNinja("/usr/local", StringReader("rule cat\n" +
                 "  command = a\n" +
                 "  depfile = a\n" +
                 "  deps = a\n" +
@@ -40,7 +40,7 @@ class NinjaParserKtTest {
 
     @Test
     fun indentedComments() {
-        parseNinja(StringReader("rule cat\n" +
+        parseNinja("/usr/local", StringReader("rule cat\n" +
                 "  command = a\n" +
                 "  depfile = a\n" +
                 "  # Deps comment\n" +
@@ -54,20 +54,20 @@ class NinjaParserKtTest {
 
     @Test
     fun buildWithNoInputs() {
-        val ninja = parseNinja(StringReader("build cat : Rule"))
+        val ninja = parseNinja("/usr/local", StringReader("build cat : Rule"))
         println(ninja)
     }
 
     @Test
     fun indentedCommentsAfterRule() {
-        val ninja = parseNinja(StringReader("rule cat\n" +
+        val ninja = parseNinja("/usr/local", StringReader("rule cat\n" +
                 "  #command = a"))
         println(ninja)
     }
 
     @Test
     fun backslash() {
-        val ninja = parseNinja(StringReader("foo = bar\\baz\n" +
+        val ninja = parseNinja("/usr/local", StringReader("foo = bar\\baz\n" +
                 "foo2 = bar\\ baz\n"))
         println(ninja)
         val assign = ninja.tops[1] as Assignment
@@ -77,14 +77,14 @@ class NinjaParserKtTest {
 
     @Test
     fun indentedCommentsAfterBuild() {
-        val ninja = parseNinja(StringReader("build cat: Rule\n" +
+        val ninja = parseNinja("/usr/local", StringReader("build cat: Rule\n" +
                 "  #command = a"))
         println(ninja)
     }
 
     @Test
     fun commentNoComment() {
-        val ninja = parseNinja(StringReader("# this is a comment\n" +
+        val ninja = parseNinja("/usr/local", StringReader("# this is a comment\n" +
                 "foo = not # a comment\n"))
         val assignment = ninja.tops[0] as Assignment
         val literal = assignment.value as UninstantiatedLiteral
@@ -93,7 +93,7 @@ class NinjaParserKtTest {
 
     @Test
     fun indentedBlankLine() {
-        val ninja = parseNinja(StringReader("build cat: Rule\n" +
+        val ninja = parseNinja("/usr/local", StringReader("build cat: Rule\n" +
                 "  \n" +
                 "  command = a"))
         println(ninja)
@@ -101,7 +101,7 @@ class NinjaParserKtTest {
 
     @Test
     fun dollars() {
-        val ninja = parseNinja(StringReader("rule foo\n" +
+        val ninja = parseNinja("/usr/local", StringReader("rule foo\n" +
                 "  command = \${out}bar\$\$baz\$\$\$\n" +
                 "blah\n" +
                 "x = \$\$dollar\n" +
@@ -115,7 +115,7 @@ class NinjaParserKtTest {
 
     @Test
     fun continuation() {
-        val ninja = parseNinja(StringReader("rule link\n" +
+        val ninja = parseNinja("/usr/local", StringReader("rule link\n" +
                 "  command = foo bar $\n" +
                 "    baz\n" +
                 "\n" +
@@ -126,19 +126,19 @@ class NinjaParserKtTest {
 
     @Test
     fun ignoreTrailingComment() {
-        parseNinja(StringReader("rule cat # My comment"))
+        parseNinja("/usr/local", StringReader("rule cat # My comment"))
     }
 
     @Test
     fun assignment() {
-        val ninja = parseNinja(StringReader("a=b"))
-        assertThat(ninja).isEqualTo(NinjaFileDef(listOf(
-                Assignment(IdentifierRef("a"), UninstantiatedLiteral("b")))))
+        val ninja = parseNinja("/usr/local", StringReader("a=b"))
+        assertThat(ninja).isEqualTo(NinjaFileDef("/usr/local",
+                listOf(Assignment(IdentifierRef("a"), UninstantiatedLiteral("b")))))
     }
 
     @Test
     fun twoAssign() {
-        val ninja = parseNinja(StringReader("""
+        val ninja = parseNinja("/usr/local", StringReader("""
             a=b
             x=y
         """.trimIndent()))
@@ -148,62 +148,62 @@ class NinjaParserKtTest {
 
     @Test
     fun include() {
-        val ninja = parseNinja(StringReader("include xyz"))
+        val ninja = parseNinja("/usr/local", StringReader("include xyz"))
         assertThat(ninja.tops[0]).isEqualTo(
                 Include(NinjaFileRef("xyz")))
     }
 
     @Test
     fun default() {
-        val ninja = parseNinja(StringReader("default abc xyz"))
-        assertThat(ninja.tops[0].toString()).isEqualTo("Default(file=[BuildRef(value=abc), BuildRef(value=xyz)])")
+        val ninja = parseNinja("/usr/local", StringReader("default abc xyz"))
+        assertThat(ninja.tops[0].toString()).isEqualTo("Default(file=[BuildRef(value=abc, original=null), BuildRef(value=xyz, original=null)])")
     }
 
     @Test
     fun build() {
-        val ninja = parseNinja(StringReader("build output.txt: RULE input.txt"))
+        val ninja = parseNinja("/usr/local", StringReader("build output.txt: RULE input.txt"))
         assertThat(ninja.tops[0].toString())
-                .isEqualTo("BuildDef(outputs=[BuildRef(value=output.txt)], rule=RuleRef(value=RULE), inputs=[BuildRef(value=input.txt)], properties=[])")
+                .isEqualTo("BuildDef(outputs=[BuildRef(value=output.txt, original=null)], rule=RuleRef(value=RULE), inputs=[BuildRef(value=input.txt, original=null)], properties=[])")
     }
 
     @Test
     fun buildProp() {
-        val ninja = parseNinja(StringReader("""
+        val ninja = parseNinja("/usr/local", StringReader("""
             build output.txt: RULE input.txt
               property = value""".trimIndent()))
         assertThat(ninja.tops[0].toString())
-                .isEqualTo("BuildDef(outputs=[BuildRef(value=output.txt)], rule=RuleRef(value=RULE), inputs=[BuildRef(value=input.txt)], properties=[Assignment(name=IdentifierRef(value=property), value=UninstantiatedLiteral(value=value))])")
+                .isEqualTo("BuildDef(outputs=[BuildRef(value=output.txt, original=null)], rule=RuleRef(value=RULE), inputs=[BuildRef(value=input.txt, original=null)], properties=[Assignment(name=IdentifierRef(value=property), value=UninstantiatedLiteral(value=value))])")
     }
 
     @Test
     fun buildTwoProperties() {
-        val ninja = parseNinja(StringReader("""
+        val ninja = parseNinja("/usr/local", StringReader("""
             build output.txt: RULE input.txt
               property = value
               property2 = value2""".trimIndent()))
         assertThat(ninja.tops[0].toString())
-                .isEqualTo("BuildDef(outputs=[BuildRef(value=output.txt)], rule=RuleRef(value=RULE), inputs=[BuildRef(value=input.txt)], properties=[Assignment(name=IdentifierRef(value=property), value=UninstantiatedLiteral(value=value)), Assignment(name=IdentifierRef(value=property2), value=UninstantiatedLiteral(value=value2))])")
+                .isEqualTo("BuildDef(outputs=[BuildRef(value=output.txt, original=null)], rule=RuleRef(value=RULE), inputs=[BuildRef(value=input.txt, original=null)], properties=[Assignment(name=IdentifierRef(value=property), value=UninstantiatedLiteral(value=value)), Assignment(name=IdentifierRef(value=property2), value=UninstantiatedLiteral(value=value2))])")
     }
 
     @Test
     fun buildTwoInputs() {
-        val ninja = parseNinja(StringReader("""
+        val ninja = parseNinja("/usr/local", StringReader("""
             build output.txt: RULE input1.txt input2.txt
               property = value""".trimIndent()))
         assertThat(ninja.tops[0].toString())
-                .isEqualTo("BuildDef(outputs=[BuildRef(value=output.txt)], rule=RuleRef(value=RULE), inputs=[BuildRef(value=input1.txt), BuildRef(value=input2.txt)], properties=[Assignment(name=IdentifierRef(value=property), value=UninstantiatedLiteral(value=value))])")
+                .isEqualTo("BuildDef(outputs=[BuildRef(value=output.txt, original=null)], rule=RuleRef(value=RULE), inputs=[BuildRef(value=input1.txt, original=null), BuildRef(value=input2.txt, original=null)], properties=[Assignment(name=IdentifierRef(value=property), value=UninstantiatedLiteral(value=value))])")
     }
 
     @Test
     fun buildTwoOutputs() {
-        val ninja = parseNinja(StringReader("build output1.txt output2.txt: RULE input1.txt"))
+        val ninja = parseNinja("/usr/local", StringReader("build output1.txt output2.txt: RULE input1.txt"))
         assertThat(ninja.tops[0].toString())
-                .isEqualTo("BuildDef(outputs=[BuildRef(value=output1.txt), BuildRef(value=output2.txt)], rule=RuleRef(value=RULE), inputs=[BuildRef(value=input1.txt)], properties=[])")
+                .isEqualTo("BuildDef(outputs=[BuildRef(value=output1.txt, original=null), BuildRef(value=output2.txt, original=null)], rule=RuleRef(value=RULE), inputs=[BuildRef(value=input1.txt, original=null)], properties=[])")
     }
 
     @Test
     fun propertyWithSpaces() {
-        val ninja = parseNinja(StringReader("""
+        val ninja = parseNinja("/usr/local", StringReader("""
             build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
               COMMAND = cmd.exe /C "cd /D C:\a\b\c && C:\x\y\z\cmake.exe -E echo "No interactive CMake dialog available.""
               DESC = No interactive CMake dialog available...
@@ -214,14 +214,14 @@ class NinjaParserKtTest {
 
     @Test
     fun emptyRule() {
-        val ninja = parseNinja(StringReader("rule my_rule"))
+        val ninja = parseNinja("/usr/local", StringReader("rule my_rule"))
         assertThat(ninja.tops[0].toString())
                 .isEqualTo("RuleDef(name=RuleRef(value=my_rule), properties=[])")
     }
 
     @Test
     fun sampleRulesNinja() {
-        parseNinja(StringReader("""
+        parseNinja("/usr/local", StringReader("""
         # CMAKE generated file: DO NOT EDIT!
         # Generated by "Ninja" Generator, CMake Version 3.10
 
@@ -290,7 +290,7 @@ class NinjaParserKtTest {
 
     @Test
     fun sampleBuildNinja() {
-        parseNinja(StringReader("""
+        parseNinja("/usr/local", StringReader("""
             # CMAKE generated file: DO NOT EDIT!
             # Generated by "Ninja" Generator, CMake Version 3.10
 

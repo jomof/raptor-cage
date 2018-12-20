@@ -13,7 +13,7 @@ private fun expandIncludesNode(node : Node, include : (String) -> NinjaFileDef) 
                     else -> listOf(top)
                 }
             }
-            return NinjaFileDef(newTops)
+            return NinjaFileDef(node.folder, newTops)
         }
         else -> node
     }

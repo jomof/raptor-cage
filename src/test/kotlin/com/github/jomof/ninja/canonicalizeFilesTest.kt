@@ -5,11 +5,11 @@ import org.junit.Test
 
 import java.io.StringReader
 
-class canonicalizeFilesKtTest {
+class CanonicalizeFilesKtTest {
 
     @Test
     fun canonicalizeFilesTest() {
-        val ninja = canonicalizeFiles(parseNinja(StringReader(
+        val ninja = canonicalizeFiles(parseNinja("/usr/local", StringReader(
                 "build out//a out//b : cat in/1 in//2")))
 
         val build = ninja.tops[0] as BuildDef
@@ -19,7 +19,7 @@ class canonicalizeFilesKtTest {
 
     @Test
     fun ruleWorks() {
-        val ninja = canonicalizeFiles(parseNinja(StringReader(
+        val ninja = canonicalizeFiles(parseNinja("/usr/local", StringReader(
                 """
                     rule my_rule
                     build out//a out//b : cat in/1 in//2
