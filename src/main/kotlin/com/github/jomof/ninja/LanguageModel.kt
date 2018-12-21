@@ -14,18 +14,9 @@ data class NinjaFileDef(
         val folder : String,
         val tops: List<Node>) : NinjaFile
 data class NinjaFileNotFound(val value: String) : NinjaFile
-data class BuildRef(val value: String, val original : BuildRef? = null) : Node {
-    init {
-        if (value.contains("|")) {
-            throw RuntimeException(value)
-        }
-
-        if (value.contains("space")) {
-            throw RuntimeException(value)
-        }
-    }
-}
+data class BuildRef(val value: String, val original : BuildRef? = null) : Node
 data class RuleRef(val value: String, val original : RuleRef? = null) : Node
+data class PoolRef(val value: String, val original : PoolRef? = null) : Node
 
 /**
  * Lexical include into the current folder. Relative to the folder that ninja.exe was invoked in.
@@ -82,5 +73,11 @@ data class BuildDef(
  */
 data class RuleDef(
         val name: RuleRef,
+        val properties: List<Assignment>
+) : Node
+
+
+data class PoolDef(
+        val name: PoolRef,
         val properties: List<Assignment>
 ) : Node

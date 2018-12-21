@@ -7,3 +7,6 @@
 [submodule "ninja/gallerygithub-kyorohiro-cgame"]
 	path = ninja/gallery/github-kyorohiro-cgame
 	url = https://github.com/kyorohiro/cgame.git
+[submodule "ninja/gallery/github-wjiali6-skcms"]
+	path = ninja/gallery/github-wjiali6-skcms
+	url = https://github.com/wjiali6/skcms.git

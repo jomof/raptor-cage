@@ -28,7 +28,14 @@ private enum class State {
     RULE_EXPECT_PROPERTY_IDENTIFIER,
     RULE_EXPECT_PROPERTY_EQUALS,
     RULE_EXPECT_PROPERTY_VALUE,
-    RULE_EXPECT_PROPERTIES_EOL
+    RULE_EXPECT_PROPERTIES_EOL,
+    POOL_EXPECT_POOL_NAME,
+    POOL_EXPECT_EOL_AFTER_POOL_NAME,
+    POOL_EXPECT_PROPERTIES,
+    POOL_EXPECT_PROPERTY_IDENTIFIER,
+    POOL_EXPECT_PROPERTY_EQUALS,
+    POOL_EXPECT_PROPERTY_VALUE,
+    POOL_EXPECT_PROPERTIES_EOL
 }
 
 enum class FileState {
@@ -72,12 +79,10 @@ fun parseNinja(folder : String, reader : Reader) : NinjaFileDef {
         var done: Boolean
         do {
             done = true
-            if (token == "|") {
-                fileState = IMPLICIT
-            } else if (token == "||") {
-                fileState = ORDER_ONLY
-            } else {
-                when (state) {
+            when (token) {
+                "|" -> fileState = IMPLICIT
+                "||" -> fileState = ORDER_ONLY
+                else -> when (state) {
                     START -> {
                         stack.clear()
                         fileState = EXPLICIT
@@ -94,6 +99,9 @@ fun parseNinja(folder : String, reader : Reader) : NinjaFileDef {
                             }
                             "rule" -> {
                                 state = RULE_EXPECT_RULE_NAME
+                            }
+                            "pool" -> {
+                                state = POOL_EXPECT_POOL_NAME
                             }
                             "default" -> {
                                 push(mutableListOf<BuildRef>())
@@ -199,6 +207,18 @@ fun parseNinja(folder : String, reader : Reader) : NinjaFileDef {
                             done = false
                         }
                     }
+                    POOL_EXPECT_PROPERTIES -> when (token) {
+                        INDENT_TOKEN -> {
+                            state = POOL_EXPECT_PROPERTY_IDENTIFIER
+                        }
+                        else -> {
+                            val properties = pop() as List<Assignment>
+                            val pool = pop() as PoolRef
+                            tops += PoolDef(pool, properties)
+                            state = START
+                            done = false
+                        }
+                    }
                     BUILD_EXPECT_PROPERTY_IDENTIFIER -> {
                         push(IdentifierRef(token))
                         state = BUILD_EXPECT_PROPERTY_EQUALS
@@ -207,6 +227,10 @@ fun parseNinja(folder : String, reader : Reader) : NinjaFileDef {
                         push(IdentifierRef(token))
                         state = RULE_EXPECT_PROPERTY_EQUALS
                     }
+                    POOL_EXPECT_PROPERTY_IDENTIFIER -> {
+                        push(IdentifierRef(token))
+                        state = POOL_EXPECT_PROPERTY_EQUALS
+                    }
                     BUILD_EXPECT_PROPERTY_EQUALS -> {
                         if (token != "=") throw error(token)
                         state = BUILD_EXPECT_PROPERTY_VALUE
@@ -214,6 +238,10 @@ fun parseNinja(folder : String, reader : Reader) : NinjaFileDef {
                     RULE_EXPECT_PROPERTY_EQUALS -> {
                         if (token != "=") throw error(token)
                         state = RULE_EXPECT_PROPERTY_VALUE
+                    }
+                    POOL_EXPECT_PROPERTY_EQUALS -> {
+                        if (token != "=") throw error(token)
+                        state = POOL_EXPECT_PROPERTY_VALUE
                     }
                     BUILD_EXPECT_PROPERTY_VALUE -> {
                         val identifier = pop() as IdentifierRef
@@ -229,6 +257,13 @@ fun parseNinja(folder : String, reader : Reader) : NinjaFileDef {
                         push(properties)
                         state = RULE_EXPECT_PROPERTIES_EOL
                     }
+                    POOL_EXPECT_PROPERTY_VALUE -> {
+                        val identifier = pop() as IdentifierRef
+                        val properties = pop() as MutableList<Assignment>
+                        properties += Assignment(identifier, UninstantiatedLiteral(token))
+                        push(properties)
+                        state = POOL_EXPECT_PROPERTIES_EOL
+                    }
                     BUILD_EXPECT_PROPERTIES_EOL -> {
                         when (token) {
                             END_OF_LINE_TOKEN, END_OF_FILE_TOKEN -> {
@@ -241,6 +276,14 @@ fun parseNinja(folder : String, reader : Reader) : NinjaFileDef {
                         when (token) {
                             END_OF_LINE_TOKEN, END_OF_FILE_TOKEN -> {
                                 state = RULE_EXPECT_PROPERTIES
+                            }
+                            else -> throw error(token)
+                        }
+                    }
+                    POOL_EXPECT_PROPERTIES_EOL -> {
+                        when (token) {
+                            END_OF_LINE_TOKEN, END_OF_FILE_TOKEN -> {
+                                state = POOL_EXPECT_PROPERTIES
                             }
                             else -> throw error(token)
                         }
@@ -263,9 +306,17 @@ fun parseNinja(folder : String, reader : Reader) : NinjaFileDef {
                         push(RuleRef(token))
                         state = RULE_EXPECT_EOL_AFTER_RULE_NAME
                     }
+                    POOL_EXPECT_POOL_NAME -> {
+                        push(PoolRef(token))
+                        state = POOL_EXPECT_EOL_AFTER_POOL_NAME
+                    }
                     RULE_EXPECT_EOL_AFTER_RULE_NAME -> {
                         push(mutableListOf<Assignment>())
                         state = RULE_EXPECT_PROPERTIES
+                    }
+                    POOL_EXPECT_EOL_AFTER_POOL_NAME -> {
+                        push(mutableListOf<Assignment>())
+                        state = POOL_EXPECT_PROPERTIES
                     }
                 }
             }

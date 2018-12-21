@@ -12,7 +12,7 @@ class GalleryTests {
     private val gallery = File("./ninja/gallery")
 
     private fun assertIdentical(left : Node, right : Node) {
-        if (left == right) return
+        //if (left == right) return
         fun error() : Exception {
             return RuntimeException()
         }
@@ -45,12 +45,23 @@ class GalleryTests {
                     if (right !is RuleRef) throw error()
                     if (left.value != right.value) throw error()
                 }
+                is PoolRef -> {
+                    if (right !is PoolRef) throw error()
+                    if (left.value != right.value) throw error()
+                }
                 is BuildRef -> {
                     if (right !is BuildRef) throw error()
                     if (left.value != right.value) throw error()
                 }
                 is RuleDef -> {
                     if (right !is RuleDef) throw error()
+                    assertIdentical(left.name, right.name)
+                    (left.properties).zip(right.properties).onEach { (l, r) ->
+                        assertIdentical(l, r)
+                    }
+                }
+                is PoolDef -> {
+                    if (right !is PoolDef) throw error()
                     assertIdentical(left.name, right.name)
                     (left.properties).zip(right.properties).onEach { (l, r) ->
                         assertIdentical(l, r)
@@ -66,11 +77,36 @@ class GalleryTests {
                     if (right !is SubNinja) throw error()
                     assertIdentical(left.original, right.original)
                 }
+                is Assignment -> {
+                    if (right !is Assignment) throw error()
+                    assertIdentical(left.name, right.name)
+                    assertIdentical(left.value, right.value)
+                }
+                is IdentifierRef -> {
+                    if (right !is IdentifierRef) throw error()
+                    if (left.value != right.value) throw error()
+                }
+                is UninstantiatedLiteral -> {
+                    if (right !is UninstantiatedLiteral) throw error()
+                    if (left.value != right.value) throw error()
+                }
+                is NinjaFileRef -> {
+                    if (right !is NinjaFileRef) throw error()
+                    if (left.value != right.value) throw error()
+                }
+                is Include -> {
+                    if (right !is Include) throw error()
+                    assertIdentical(left.file, right.file)
+                }
                 else -> throw RuntimeException("$left")
             }
         } catch (e : Throwable) {
-            println("Left ${left.javaClass.simpleName}:\n${writeNinjaToString(left)}")
-            println("Right ${right.javaClass.simpleName}:\n${writeNinjaToString(right)}")
+            val ls = writeNinjaToString(left).split("\n")[0]
+            val rs = writeNinjaToString(right).split("\n")[0]
+            if (ls.length < 256 && rs.length < 256) {
+                println("Left ${left.javaClass.simpleName}:\n$ls")
+                println("Right ${right.javaClass.simpleName}:\n$rs")
+            }
             throw e
         }
     }
@@ -88,18 +124,39 @@ class GalleryTests {
     }
 
     @Test
+    fun roundTripTopLevelAssignment() {
+        val body = "a = b"
+        roundTrip(parseNinja("folder", StringReader(body)))
+    }
+
+    @Test
     fun roundTripColonInBuildOutput() {
         val body = "build build.ninja: RERUN_CMAKE C\$:/abc"
         roundTrip(parseNinja("folder", StringReader(body)))
     }
 
     @Test
+    fun testDollarColon() {
+        val body = """
+            rule a
+              command = python.exe policy${'$'}: --include
+        """.trimIndent()
+        roundTrip(parseNinja("folder", StringReader(body)))
+    }
+
+    @Test
     fun roundTripAll() {
-        gallery.walk().filter { it.name.endsWith(".ninja") }.forEach { buildNinja ->
-            val topNinja = parseNinja(buildNinja) // Doesn't expand includes
-            roundTrip(topNinja)
-            val ninja = readNinjaFile(buildNinja) // Expands includes
-            roundTrip(ninja)
+        gallery.walk().filter { it.name.contains("build") &&
+                it.name.endsWith(".ninja") }.forEach { buildNinja ->
+            try {
+                val topNinja = parseNinja(buildNinja) // Doesn't expand includes
+                roundTrip(topNinja)
+                val ninja = readNinjaFile(buildNinja) // Expands includes
+                roundTrip(ninja)
+            } catch (e : Exception) {
+                println("$buildNinja")
+                throw e
+            }
         }
     }
 
@@ -128,10 +185,10 @@ class GalleryTests {
 
     @Test
     fun copyFrom() {
-        val from = File("C:\\Users\\Jomo\\projects\\vscode_workspace\\project").canonicalFile
+        val from = File("C:\\src\\chromium-2").canonicalFile
         if (!from.exists()) return
         val fromLength = from.path.length + 1
-        val to = File("./ninja/gallery/android-example").canonicalFile
+        val to = File("./ninja/gallery/chromium").canonicalFile
         if (to.exists()) return
         fun match(file : File) : Boolean {
             return when {

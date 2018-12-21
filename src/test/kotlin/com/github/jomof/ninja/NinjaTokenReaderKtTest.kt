@@ -195,6 +195,15 @@ class NinjaTokenReaderKtTest {
     }
 
     @Test
+    fun testDollarColon() {
+        val lines = mutableListOf<String>()
+        StringReader("""
+              command = python.exe policy${'$'}: --include
+        """.trimIndent()).forEachNinjaToken { lines += it }
+        assertThat(lines).containsExactly("command", "=", "python.exe policy: --include", END_OF_LINE_TOKEN, END_OF_FILE_TOKEN)
+    }
+
+    @Test
     fun colonInBuildInput() {
         val lines = mutableListOf<String>()
         StringReader("build build.ninja: RERUN_CMAKE C\$:/abc").forEachNinjaToken { lines += it }

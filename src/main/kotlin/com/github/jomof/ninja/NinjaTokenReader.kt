@@ -41,15 +41,17 @@ fun Reader.forEachContinuedLine(action: (String) -> Unit) {
     continuation()
 }
 
-private fun escape(line: String) = line
-        .replace("\$\$", "\$\$dollar\$\$")
-        .replace("$:", "\$\$colon\$\$")
-        .replace("$ ", "\$\$space\$\$")
+private fun escape(line: String) : String {
+    val l1 = line.replace("\$\$", "[\$dollar\$]")
+    val l2 = l1.replace("$:", "[\$colon\$]")
+    val l3 = l2.replace("$ ", "[\$space\$]")
+    return l3
+}
 
 private fun unescape(line: String) = line
-        .replace("\$\$dollar\$\$", "$")
-        .replace("\$\$colon\$\$", ":")
-        .replace("\$\$space\$\$", " ")
+        .replace("[\$dollar\$]", "$")
+        .replace("[\$colon\$]", ":")
+        .replace("[\$space\$]", " ")
 
 private fun tokenizeAround(separatorToken: Char, value: String, action: (String) -> Unit) {
     if (value.isEmpty()) return
@@ -87,7 +89,10 @@ fun Reader.forEachNinjaToken(action: (String) -> Unit) {
 
             action(line.substringBefore('=').trim())
             action("=")
-            action(unescape(escape(line.substringAfter('=').trim())))
+            val remainder = line.substringAfter('=').trim()
+            val escaped = escape(remainder)
+            val unescaped = unescape(escaped)
+            action(unescaped)
         } else {
             val escaped = escape(line.substringBefore("#"))
             val spaceSplits = escaped.split(' ')

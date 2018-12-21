@@ -9,6 +9,7 @@ class VsCodeOps {
 
     @Test
     fun vscodeStart() {
+        //val folder = File("C:\\Users\\Jomo\\IdeaProjects\\raptor-cage\\ninja\\gallery\\github-wjiali6-skcms")
         val folder = File("C:\\Users\\Jomo\\projects\\vscode_workspace\\project")
         if (folder.exists()) {
             val connection = getOrStartServer(ServerName("vscode"))

@@ -38,7 +38,18 @@ fun writeNinjaToString(ninja : Node) : String {
                 properties.onEach { write(it) }
                 indent = ""
             }
+            is PoolDef -> with(node) {
+                sb.append("pool ")
+                write(name)
+                sb.append("\n")
+                indent = "  "
+                properties.onEach { write(it) }
+                indent = ""
+            }
             is RuleRef -> with(node) {
+                sb.append(value)
+            }
+            is PoolRef -> with(node) {
                 sb.append(value)
             }
             is BuildDef -> with(node) {
